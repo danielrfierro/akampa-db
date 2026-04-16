@@ -1,0 +1,4 @@
+# Dependencias para procesamiento de datos Akampa
+openpyxl>=3.1.0
+# Para el setup local del token de Gmail (solo correr una vez en Mac)
+google-auth-oauthlib>=1.2.0

@@ -1,0 +1,34 @@
+# ── Secretos y credenciales ────────────────────────────────────────────
+credentials.json
+gmail_secrets.json
+*.pem
+*.key
+akampa_config.json
+
+# ── Archivos de datos temporales ───────────────────────────────────────
+reportes/
+*.xlsx
+*.xls
+*.csv
+
+# ── Python ─────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+
+# ── macOS ──────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ── LaunchAgent (solo uso local Mac) ───────────────────────────────────
+*.plist
+akampa_launch.sh
+
+# ── Logs y temporales ──────────────────────────────────────────────────
+*.log
+*.tmp

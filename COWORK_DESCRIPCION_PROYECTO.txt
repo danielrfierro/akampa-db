@@ -1,0 +1,83 @@
+# DESCRIPCIÓN DEL PROYECTO PARA COWORK
+# Pega esto en Cowork al crear el proyecto "Akampa Sales Dashboard"
+
+---
+
+NOMBRE DEL PROYECTO:
+Akampa Sales Intelligence Dashboard
+
+DESCRIPCIÓN:
+Dashboard interno de ventas para el equipo de Akampa. Consolida datos de tres destinos — Bahía Magdalena (Cloudbeds), La Ventana (WeTravel) y Yucatán (WeTravel) — en un solo dashboard accesible en https://akampa-sales.netlify.app
+
+Los datos se actualizan cada semana procesando exports XLSX de ambas plataformas. El dashboard muestra ocupación por viaje, huéspedes, revenue cobrado vs pendiente y progreso contra metas de temporada.
+
+---
+
+TAREA RECURRENTE — ACTUALIZACIÓN SEMANAL
+Nombre: "Actualización semanal Akampa Dashboard"
+Frecuencia: Cada lunes a las 8:00am
+
+INSTRUCCIONES PARA COWORK:
+1. Busca en Gmail correos de noreply@cloudbeds.com de los últimos 7 días con asunto "Reporte Sales Inteligence"
+2. Abre el link de descarga del correo en Chrome
+3. Descarga el archivo XLSX a ~/Downloads/
+4. El script akampa_run_weekly.py se ejecuta automáticamente a las 8:30am via LaunchAgent y sube los datos a Netlify
+
+Si el archivo no se descarga automáticamente, descárgalo manualmente y notifica a daniel@akampa.mx
+
+NOTA IMPORTANTE:
+Cowork NO necesita ejecutar Python. Solo necesita descargar el archivo XLSX a ~/Downloads/.
+El LaunchAgent de macOS (com_akampa_weeklysales.plist) toma el relevo a las 8:30am y hace el procesamiento.
+
+---
+
+ARCHIVOS DEL PROYECTO:
+Ubicación local: ~/Documents/Cowork/Akampa/
+Repositorio de trabajo: Este proyecto en Cowork
+
+Archivos principales:
+- akampa_processor_v3.py     → Procesa los XLSXs y genera los datos del dashboard
+- akampa_run_weekly.py       → Orquestador: localiza el XLSX, procesa y sube a Netlify
+- akampa_launch.sh           → Wrapper del LaunchAgent de macOS
+- akampa_gmail_downloader.py → Descarga reportes desde Gmail
+- akampa-dashboard-v3.html   → El dashboard (index.html en Netlify)
+- akampa-data-v3.js          → Los datos actuales (se sobreescribe cada ciclo)
+- akampa_config.json         → Credenciales Netlify, rutas, config Gmail
+- com_akampa_weeklysales.plist → LaunchAgent macOS (lunes 8:30am)
+
+---
+
+FUENTES DE DATOS:
+- Bahía Magdalena → Cloudbeds → correo automático semanal → Gmail → descarga XLSX
+- La Ventana → WeTravel → descarga manual → guardar como wetravel_la_ventana.xlsx en reportes/
+- Yucatán → WeTravel → descarga manual → guardar como wetravel_yucatan.xlsx en reportes/
+
+---
+
+CONTEXTO DEL NEGOCIO:
+- Los viajes corren en fechas fijas (grupos definidos, no reservaciones individuales)
+- La métrica más crítica es el número de huéspedes vs el magic number de rentabilidad
+- Se necesita ver tanto el revenue cobrado como el pendiente por cobrar
+- El dashboard es para uso interno del equipo de ventas y operaciones
+- La URL es pública pero no está indexada; no tiene contraseña por ahora
+
+---
+
+ESTADO ACTUAL (2026-04-14):
+✅ Dashboard funcionando con datos de Bahía Magdalena (64 viajes, 2 temporadas)
+✅ La Ventana integrada (4 viajes activos)
+⚠️  Yucatán pendiente de primer export WeTravel
+⚠️  Automatización Cowork parcial: descarga OK, ejecución Python requiere LaunchAgent
+✅ Netlify actualizado el 2026-04-14
+
+PRÓXIMOS PASOS:
+1. Subir primer export WeTravel Yucatán
+2. Confirmar magic number real de rentabilidad (default actual: 20 huéspedes)
+3. Obtener export con columna "Balance Due" de WeTravel para separar cobrado/pendiente
+4. Evaluar si automatizar completamente la descarga de WeTravel
+
+---
+
+CONTACTO:
+daniel@akampa.mx
+Dashboard: https://akampa-sales.netlify.app

@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akampa · Sales Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+/* ── THEMES ──────────────────────────────────────── */
+:root {
+  --bg:#0b1512; --surface:#111e1a; --surface2:#182923; --surface3:#1f342d;
+  --border:#223028; --border2:#1a2822;
+  --gold:#c8a05a; --gold2:#e0c48a; --gold-dim:rgba(200,160,90,.14); --gold-glow:rgba(200,160,90,.05);
+  --sage:#72b391; --sage-dim:rgba(114,179,145,.12);
+  --text:#d8ceb8; --text2:#a09882; --muted:#5a7068; --dim:#334840;
+  --ok:#5a9e72; --ok-dim:rgba(90,158,114,.16);
+  --warn:#c49040; --warn-dim:rgba(196,144,64,.14);
+  --danger:#b05040; --danger-dim:rgba(176,80,64,.14);
+  --cobrado:#4a8a62; --pendiente:#7a6030;
+  --lv:#5a8ab0; --lv-dim:rgba(90,138,176,.14); --lv-glow:rgba(90,138,176,.06);
+  --yuc:#8a6ab0; --yuc-dim:rgba(138,106,176,.14);
+}
+html.light {
+  --bg:#f5f2ec; --surface:#fff; --surface2:#f0ede6; --surface3:#e8e4da;
+  --border:#d8d0c0; --border2:#e4ddd0;
+  --gold:#9a6e28; --gold2:#7a5218; --gold-dim:rgba(154,110,40,.10); --gold-glow:rgba(154,110,40,.04);
+  --sage:#2e7a52; --sage-dim:rgba(46,122,82,.10);
+  --text:#1e2820; --text2:#5a5040; --muted:#7a6e58; --dim:#b0a890;
+  --ok:#2a7a48; --ok-dim:rgba(42,122,72,.12);
+  --warn:#8a6020; --warn-dim:rgba(138,96,32,.10);
+  --danger:#8a3020; --danger-dim:rgba(138,48,32,.10);
+  --cobrado:#2a7a48; --pendiente:#8a6020;
+  --lv:#2a5a8a; --lv-dim:rgba(42,90,138,.10); --lv-glow:rgba(42,90,138,.04);
+  --yuc:#6a3a9a; --yuc-dim:rgba(106,58,154,.10);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:13px;min-height:100vh;transition:background .25s,color .25s}
+
+/* ── HEADER ─────────────────────────────────────── */
+header{border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg);z-index:100;gap:16px}
+.brand{display:flex;align-items:baseline;gap:9px}
+.brand-name{font-size:15px;font-weight:500;color:var(--gold);letter-spacing:.16em;text-transform:uppercase}
+.brand-sub{font-size:10px;color:var(--muted);letter-spacing:.09em;text-transform:uppercase}
+.header-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+
+/* Destination tabs */
+.dest-tabs{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.dtab{padding:5px 14px;font-size:10px;font-family:'Inter',sans-serif;font-weight:500;letter-spacing:.07em;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .18s;white-space:nowrap}
+.dtab.active-bm  {background:var(--gold-dim);color:var(--gold)}
+.dtab.active-lv  {background:var(--lv-dim);color:var(--lv)}
+.dtab.active-yuc {background:var(--yuc-dim);color:var(--yuc)}
+.dtab.active-gen {background:var(--sage-dim);color:var(--sage)}
+
+/* Year tabs */
+.year-tabs{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.ytab{padding:5px 12px;font-size:10px;font-family:'Inter',sans-serif;letter-spacing:.06em;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .18s}
+.ytab.active{background:var(--gold-dim);color:var(--gold)}
+
+/* Theme toggle */
+.theme-wrap{display:flex;align-items:center;gap:7px;cursor:pointer}
+.theme-toggle{width:34px;height:18px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;position:relative;transition:background .2s}
+.theme-toggle::after{content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:var(--gold);transition:transform .2s}
+html.light .theme-toggle::after{transform:translateX(16px)}
+.theme-label{font-size:10px;color:var(--muted);letter-spacing:.06em;user-select:none}
+.updated{font-size:10px;color:var(--dim);letter-spacing:.05em;white-space:nowrap}
+
+/* ── MAIN ──────────────────────────────────────── */
+main{padding:0 28px 48px;max-width:1400px;margin:0 auto}
+
+/* ── ANNUAL PROGRESS ──────────────────────────── */
+.annual-block{margin:20px 0 16px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:20px 24px}
+.annual-top{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:12px;gap:20px}
+.annual-label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.annual-total{font-size:28px;font-weight:300;color:var(--text);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.annual-meta{font-size:10px;color:var(--muted)}.annual-meta span{color:var(--gold)}
+.annual-kpis{display:flex;gap:24px;align-items:flex-end}
+.akpi{text-align:right}.akpi-val{font-size:17px;font-weight:300;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.akpi-val.cc{color:var(--sage)}.akpi-val.pp{color:var(--gold)}
+.akpi-label{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.progress-track{height:7px;background:var(--border);border-radius:4px;overflow:visible;position:relative}
+.progress-fill{height:100%;border-radius:4px;display:flex;overflow:hidden}
+.pfill-c{background:var(--cobrado);transition:width .6s cubic-bezier(.4,0,.2,1)}
+.pfill-p{background:var(--pendiente);transition:width .6s cubic-bezier(.4,0,.2,1)}
+.progress-needle{position:absolute;top:-4px;width:2px;height:15px;background:var(--gold);border-radius:1px;transition:left .6s cubic-bezier(.4,0,.2,1)}
+.progress-needle::after{content:'';position:absolute;top:-3px;left:-3px;width:8px;height:8px;background:var(--gold);border-radius:50%}
+.progress-marks{display:flex;justify-content:space-between;margin-top:5px}
+.pmark{font-size:9px;color:var(--dim)}.pmark.goal{color:var(--gold);font-weight:500}
+
+/* ── WEEKLY COMPARISON ─────────────────────────── */
+.weekly-strip{display:grid;grid-template-columns:1fr 1fr auto;gap:1px;background:var(--border2);border:1px solid var(--border2);border-radius:5px;overflow:hidden;margin-bottom:16px}
+.wk-cell{background:var(--surface);padding:14px 18px}
+.wk-label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.wk-amount{font-size:20px;font-weight:300;font-variant-numeric:tabular-nums;letter-spacing:-.02em;color:var(--text)}
+.wk-sub{font-size:10px;color:var(--muted);margin-top:4px}
+.wk-delta-cell{background:var(--surface);padding:14px 20px;display:flex;flex-direction:column;justify-content:center;align-items:center;min-width:90px}
+.wk-delta{font-size:22px;font-weight:300;font-variant-numeric:tabular-nums}
+.wk-delta.up{color:var(--ok)}.wk-delta.down{color:var(--danger)}.wk-delta.flat{color:var(--muted)}
+.wk-delta-label{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+
+/* ── KPI ROW ───────────────────────────────────── */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border2);border:1px solid var(--border2);border-radius:5px;overflow:hidden;margin-bottom:20px}
+.kpi{background:var(--surface);padding:14px 16px}
+.kpi-l{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.kpi-v{font-size:20px;font-weight:300;color:var(--text);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.kpi-s{font-size:9px;color:var(--muted);margin-top:4px}
+.c-gold{color:var(--gold)}.c-sage{color:var(--sage)}.c-warn{color:var(--warn)}.c-lv{color:var(--lv)}.c-yuc{color:var(--yuc)}
+
+/* ── SECTION HEADS ─────────────────────────────── */
+.sec-head{display:flex;align-items:center;gap:12px;margin:20px 0 10px}
+.sec-title{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
+.sec-title.lv{color:var(--lv)}.sec-title.yuc{color:var(--yuc)}.sec-title.gen{color:var(--sage)}
+.sec-line{flex:1;height:1px;background:var(--border)}
+.sec-note{font-size:10px;color:var(--dim);letter-spacing:.04em;white-space:nowrap}
+
+/* ── TIMELINE ──────────────────────────────────── */
+.timeline-wrap{overflow-x:auto;margin-bottom:20px;padding-bottom:4px}
+.timeline-track{display:flex;gap:4px;min-width:max-content}
+.tmonth{display:flex;flex-direction:column;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:9px 11px 7px;min-width:76px;position:relative;cursor:default}
+.tmonth.is-past{opacity:.65}.tmonth.is-current{border-color:var(--gold);background:var(--gold-glow)}
+.tmonth.is-future{border-color:var(--border2)}.tmonth.is-empty{opacity:.3;border-style:dashed}
+.tmonth-label{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.tmonth.is-current .tmonth-label{color:var(--gold)}
+.tmonth-rev{font-size:12px;font-weight:300;font-variant-numeric:tabular-nums;color:var(--text);margin-bottom:4px}
+.tmonth.is-empty .tmonth-rev{color:var(--dim)}
+.tmonth-bar-wrap{width:100%;height:2px;background:var(--border);border-radius:1px;overflow:hidden;margin-bottom:4px}
+.tmonth-bar-fill{height:100%;border-radius:1px;transition:width .5s}
+.tmonth-trips{font-size:9px;color:var(--dim)}
+.tmonth-dot{position:absolute;top:-4px;right:-4px;width:7px;height:7px;border-radius:50%;background:var(--gold);border:1px solid var(--bg);display:none}
+.tmonth.is-current .tmonth-dot{display:block}
+
+/* ── FILTERS ROW (Bahía Mag) ───────────────────── */
+.filters-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.fstrip{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:8px 14px;flex:1;flex-wrap:wrap}
+.fstrip-label{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.band-filter-btns{display:flex;gap:4px}
+.bfbtn{padding:4px 12px;font-size:10px;font-family:'Inter',sans-serif;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--muted);border-radius:3px;transition:all .15s}
+.bfbtn.all.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold)}
+.bfbtn.danger.active{background:var(--danger-dim);border-color:var(--danger);color:var(--danger)}
+.bfbtn.warn.active{background:var(--warn-dim);border-color:var(--warn);color:var(--warn)}
+.bfbtn.ok.active{background:var(--ok-dim);border-color:var(--ok);color:var(--ok)}
+.band-ref{font-size:9px;color:var(--dim);margin-left:4px}
+
+/* Date filter */
+.date-strip{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:8px 14px;flex-wrap:wrap}
+.date-label{font-size:10px;color:var(--muted)}
+.date-input{background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:3px 7px;border-radius:3px;cursor:pointer}
+.date-input:focus{outline:none;border-color:var(--gold)}
+.date-input::-webkit-calendar-picker-indicator{filter:invert(.5);cursor:pointer}
+html.light .date-input::-webkit-calendar-picker-indicator{filter:none}
+.month-shortcuts{display:flex;gap:3px;flex-wrap:wrap}
+.mshort{padding:3px 9px;font-size:9px;font-family:'Inter',sans-serif;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--muted);border-radius:3px;transition:all .15s}
+.mshort:hover{border-color:var(--gold);color:var(--text)}.mshort.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold)}
+.date-clear{padding:3px 9px;font-size:10px;cursor:pointer;border:1px solid var(--danger);background:var(--danger-dim);color:var(--danger);border-radius:3px}
+
+/* ── TRIPS TABLE (Bahía Mag) ───────────────────── */
+.trips-table{width:100%;border-collapse:collapse}
+.trips-table thead tr{border-bottom:1px solid var(--border)}
+.trips-table th{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding:7px 9px;text-align:left;font-weight:400}
+.trips-table th.r,.trips-table td.r{text-align:right}
+.trips-table th.c,.trips-table td.c{text-align:center}
+.trips-table tbody tr{border-bottom:1px solid var(--border2);transition:background .13s}
+.trips-table tbody tr:hover{background:var(--gold-glow)}
+.trips-table tbody tr.is-past td{opacity:.6}.trips-table tbody tr.is-past:hover td{opacity:1}
+.trips-table tbody tr.is-next{background:rgba(114,179,145,.05);border-left:2px solid var(--sage)}
+.trips-table td{padding:8px 9px;vertical-align:middle}
+.td-date .main{font-size:12px;color:var(--text)}.td-date .sub{font-size:10px;color:var(--muted)}
+.occ-wrap{min-width:100px}
+.occ-top{display:flex;justify-content:space-between;margin-bottom:3px}
+.occ-rooms{font-size:12px}.occ-pct{font-size:10px;font-weight:500}
+.occ-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.occ-bar-fill{height:100%;border-radius:2px}
+.guests-wrap{display:flex;align-items:center;gap:5px;justify-content:center}
+.guests-num{font-size:14px;font-weight:300;font-variant-numeric:tabular-nums}
+.gflag{font-size:8px;letter-spacing:.07em;padding:2px 5px;border-radius:2px;text-transform:uppercase}
+.gflag.ok{background:var(--ok-dim);color:var(--ok)}.gflag.warn{background:var(--warn-dim);color:var(--warn)}
+.gflag.danger{background:var(--danger-dim);color:var(--danger)}.gflag.gold{background:var(--gold-dim);color:var(--gold)}
+.gflag.none{background:transparent;color:var(--dim)}
+.fin-wrap{min-width:140px}
+.fin-bar-wrap{height:3px;background:var(--border);border-radius:2px;overflow:hidden;display:flex;margin-bottom:3px}
+.fin-cobrado{background:var(--cobrado)}.fin-pendiente{background:var(--pendiente)}
+.fin-amounts{display:flex;gap:8px;align-items:center}
+.fin-c{font-size:11px;color:var(--sage)}.fin-p{font-size:11px;color:var(--gold)}.fin-sep{font-size:10px;color:var(--dim)}
+.sbadge{font-size:9px;letter-spacing:.07em;text-transform:uppercase;padding:2px 6px;border-radius:2px;display:inline-block;white-space:nowrap}
+.sbadge.past{color:var(--dim);border:1px solid var(--border)}.sbadge.future{color:var(--gold);background:var(--gold-dim);border:1px solid rgba(200,160,90,.25)}
+.sbadge.next{color:var(--sage);background:var(--sage-dim);border:1px solid rgba(114,179,145,.3)}.sbadge.buyout{color:#9a7a40;background:rgba(154,122,64,.12);border:1px solid rgba(154,122,64,.3);font-style:italic}
+
+/* ── WETRAVEL TRIPS (La Ventana / Yucatán) ─────── */
+.wt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-bottom:24px}
+.wt-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:18px 20px;transition:border-color .15s}
+.wt-card:hover{border-color:var(--lv)}
+.wt-card.yuc:hover{border-color:var(--yuc)}
+.wt-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.wt-trip-name{font-size:13px;font-weight:500;color:var(--text);line-height:1.3}
+.wt-dates{font-size:10px;color:var(--muted);margin-top:2px}
+.wt-status{font-size:9px;padding:2px 7px;border-radius:2px}
+.wt-status.past{color:var(--dim);border:1px solid var(--border)}.wt-status.next{color:var(--sage);background:var(--sage-dim);border:1px solid rgba(114,179,145,.3)}
+.wt-status.future{color:var(--lv);background:var(--lv-dim);border:1px solid rgba(90,138,176,.3)}
+.wt-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.wt-metric-label{font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.wt-metric-val{font-size:16px;font-weight:300;font-variant-numeric:tabular-nums;color:var(--text)}
+.wt-metric-val.rev{color:var(--sage)}
+.wt-fill-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:4px}
+.wt-fill-fill{height:100%;background:var(--lv);border-radius:2px;transition:width .5s}
+.wt-card.yuc .wt-fill-fill{background:var(--yuc)}
+.wt-fill-label{font-size:9px;color:var(--dim)}
+.wt-payments{border-top:1px solid var(--border2);padding-top:10px;margin-top:4px}
+.wt-payment-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:10px;color:var(--muted)}
+.wt-payment-row .amt{color:var(--text);font-variant-numeric:tabular-nums}
+.wt-payment-row .ppl{color:var(--dim);font-size:9px}
+
+/* ── GENERAL VIEW ──────────────────────────────── */
+.gen-dest-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.gen-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:18px 20px}
+.gen-card-title{font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+.gen-card-title.bm{color:var(--gold)}.gen-card-title.lv{color:var(--lv)}.gen-card-title.yuc{color:var(--yuc)}
+.gen-rev{font-size:24px;font-weight:300;font-variant-numeric:tabular-nums;letter-spacing:-.02em;color:var(--text);margin-bottom:4px}
+.gen-sub{font-size:10px;color:var(--muted)}
+.gen-bar-wrap{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin:10px 0 6px}
+.gen-bar-fill{height:100%;border-radius:2px;transition:width .5s}
+.gen-bar-fill.bm{background:var(--gold)}.gen-bar-fill.lv{background:var(--lv)}.gen-bar-fill.yuc{background:var(--yuc)}
+.gen-pct{font-size:11px;color:var(--muted)}
+
+/* ── CHART / BOTTOM ────────────────────────────── */
+.bottom-grid{display:grid;grid-template-columns:3fr 2fr;gap:14px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:18px}
+.card-title{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.chart-box{position:relative;height:150px}
+.monthly-tbl{width:100%;border-collapse:collapse}
+.monthly-tbl th{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding:5px 7px;font-weight:400;border-bottom:1px solid var(--border);text-align:right}
+.monthly-tbl th:first-child{text-align:left}
+.monthly-tbl td{padding:6px 7px;font-size:11px;text-align:right;border-bottom:1px solid var(--border2)}
+.monthly-tbl td:first-child{text-align:left;font-size:13px;font-weight:300;color:var(--text)}
+.monthly-tbl tr:last-child td{border-top:1px solid var(--border);border-bottom:none;color:var(--gold);padding-top:8px}
+
+/* ── NOTE ──────────────────────────────────────── */
+.note{margin-top:20px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-left:2px solid var(--dim);border-radius:0 4px 4px 0;font-size:10px;color:var(--dim);line-height:1.8}
+.note b{color:var(--muted)}
+
+/* ── PLACEHOLDER ───────────────────────────────── */
+.placeholder{text-align:center;padding:60px 20px;color:var(--dim)}
+.placeholder-icon{font-size:32px;margin-bottom:12px}
+.placeholder-title{font-size:14px;font-weight:300;color:var(--muted);margin-bottom:6px}
+.placeholder-sub{font-size:11px;color:var(--dim)}
+
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* ── MOBILE ─────────────────────────────────────── */
+@media (max-width: 768px) {
+  header{padding:10px 14px;flex-wrap:wrap;gap:10px}
+  .brand-name{font-size:13px}
+  .header-right{gap:8px;flex-wrap:wrap}
+  .dtab{padding:4px 10px;font-size:9px}
+  .ytab{padding:3px 9px;font-size:9px}
+  .updated{display:none}
+  main{padding:12px 10px}
+  .annual-top{flex-direction:column;gap:10px}
+  .annual-kpis{gap:12px}
+  .gen-dest-grid{grid-template-columns:1fr}
+  .bottom-grid{grid-template-columns:1fr}
+  .wk-grid{grid-template-columns:1fr 1fr}
+  .sec-head{flex-wrap:wrap}
+  .sec-note{display:none}
+  .filters-row{flex-direction:column;align-items:flex-start;gap:8px}
+  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .tbl-wrap table{min-width:600px}
+  .timeline{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .wt-cards{grid-template-columns:1fr}
+  .chart-box{height:200px!important}
+  .annual-label{font-size:10px}
+  .annual-total{font-size:22px}
+  .gen-rev{font-size:18px}
+}
+@media (max-width: 480px) {
+  .wk-grid{grid-template-columns:1fr}
+  .dest-tabs{flex-wrap:wrap}
+  .dtab{flex:1;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="brand-name">Akampa</span>
+    <span class="brand-sub">Sales Dashboard</span>
+  </div>
+  <div class="header-right">
+    <div class="dest-tabs">
+      <button class="dtab active-gen" id="dt-gen" onclick="setDest('gen')">General</button>
+      <button class="dtab" id="dt-bm"  onclick="setDest('bm')">Bahía Mag</button>
+      <button class="dtab" id="dt-lv"  onclick="setDest('lv')">La Ventana</button>
+      <button class="dtab" id="dt-yuc" onclick="setDest('yuc')">Yucatán</button>
+    </div>
+    <div class="year-tabs" id="year-tabs-wrap">
+      <button class="ytab active" id="yr-2026" onclick="setYear('2026')">2026</button>
+      <button class="ytab" id="yr-2027" onclick="setYear('2027')">2027</button>
+      <button class="ytab" id="yr-all"  onclick="setYear('all')">Total</button>
+    </div>
+    <div class="theme-wrap" onclick="toggleTheme()">
+      <span class="theme-label" id="theme-label">Dark</span>
+      <div class="theme-toggle"></div>
+    </div>
+    <span class="updated" id="last-updated">Actualizado 15 Abr 2026</span>
+  </div>
+</header>
+
+<main>
+
+<!-- ANNUAL PROGRESS (General only) -->
+<div id="annual-block" class="annual-block">
+  <div class="annual-top">
+    <div>
+      <div class="annual-label">KPI Anual · Meta de ventas — Todos los destinos</div>
+      <div style="display:flex;align-items:baseline;gap:8px">
+        <span class="annual-total" id="ap-total">—</span>
+        <span class="annual-meta">MXN comprometido de <span>$30,000,000</span></span>
+      </div>
+    </div>
+    <div class="annual-kpis">
+      <div class="akpi"><div class="akpi-val cc" id="ap-cobrado">—</div><div class="akpi-label">Cobrado</div></div>
+      <div class="akpi"><div class="akpi-val pp" id="ap-pendiente">—</div><div class="akpi-label">Por cobrar</div></div>
+      <div class="akpi"><div class="akpi-val" id="ap-pct" style="color:var(--text)">—</div><div class="akpi-label">% meta</div></div>
+    </div>
+  </div>
+  <div style="position:relative">
+    <div class="progress-track">
+      <div class="progress-fill">
+        <div class="pfill-c" id="pf-c" style="width:0%"></div>
+        <div class="pfill-p" id="pf-p" style="width:0%"></div>
+      </div>
+      <div class="progress-needle" id="pf-needle" style="left:0%"></div>
+    </div>
+    <div class="progress-marks">
+      <span class="pmark">$0</span><span class="pmark">$7.5M</span>
+      <span class="pmark">$15M</span><span class="pmark">$22.5M</span>
+      <span class="pmark goal">$30M ← Meta</span>
+    </div>
+  </div>
+</div>
+
+<!-- WEEKLY COMPARISON -->
+<div class="sec-head">
+  <span class="sec-title gen" id="weekly-title">Ventas por semana · booking date</span>
+  <span class="sec-line"></span>
+  <span class="sec-note" id="weekly-note">—</span>
+</div>
+<div class="weekly-strip">
+  <div class="wk-cell">
+    <div class="wk-label" id="wk-curr-label">Esta semana</div>
+    <div class="wk-amount" id="wk-curr">—</div>
+    <div class="wk-sub" id="wk-curr-sub">—</div>
+  </div>
+  <div class="wk-cell">
+    <div class="wk-label" id="wk-prev-label">Semana anterior</div>
+    <div class="wk-amount" id="wk-prev">—</div>
+    <div class="wk-sub" id="wk-prev-sub">—</div>
+  </div>
+  <div class="wk-delta-cell">
+    <div class="wk-delta" id="wk-delta">—</div>
+    <div class="wk-delta-label">vs semana ant.</div>
+  </div>
+</div>
+
+<!-- KPI ROW -->
+<div class="kpi-row">
+  <div class="kpi"><div class="kpi-l">Ingreso comprometido</div><div class="kpi-v c-gold" id="k-rev">—</div><div class="kpi-s" id="k-rev-s">MXN · destino</div></div>
+  <div class="kpi"><div class="kpi-l">Participantes / Huéspedes</div><div class="kpi-v c-sage" id="k-guests">—</div><div class="kpi-s" id="k-guests-s">—</div></div>
+  <div class="kpi"><div class="kpi-l">Ingreso por persona</div><div class="kpi-v" id="k-rpg">—</div><div class="kpi-s">MXN promedio</div></div>
+  <div class="kpi"><div class="kpi-l" id="k4-label">Viajes / Eventos</div><div class="kpi-v" id="k-trips">—</div><div class="kpi-s" id="k-trips-s">—</div></div>
+  <div class="kpi"><div class="kpi-l" id="k5-label">Por cobrar</div><div class="kpi-v c-warn" id="k-pend">—</div><div class="kpi-s" id="k-pend-s">—</div></div>
+</div>
+
+<!-- TIMELINE -->
+<div class="sec-head">
+  <span class="sec-title" id="timeline-title">Progreso mensual</span>
+  <span class="sec-line"></span>
+  <span class="sec-note" id="timeline-note">—</span>
+</div>
+<div class="timeline-wrap"><div class="timeline-track" id="timeline-track"></div></div>
+
+<!-- CONTENT AREAS -->
+<div id="content-gen"><!-- General destination cards --></div>
+<div id="content-bm" style="display:none"><!-- Bahía Mag --></div>
+<div id="content-lv" style="display:none"><!-- La Ventana --></div>
+<div id="content-yuc" style="display:none"><!-- Yucatán --></div>
+
+</main>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+// DATA
+// ════════════════════════════════════════════════════════════════
+const META = { kpi: 30000000, today: '2026-04-15' };
+
+// Bahía Mag trips
+const BM_TRIPS = [
+  {id:1, name:"Ballena Jorobada",         s:"2025-2026",start:"2026-01-04",end:"2026-01-07",rooms:2, cap:15,occ:13.3,guests:4,status:"past", cobrado:83132, pend:0,     total:83132},
+  {id:2, name:"Ballena Jorobada",         s:"2025-2026",start:"2026-01-08",end:"2026-01-11",rooms:7, cap:15,occ:46.7,guests:13,status:"past", cobrado:320160, pend:2000,     total:322160},
+  {id:3, name:"Ballena Jorobada",         s:"2025-2026",start:"2026-01-11",end:"2026-01-14",rooms:2, cap:15,occ:13.3,guests:4,status:"past", cobrado:96600, pend:0,     total:96600},
+  {id:4, name:"Ballena Gris",         s:"2025-2026",start:"2026-01-15",end:"2026-01-18",rooms:1, cap:15,occ:6.7,guests:2,status:"past", cobrado:49500, pend:0,     total:49500},
+  {id:5, name:"Ballena Gris",         s:"2025-2026",start:"2026-01-18",end:"2026-01-21",rooms:0, cap:15,occ:0,guests:0,status:"past", cobrado:0, pend:0,     total:0},
+  {id:6, name:"Ballena Gris",         s:"2025-2026",start:"2026-01-22",end:"2026-01-25",rooms:1, cap:15,occ:6.7,guests:2,status:"past", cobrado:208600, pend:0,     total:208600},
+  {id:7, name:"Ballena Gris",         s:"2025-2026",start:"2026-01-25",end:"2026-01-28",rooms:2, cap:15,occ:13.3,guests:4,status:"past", cobrado:75535, pend:0,     total:75535},
+  {id:8, name:"Ballena Gris",         s:"2025-2026",start:"2026-01-30",end:"2026-02-02",rooms:16, cap:17,occ:94.1,guests:30,status:"past", cobrado:693960, pend:0,     total:693960},
+  {id:9, name:"Ballena Gris",         s:"2025-2026",start:"2026-02-02",end:"2026-02-05",rooms:5, cap:15,occ:33.3,guests:7,status:"past", cobrado:186540, pend:320,     total:186860},
+  {id:10, name:"Ballena Gris",         s:"2025-2026",start:"2026-02-05",end:"2026-02-08",rooms:8, cap:15,occ:53.3,guests:15,status:"past", cobrado:324571, pend:50050,     total:374621},
+  {id:11, name:"Ballena Gris",         s:"2025-2026",start:"2026-02-08",end:"2026-02-11",rooms:15, cap:15,occ:100.0,guests:30,status:"past", cobrado:329559, pend:0,     total:329559},
+  {id:12, name:"Ballena Gris x Kēntro",         s:"2025-2026",start:"2026-02-12",end:"2026-02-15",rooms:14, cap:15,occ:93.3,guests:24,status:"past", cobrado:649396, pend:18598,     total:667994},
+  {id:13, name:"Ballena Gris",         s:"2025-2026",start:"2026-02-15",end:"2026-02-18",rooms:7, cap:15,occ:46.7,guests:11,status:"past", cobrado:240073, pend:0,     total:240073},
+  {id:14, name:"Ballena Gris",         s:"2025-2026",start:"2026-02-19",end:"2026-02-22",rooms:14, cap:15,occ:93.3,guests:27,status:"past", cobrado:619602, pend:1900,     total:621502},
+  {id:15, name:"Ballena Gris",         s:"2025-2026",start:"2026-02-22",end:"2026-02-25",rooms:13, cap:15,occ:86.7,guests:22,status:"past", cobrado:453325, pend:0,     total:453325},
+  {id:16, name:"Ballena Gris",         s:"2025-2026",start:"2026-02-26",end:"2026-03-01",rooms:14, cap:15,occ:93.3,guests:23,status:"past", cobrado:551760, pend:2700,     total:554460},
+  {id:17, name:"Ballena Gris",         s:"2025-2026",start:"2026-03-01",end:"2026-03-04",rooms:0, cap:15,occ:0,guests:0,status:"past", cobrado:0, pend:0,     total:0},
+  {id:18, name:"Ballena Gris",         s:"2025-2026",start:"2026-03-05",end:"2026-03-08",rooms:5, cap:15,occ:33.3,guests:10,status:"past", cobrado:284032, pend:0,     total:284032},
+  {id:19, name:"Ballena Gris",         s:"2025-2026",start:"2026-03-06",end:"2026-03-08",rooms:4, cap:15,occ:26.7,guests:8,status:"past", cobrado:161448, pend:0,     total:161448},
+  {id:20, name:"Ballena Gris",         s:"2025-2026",start:"2026-03-08",end:"2026-03-11",rooms:3, cap:15,occ:20.0,guests:5,status:"past", cobrado:74820, pend:0,     total:74820},
+  {id:21, name:"Mi Compa Chava 3.0",         s:"2025-2026",start:"2026-03-13",end:"2026-03-16",rooms:14, cap:15,occ:93.3,guests:23,status:"past", cobrado:628681, pend:0,     total:628681},
+  {id:22, name:"Ballena Gris",         s:"2025-2026",start:"2026-03-15",end:"2026-03-18",rooms:1, cap:15,occ:6.7,guests:2,status:"past", cobrado:30000, pend:0,     total:30000},
+  {id:23, name:"Ballena Gris",         s:"2025-2026",start:"2026-03-16",end:"2026-03-19",rooms:0, cap:15,occ:0,guests:0,status:"past", cobrado:0, pend:0,     total:0},
+  {id:24, name:"Ballena Gris",         s:"2025-2026",start:"2026-03-19",end:"2026-03-22",rooms:9, cap:15,occ:60.0,guests:15,status:"past", cobrado:380700, pend:0,     total:380700},
+  {id:25, name:"Ballena Gris",         s:"2025-2026",start:"2026-03-23",end:"2026-03-26",rooms:15, cap:15,occ:100.0,guests:30,status:"past", cobrado:520464, pend:0,     total:520464},
+  {id:26, name:"Ballena Gris",         s:"2025-2026",start:"2026-03-26",end:"2026-03-29",rooms:7, cap:15,occ:46.7,guests:11,status:"past", cobrado:284447, pend:0,     total:284447},
+  {id:27, name:"Ballena Gris",         s:"2025-2026",start:"2026-03-29",end:"2026-04-01",rooms:15, cap:15,occ:100.0,guests:26,status:"past", cobrado:667005, pend:0,     total:667005},
+  {id:28, name:"Ocean Safari",         s:"2025-2026",start:"2026-04-02",end:"2026-04-05",rooms:17, cap:17,occ:100.0,guests:28,status:"past", cobrado:619685, pend:0,     total:619685},
+  {id:29, name:"Ocean Safari",         s:"2025-2026",start:"2026-04-05",end:"2026-04-08",rooms:4, cap:15,occ:26.7,guests:8,status:"past", cobrado:193125, pend:0,     total:193125},
+  {id:30, name:"Retiro Kalea x La Magia del Caos",         s:"2025-2026",start:"2026-04-09",end:"2026-04-12",rooms:0, cap:15,occ:0,guests:0,status:"past", cobrado:0, pend:0,     total:0,buyout:true},
+  {id:31, name:"Ocean Safari",         s:"2025-2026",start:"2026-04-12",end:"2026-04-15",rooms:5, cap:15,occ:33.3,guests:9,status:"past", cobrado:177000, pend:0,     total:177000},
+  {id:32, name:"Ocean Safari",         s:"2025-2026",start:"2026-04-15",end:"2026-04-18",rooms:9, cap:15,occ:60.0,guests:13,status:"next", cobrado:292940, pend:49290,     total:342230},
+  {id:33, name:"Marlin & Sardine Run",         s:"2026-2027",start:"2026-10-15",end:"2026-10-18",rooms:5, cap:15,occ:33.3,guests:10,status:"future", cobrado:33600, pend:167400,     total:201000},
+  {id:34, name:"Marlin & Sardine Run",         s:"2026-2027",start:"2026-10-18",end:"2026-10-21",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:35, name:"Marlin & Sardine Run",         s:"2026-2027",start:"2026-10-22",end:"2026-10-25",rooms:15, cap:15,occ:100.0,guests:29,status:"future", cobrado:338350, pend:390250,     total:728600},
+  {id:36, name:"Marlin & Sardine Run",         s:"2026-2027",start:"2026-10-25",end:"2026-10-28",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:37, name:"Marlin & Sardine Run",         s:"2026-2027",start:"2026-10-29",end:"2026-11-01",rooms:10, cap:15,occ:66.7,guests:20,status:"future", cobrado:122800, pend:362600,     total:485400},
+  {id:38, name:"Marlin & Sardine Run",         s:"2026-2027",start:"2026-11-01",end:"2026-11-04",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:39, name:"Marlin & Sardine Run",         s:"2026-2027",start:"2026-11-05",end:"2026-11-08",rooms:1, cap:15,occ:6.7,guests:2,status:"future", cobrado:0, pend:53900,     total:53900},
+  {id:40, name:"Marlin & Sardine Run",         s:"2026-2027",start:"2026-11-08",end:"2026-11-11",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:41, name:"Marlin & Sardine Run",         s:"2026-2027",start:"2026-11-12",end:"2026-11-15",rooms:13, cap:15,occ:86.7,guests:26,status:"future", cobrado:338222, pend:338222,     total:676444},
+  {id:42, name:"Marlin & Sardine Run",         s:"2026-2027",start:"2026-11-15",end:"2026-11-18",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:43, name:"Marlin & Sardine Run",         s:"2026-2027",start:"2026-11-19",end:"2026-11-22",rooms:3, cap:15,occ:20.0,guests:6,status:"future", cobrado:0, pend:167700,     total:167700},
+  {id:44, name:"Marlin & Sardine Run",         s:"2026-2027",start:"2026-11-22",end:"2026-11-25",rooms:1, cap:15,occ:6.7,guests:2,status:"future", cobrado:33600, pend:33600,     total:67200},
+  {id:45, name:"Marlin & Sardine Run",         s:"2026-2027",start:"2026-11-29",end:"2026-12-02",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:46, name:"Marlin & Sardine Run",         s:"2026-2027",start:"2026-12-03",end:"2026-12-06",rooms:12, cap:15,occ:80.0,guests:24,status:"future", cobrado:323400, pend:323400,     total:646800},
+  {id:47, name:"Marlin & Sardine Run",         s:"2026-2027",start:"2026-12-06",end:"2026-12-09",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:48, name:"Marlin & Sardine Run",         s:"2026-2027",start:"2026-12-10",end:"2026-12-13",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:49, name:"Ballena Jorobada",         s:"2026-2027",start:"2026-12-17",end:"2026-12-20",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:50, name:"Ballena Jorobada",         s:"2026-2027",start:"2026-12-23",end:"2026-12-26",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:51, name:"Ballena Jorobada",         s:"2026-2027",start:"2026-12-30",end:"2027-01-02",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:52, name:"Ballena Jorobada",         s:"2026-2027",start:"2027-01-07",end:"2027-01-10",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:53, name:"Ballena Jorobada",         s:"2026-2027",start:"2027-01-14",end:"2027-01-17",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:54, name:"Ballena Gris",         s:"2026-2027",start:"2027-01-21",end:"2027-01-24",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:55, name:"Ballena Gris",         s:"2026-2027",start:"2027-01-28",end:"2027-01-31",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:56, name:"Ballena Gris",         s:"2026-2027",start:"2027-02-04",end:"2027-02-07",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:57, name:"Ballena Gris",         s:"2026-2027",start:"2027-02-11",end:"2027-02-14",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:58, name:"Ballena Gris",         s:"2026-2027",start:"2027-02-18",end:"2027-02-21",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:59, name:"Ballena Gris",         s:"2026-2027",start:"2027-02-25",end:"2027-02-28",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:60, name:"Ballena Gris",         s:"2026-2027",start:"2027-03-04",end:"2027-03-07",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:61, name:"Ballena Gris",         s:"2026-2027",start:"2027-03-18",end:"2027-03-21",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:62, name:"Ballena Gris",         s:"2026-2027",start:"2027-03-25",end:"2027-03-28",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:63, name:"Ballena Gris",         s:"2026-2027",start:"2027-04-01",end:"2027-04-04",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:64, name:"Ballena Gris",         s:"2026-2027",start:"2027-04-08",end:"2027-04-11",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:65, name:"Ballena Gris",         s:"2026-2027",start:"2027-04-15",end:"2027-04-18",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+  {id:66, name:"Ballena Gris",         s:"2026-2027",start:"2027-04-22",end:"2027-04-25",rooms:0, cap:15,occ:0,guests:0,status:"future", cobrado:0, pend:0,     total:0},
+];
+
+// La Ventana trips (WeTravel)
+const LV_TRIPS = [
+  {
+    id:1, name:"Móbulas", dest:"La Ventana",
+    start:"2026-04-19", end:"2026-04-22", cap:30, status:"next",
+    payments:[
+      {date:"2025-11-22",amount:24750,participants:["Marisol González Ficachi", "MARIA DEL MAR ARIAS"]},
+      {date:"2026-04-08",amount:17500,participants:["Carmen Matiella"]},
+      {date:"2026-04-12",amount:21037,participants:["Olga de la Fuente"]},
+      {date:"2026-04-12",amount:21037,participants:["Regina Cabal"]}
+    ]
+  },
+  {
+    id:2, name:"Expedition Camp", dest:"La Ventana",
+    start:"2026-05-28", end:"2026-06-01", cap:30, status:"future",
+    payments:[
+      {date:"2026-04-13",amount:45000,participants:["Carlos Mendoza", "Maria Elena Ortal Ortega"]},
+      {date:"2026-04-13",amount:45000,participants:["Ana paula Isaac", "Gabriela Vazquez"]}
+    ]
+  },
+  {
+    id:3, name:"Expedition Camp", dest:"La Ventana",
+    start:"2026-06-04", end:"2026-06-07", cap:30, status:"future",
+    payments:[
+      {date:"2026-04-07",amount:31500,participants:["Eduardo Zago", "Michelle Ralph"]},
+      {date:"2026-04-07",amount:25500,participants:["Ana Maria Mateo Reyes"]},
+      {date:"2026-04-09",amount:45000,participants:["Francisco Javier Vera", "Maria Fernanda Osorio Chavez"]}
+    ]
+  },
+  {
+    id:4, name:"Expedition Camp", dest:"La Ventana",
+    start:"2026-06-11", end:"2026-06-14", cap:30, status:"future",
+    payments:[
+      {date:"2026-04-07",amount:45000,participants:["Sofia Carrion", "Ana María Carrion"]},
+      {date:"2026-04-08",amount:45000,participants:["MARDOQUEO Rodriguez", "Lorena Rodriguez"]}
+    ]
+  },
+];
+
+// Yucatán trips — placeholder
+const YUC_TRIPS = [];
+
+// Bahía Mag — ventas por semana de BOOKING DATE (Cloudbeds · 2026-04-15)
+const BM_WEEKLY = {"2026-W01":28060,"2026-W02":164555,"2026-W03":401480,"2026-W04":484087,"2026-W05":918843,"2026-W06":427715,"2026-W07":798555,"2026-W08":161110,"2026-W09":757266,"2026-W10":421535,"2026-W11":149065,"2026-W12":192045,"2026-W13":307720,"2026-W15":107420,"2026-W16":7500};
+
+// Bahía Mag — balance due pendiente por semana de booking
+const BM_WEEKLY_PEND = {
+  "2026-W04":168680,"2026-W05":15000,"2026-W06":45387,
+  "2026-W10":162000,"2026-W11":26950,"2026-W13":53900,
+  "2026-W15":74700,"2026-W16":133800
+};
+
+// Bahía Mag — ventas diarias por BOOKING DATE
+const BM_DAILY  = {"2026-01-01":28060,"2026-01-07":28290,"2026-01-08":50570,"2026-01-09":29898,"2026-01-10":55797,"2026-01-12":103830,"2026-01-13":85695,"2026-01-14":111595,"2026-01-15":72009,"2026-01-18":28350,"2026-01-19":127917,"2026-01-20":49800,"2026-01-21":74610,"2026-01-22":95510,"2026-01-23":87800,"2026-01-24":48450,"2026-01-26":76400,"2026-01-27":206650,"2026-01-28":307898,"2026-01-29":115200,"2026-01-30":212695,"2026-02-02":27900,"2026-02-03":254930,"2026-02-04":144885,"2026-02-09":168930,"2026-02-10":208600,"2026-02-11":77290,"2026-02-12":251340,"2026-02-13":17610,"2026-02-15":74785,"2026-02-18":75970,"2026-02-19":85140,"2026-02-24":157330,"2026-02-25":575664,"2026-02-27":24272,"2026-03-04":185895,"2026-03-05":77400,"2026-03-06":158240,"2026-03-09":56950,"2026-03-11":92115,"2026-03-17":28370,"2026-03-18":135375,"2026-03-22":28300,"2026-03-23":152810,"2026-03-25":50905,"2026-03-26":53900,"2026-03-28":50105,"2026-04-09":33600,"2026-04-10":40220,"2026-04-12":33600,"2026-04-13":7500};
+
+const BM_MONTHLY = {
+  "2025-2026":[
+    {m:"Ene",g:168,occ:16.89,rpg:8311,rev:1396267},
+    {m:"Feb",g:503,occ:59.66,rpg:7038,rev:3540116},
+    {m:"Mar",g:371,occ:39.47,rpg:7815,rev:2899208},
+    {m:"Abr",g:171,occ:20.0, rpg:7590,rev:1297870}
+  ],
+  "2026-2027":[
+    {m:"Oct",g:141,occ:13.66,rpg:8610,rev:1214000},
+    {m:"Nov",g:174,occ:17.06,rpg:8878,rev:1544845}
+  ]
+};
+
+
+
+// ════════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════════
+let dest       = 'gen';   // gen | bm | lv | yuc
+let yearFilter = '2026';
+let bandFilter = '';
+let dateFrom   = '';
+let dateTo     = '';
+let isLight    = false;
+let mainChart          = null;
+let revenuePipelineChart = null;
+
+// ════════════════════════════════════════════════════════════════
+// UTILS
+// ════════════════════════════════════════════════════════════════
+const nM  = v => v >= 1e6 ? (v/1e6).toFixed(2)+'M' : v >= 1e3 ? (v/1e3).toFixed(0)+'k' : String(Math.round(v));
+const n0  = v => Math.round(v).toLocaleString('es-MX');
+const MNS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const fmtD = d => { const [y,m,day] = d.split('-'); return `${+day} ${MNS[+m-1]}`; };
+
+function isoWeek(dateStr) {
+  // Returns 'YYYY-Www' for a date string
+  const d = new Date(dateStr + 'T12:00:00');
+  const jan4 = new Date(d.getFullYear(), 0, 4);
+  const startOfWeek1 = new Date(jan4);
+  startOfWeek1.setDate(jan4.getDate() - ((jan4.getDay() + 6) % 7));
+  const diff = d - startOfWeek1;
+  const weekNo = Math.floor(diff / 604800000) + 1;
+  const yr = weekNo < 1 ? d.getFullYear() - 1 : d.getFullYear();
+  const wn = weekNo < 1 ? 52 : weekNo;
+  return `${yr}-W${String(wn).padStart(2,'0')}`;
+}
+
+// Current and previous ISO week for today
+const TODAY_WK = isoWeek(META.today);
+const [TWY, TWN] = TODAY_WK.split('-W');
+const prevWkN = +TWN - 1;
+const PREV_WK = prevWkN < 1 ? `${+TWY-1}-W52` : `${TWY}-W${String(prevWkN).padStart(2,'0')}`;
+
+function lvWeekly(wk) {
+  let total = 0;
+  LV_TRIPS.forEach(t => t.payments.forEach(p => { if (isoWeek(p.date) === wk) total += p.amount; }));
+  return total;
+}
+
+function bmWeekly(wk) { return BM_WEEKLY[wk] || 0; }
+
+function weeklyForDest(d, wk) {
+  if (d === 'bm')  return bmWeekly(wk);
+  if (d === 'lv')  return lvWeekly(wk);
+  if (d === 'yuc') return 0;
+  return bmWeekly(wk) + lvWeekly(wk); // general
+}
+
+function getBMTrips() {
+  return BM_TRIPS.filter(t => {
+    const yr = t.start.slice(0,4);
+    const matchYear = yearFilter === 'all' || yr === yearFilter;
+    const matchBand = bandFilter === '' || (() => {
+      if (t.buyout) return false;
+      const b = getMagicBand(t.guests).cls;
+      return bandFilter === 'ok' ? (b === 'ok' || b === 'gold') : b === bandFilter;
+    })();
+    const ts = new Date(t.start+'T12:00:00'), te = new Date(t.end+'T12:00:00');
+    const matchDate = !dateFrom && !dateTo ? true
+      : dateFrom && dateTo ? (ts <= new Date(dateTo+'T23:59:59') && te >= new Date(dateFrom+'T00:00:00'))
+      : dateFrom ? te >= new Date(dateFrom+'T00:00:00')
+      : ts <= new Date(dateTo+'T23:59:59');
+    return matchYear && matchBand && matchDate;
+  });
+}
+
+function getMagicBand(g) {
+  if (!g)    return {cls:'none',  label:'Sin datos'};
+  if (g<=5)  return {cls:'danger',label:'No viable'};
+  if (g<=7)  return {cls:'warn',  label:'Límite'};
+  if (g<=10) return {cls:'ok',    label:'Viable'};
+  if (g<=13) return {cls:'danger',label:'No rentable'};
+  if (g<=15) return {cls:'warn',  label:'Límite'};
+  if (g<=19) return {cls:'ok',    label:'Viable'};
+  if (g<=21) return {cls:'warn',  label:'Límite'};
+  if (g<=23) return {cls:'danger',label:'No rentable'};
+  if (g<=25) return {cls:'warn',  label:'Límite'};
+  if (g<=27) return {cls:'ok',    label:'Viable'};
+  if (g===28)return {cls:'gold',  label:'Sold out ★'};
+  if (g<=31) return {cls:'danger',label:'No rentable'};
+  if (g===32)return {cls:'ok',    label:'Máx. ext.'};
+  return      {cls:'danger',label:'Fuera de cap.'};
+}
+
+const occColor = o => o >= 75 ? 'var(--ok)' : o >= 45 ? 'var(--warn)' : 'var(--danger)';
+
+// ════════════════════════════════════════════════════════════════
+// RENDER: WEEKLY COMPARISON
+// ════════════════════════════════════════════════════════════════
+function renderWeekly() {
+  const curr = weeklyForDest(dest, TODAY_WK);
+  const prev = weeklyForDest(dest, PREV_WK);
+  const delta = prev > 0 ? ((curr - prev) / prev * 100) : null;
+
+  document.getElementById('wk-curr').textContent = '$' + n0(curr);
+  document.getElementById('wk-prev').textContent = '$' + n0(prev);
+  document.getElementById('wk-curr-label').textContent = `Esta semana (${TODAY_WK})`;
+  document.getElementById('wk-prev-label').textContent = `Semana anterior (${PREV_WK})`;
+  document.getElementById('wk-curr-sub').textContent  = 'MXN · bruto';
+  document.getElementById('wk-prev-sub').textContent  = 'MXN · bruto';
+
+  const dEl = document.getElementById('wk-delta');
+  if (delta === null) {
+    dEl.textContent = '—'; dEl.className = 'wk-delta flat';
+  } else {
+    const sign = delta >= 0 ? '+' : '';
+    dEl.textContent = `${sign}${delta.toFixed(1)}%`;
+    dEl.className = `wk-delta ${delta > 5 ? 'up' : delta < -5 ? 'down' : 'flat'}`;
+  }
+
+  const destNames = {gen:'General',bm:'Bahía Mag',lv:'La Ventana',yuc:'Yucatán'};
+  document.getElementById('weekly-note').textContent =
+    `${destNames[dest]} · ${dest === 'bm' ? 'fecha approx. (check-in)' : 'fecha exacta de pago'}`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// RENDER: KPI ROW
+// ════════════════════════════════════════════════════════════════
+function renderKPIs() {
+  let rev=0, cobrado=0, pend=0, guests=0, trips=0;
+
+  if (dest === 'gen' || dest === 'bm') {
+    const src = dest === 'gen' ? BM_TRIPS : getBMTrips();
+    rev     += src.reduce((s,t)=>s+t.total,0);
+    cobrado += src.reduce((s,t)=>s+t.cobrado,0);
+    pend    += src.reduce((s,t)=>s+t.pend,0);
+    guests  += src.reduce((s,t)=>s+t.guests,0);
+    trips   += src.filter(t=>t.total>0||t.buyout).length;
+  }
+  if (dest === 'gen' || dest === 'lv') {
+    LV_TRIPS.forEach(t => {
+      const amt = t.payments.reduce((s,p)=>s+p.amount,0);
+      const pax = new Set(t.payments.flatMap(p=>p.participants)).size;
+      rev     += amt; cobrado += amt;
+      guests  += pax; trips++;
+    });
+  }
+
+  const rpg = guests > 0 ? Math.round(rev / guests) : 0;
+  const pendTotal = dest === 'bm' ? getBMTrips().reduce((s,t)=>s+t.pend,0)
+                  : dest === 'gen' ? BM_TRIPS.reduce((s,t)=>s+t.pend,0)
+                  : 0;
+
+  document.getElementById('k-rev').textContent    = '$' + nM(rev);
+  document.getElementById('k-guests').textContent = n0(guests);
+  document.getElementById('k-rpg').textContent    = n0(rpg);
+  document.getElementById('k-trips').textContent  = trips;
+  document.getElementById('k-pend').textContent   = '$' + nM(pendTotal);
+  document.getElementById('k-rev-s').textContent  = dest === 'gen' ? 'MXN · todos los destinos' : 'MXN · comprometido';
+  document.getElementById('k-guests-s').textContent = dest === 'lv' ? 'participantes WeTravel' : 'huéspedes / participantes';
+  document.getElementById('k-trips-s').textContent  = dest === 'bm' ? 'con datos en Cloudbeds' : 'con pagos registrados';
+  document.getElementById('k-pend-s').textContent   = dest === 'lv' ? 'Cobro directo WeTravel' : 'pendiente de cobrar';
+}
+
+// ════════════════════════════════════════════════════════════════
+// RENDER: ANNUAL PROGRESS
+// ════════════════════════════════════════════════════════════════
+function renderProgress() {
+  const bmTot = BM_TRIPS.reduce((s,t)=>s+t.total,0);
+  const bmCob = BM_TRIPS.reduce((s,t)=>s+t.cobrado,0);
+  const bmPend= BM_TRIPS.reduce((s,t)=>s+t.pend,0);
+  const lvTot = LV_TRIPS.reduce((s,t)=>s+t.payments.reduce((ss,p)=>ss+p.amount,0),0);
+
+  const cobrado = bmCob + lvTot;
+  const pend    = bmPend;
+  const total   = cobrado + pend;
+  const pct     = Math.min(100, total / META.kpi * 100);
+  const pctC    = Math.min(100, cobrado / META.kpi * 100);
+  const pctP    = Math.min(100, pctC + pend / META.kpi * 100);
+
+  document.getElementById('ap-total').textContent     = '$' + nM(total);
+  document.getElementById('ap-cobrado').textContent   = '$' + nM(cobrado);
+  document.getElementById('ap-pendiente').textContent = '$' + nM(pend);
+  document.getElementById('ap-pct').textContent       = pct.toFixed(1) + '%';
+  document.getElementById('pf-c').style.width         = pctC + '%';
+  document.getElementById('pf-p').style.width         = (pctP - pctC) + '%';
+  document.getElementById('pf-needle').style.left     = pct + '%';
+}
+
+// ════════════════════════════════════════════════════════════════
+// RENDER: TIMELINE
+// ════════════════════════════════════════════════════════════════
+function renderTimeline() {
+  const today = new Date(META.today + 'T12:00:00');
+  const buckets = {};
+
+  if (dest === 'bm' || dest === 'gen') {
+    const src = dest === 'bm' ? getBMTrips() : BM_TRIPS;
+    src.forEach(t => {
+      const ym = t.start.slice(0,7);
+      if (yearFilter !== 'all' && t.start.slice(0,4) !== yearFilter) return;
+      if (!buckets[ym]) buckets[ym] = {rev:0,trips:0,hasData:false};
+      buckets[ym].rev   += t.total;
+      buckets[ym].trips++;
+      if (t.total > 0) buckets[ym].hasData = true;
+    });
+  }
+  if (dest === 'lv' || dest === 'gen') {
+    LV_TRIPS.forEach(t => {
+      const ym = t.start.slice(0,7);
+      if (yearFilter !== 'all' && t.start.slice(0,4) !== yearFilter) return;
+      const amt = t.payments.reduce((s,p)=>s+p.amount,0);
+      if (!buckets[ym]) buckets[ym] = {rev:0,trips:0,hasData:false};
+      buckets[ym].rev   += amt;
+      buckets[ym].trips++;
+      if (amt > 0) buckets[ym].hasData = true;
+    });
+  }
+
+  const yms = Object.keys(buckets).sort();
+  if (!yms.length) { document.getElementById('timeline-track').innerHTML=''; return; }
+  const maxRev = Math.max(...yms.map(ym=>buckets[ym].rev), 1);
+
+  const barColor = dest === 'lv' ? 'var(--lv)' : dest === 'yuc' ? 'var(--yuc)' : 'var(--cobrado)';
+  const currentBarColor = dest === 'lv' ? 'var(--lv)' : dest === 'yuc' ? 'var(--yuc)' : 'var(--gold)';
+
+  document.getElementById('timeline-track').innerHTML = yms.map(ym => {
+    const [y,m] = ym.split('-');
+    const b     = buckets[ym];
+    const label = yearFilter === 'all' ? `${MNS[+m-1]} '${y.slice(2)}` : MNS[+m-1];
+    const pct   = Math.round(b.rev / maxRev * 100);
+    const ms    = new Date(`${ym}-01T12:00:00`);
+    const me    = new Date(+y, +m, 0);
+    const isCur = ms <= today && today <= me;
+    const isPst = me < today;
+    const cls   = !b.hasData ? 'is-empty' : isCur ? 'is-current' : isPst ? 'is-past' : 'is-future';
+    const bc    = isCur ? currentBarColor : isPst ? barColor : 'var(--dim)';
+    return `<div class="tmonth ${cls}">
+      <div class="tmonth-dot"></div>
+      <div class="tmonth-label">${label}</div>
+      <div class="tmonth-rev">${b.rev > 0 ? '$'+nM(b.rev) : '—'}</div>
+      <div class="tmonth-bar-wrap"><div class="tmonth-bar-fill" style="width:${pct}%;background:${bc}"></div></div>
+      <div class="tmonth-trips">${b.trips} ${b.trips===1?'viaje':'viajes'}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('timeline-note').textContent =
+    `${yms.length} meses · $${nM(yms.reduce((s,ym)=>s+buckets[ym].rev,0))} comprometido`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// RENDER: GENERAL DESTINATION CARDS
+// ════════════════════════════════════════════════════════════════
+function renderGeneral() {
+  const bmTot = BM_TRIPS.reduce((s,t)=>s+t.total,0);
+  const bmCob = BM_TRIPS.reduce((s,t)=>s+t.cobrado,0);
+  const lvTot = LV_TRIPS.reduce((s,t)=>s+t.payments.reduce((ss,p)=>ss+p.amount,0),0);
+  const allTot = bmTot + lvTot;
+
+  const bmPct = Math.round(bmTot / allTot * 100);
+  const lvPct = Math.round(lvTot / allTot * 100);
+
+  const bmGuests = BM_TRIPS.reduce((s,t)=>s+t.guests,0);
+  const lvPax    = new Set(LV_TRIPS.flatMap(t=>t.payments.flatMap(p=>p.participants))).size;
+
+  document.getElementById('content-gen').innerHTML = `
+    <div class="gen-dest-grid">
+      <div class="gen-card">
+        <div class="gen-card-title bm">Bahía Magdalena Ocean Camp</div>
+        <div class="gen-rev">$${nM(bmTot)}</div>
+        <div class="gen-sub">comprometido · ${bmGuests} huéspedes · ${BM_TRIPS.filter(t=>t.total>0).length} viajes</div>
+        <div class="gen-bar-wrap"><div class="gen-bar-fill bm" style="width:${bmPct}%"></div></div>
+        <div class="gen-pct">${bmPct}% del total de destinos</div>
+      </div>
+      <div class="gen-card">
+        <div class="gen-card-title lv">La Ventana</div>
+        <div class="gen-rev">$${nM(lvTot)}</div>
+        <div class="gen-sub">cobrado WeTravel · ${lvPax} participantes · ${LV_TRIPS.length} viajes</div>
+        <div class="gen-bar-wrap"><div class="gen-bar-fill lv" style="width:${lvPct}%"></div></div>
+        <div class="gen-pct">${lvPct}% del total de destinos</div>
+      </div>
+      <div class="gen-card" style="opacity:.5">
+        <div class="gen-card-title yuc">Yucatán Jungle Safari</div>
+        <div class="gen-rev" style="color:var(--dim)">—</div>
+        <div class="gen-sub">Sin datos · próxima temporada</div>
+        <div class="gen-bar-wrap"><div class="gen-bar-fill yuc" style="width:0%"></div></div>
+        <div class="gen-pct">0% del total</div>
+      </div>
+    </div>
+    <div class="sec-head" style="margin-top:8px">
+      <span class="sec-title gen">Pipeline de Revenue — Cobrado &amp; Pendiente por Semana</span>
+      <span class="sec-line"></span>
+      <span class="sec-note">Cobrado + pendiente de esa semana de booking · BM (verde/gold) + La Ventana (azul)</span>
+    </div>
+    <div class="card" style="margin-bottom:4px">
+      <div class="chart-box" style="height:290px"><canvas id="revenue-pipeline-chart"></canvas></div>
+    </div>`;
+  renderRevenuePipelineChart();
+}
+
+// ════════════════════════════════════════════════════════════════
+// RENDER: BAHÍA MAG TABLE + FILTERS
+// ════════════════════════════════════════════════════════════════
+function renderBM() {
+  const src = getBMTrips();
+  const belowMagic = src.filter(t=>t.guests>0&&!t.buyout&&getMagicBand(t.guests).cls==='danger').length;
+
+  document.getElementById('content-bm').innerHTML = `
+    <div class="filters-row">
+      <div class="fstrip">
+        <span class="fstrip-label">Rentabilidad</span>
+        <div class="band-filter-btns">
+          <button class="bfbtn all ${bandFilter===''?'active':''}"    onclick="setBandFilter('')">Todos</button>
+          <button class="bfbtn danger ${bandFilter==='danger'?'active':''}" onclick="setBandFilter('danger')">🔴 No rentable</button>
+          <button class="bfbtn warn ${bandFilter==='warn'?'active':''}"     onclick="setBandFilter('warn')">🟡 En límite</button>
+          <button class="bfbtn ok ${bandFilter==='ok'?'active':''}"         onclick="setBandFilter('ok')">🟢 Viable</button>
+        </div>
+        <span class="band-ref">${belowMagic} viaje${belowMagic!==1?'s':''} no rentables</span>
+      </div>
+      <div class="date-strip">
+        <span class="date-label">Desde</span>
+        <input type="date" id="date-from" class="date-input" value="${dateFrom}" onchange="setDateFilter()">
+        <span class="date-label">Hasta</span>
+        <input type="date" id="date-to" class="date-input" value="${dateTo}" onchange="setDateFilter()">
+        <div class="month-shortcuts" id="month-shortcuts"></div>
+        <button class="date-clear" id="date-clear-btn" onclick="clearDateFilter()" style="${dateFrom||dateTo?'':'display:none'}">✕</button>
+      </div>
+    </div>
+    <div class="tbl-wrap"><table class="trips-table">
+      <thead><tr>
+        <th>#</th><th>Viaje</th><th>Período</th><th class="c">Och.</th>
+        <th>Ocupación</th><th class="c">Huéspedes</th>
+        <th>Cobrado · Por cobrar</th><th class="r">Total</th><th class="c">Estado</th>
+      </tr></thead>
+      <tbody>${src.map((t,i) => renderBMRow(t, i+1)).join('')}</tbody>
+    </table></div>
+    <div class="bottom-grid" style="margin-top:24px">
+      <div class="card">
+        <div class="card-title">Ingresos por mes (MXN)</div>
+        <div class="chart-box"><canvas id="main-chart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Métricas mensuales</div>
+        <table class="monthly-tbl">
+          <thead><tr><th>Mes</th><th>Huésp.</th><th>Occ%</th><th>$/Huésp.</th></tr></thead>
+          <tbody id="monthly-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="note">
+      <b>Bahía Mag:</b> Occupancy Statistics · Revenue Per Guest · Balance Due · Check-in Review (Cloudbeds) &nbsp;·&nbsp;
+      <b>Semana BM:</b> fecha real de booking (Cloudbeds · Reservations by Booking Date) · monto = Reservation Paid Amount · excluye cancelaciones &nbsp;·&nbsp;
+      <b>Huéspedes:</b> conteo real del Check-in Review
+    </div>`;
+
+  buildMonthShortcuts();
+  renderBMChart();
+  renderBMMonthly();
+}
+
+function renderBMRow(t, i) {
+  const oc  = occColor(t.occ);
+  const band = getMagicBand(t.guests);
+  const colors = {ok:'var(--ok)',warn:'var(--warn)',gold:'var(--gold)',danger:'var(--danger)',none:'var(--dim)'};
+  const gc  = colors[band.cls] || 'var(--dim)';
+  const pend = Math.max(0, t.pend);
+  const cPct = t.total > 0 ? (t.cobrado/t.total*100) : 0;
+  const pPct = t.total > 0 ? (pend/t.total*100) : 0;
+  const rc   = t.status==='past'?'is-past':t.status==='next'?'is-next':'';
+  const badge = t.buyout ? '<span class="sbadge buyout">Buyout</span>'
+    : t.status==='past'  ? '<span class="sbadge past">Concluido</span>'
+    : t.status==='next'  ? '<span class="sbadge next">Próximo</span>'
+    : '<span class="sbadge future">Forecast</span>';
+  const seasonTag = yearFilter === 'all' ? ` <span style="font-size:9px;color:var(--dim)">${t.start.slice(0,4)}</span>` : '';
+  const finHtml = t.buyout
+    ? '<span style="font-size:10px;color:var(--warn);font-style:italic">Cobro externo</span>'
+    : t.total > 0
+    ? `<div class="fin-wrap">
+        <div class="fin-bar-wrap">
+          <div class="fin-cobrado" style="width:${cPct}%"></div>
+          <div class="fin-pendiente" style="width:${pPct}%"></div>
+        </div>
+        <div class="fin-amounts">
+          <span class="fin-c">${nM(t.cobrado)}</span>
+          <span class="fin-sep">·</span>
+          <span class="fin-p">${pend>0?nM(pend)+' pend.':'Saldado'}</span>
+        </div></div>`
+    : '<span style="font-size:10px;color:var(--dim)">Sin datos</span>';
+  const guestHtml = t.buyout ? '<span style="font-size:10px;color:var(--dim)">Buyout</span>'
+    : `<div class="guests-wrap" style="justify-content:center">
+        <span class="guests-num" style="color:${gc}">${t.guests||'—'}</span>
+        ${t.guests?`<span class="gflag ${band.cls}">${band.label}</span>`:''}
+       </div>`;
+  return `<tr class="${rc}">
+    <td style="color:var(--dim);font-size:10px">${i}</td>
+    <td style="font-size:11px;color:var(--text2);max-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${t.name}">${t.name}</td>
+    <td class="td-date"><div class="main">${fmtD(t.start)} → ${fmtD(t.end)}${seasonTag}</div><div class="sub">3 noches · ${new Date(t.start+'T12:00').toLocaleDateString('es-MX',{weekday:'short'})}</div></td>
+    <td class="c" style="color:var(--text2)">${t.rooms||'—'}</td>
+    <td><div class="occ-wrap"><div class="occ-top"><span class="occ-rooms" style="color:${oc}">${t.rooms}<span style="color:var(--muted)">/${t.cap}</span></span><span class="occ-pct" style="color:${oc}">${t.occ}%</span></div><div class="occ-bar"><div class="occ-bar-fill" style="width:${t.occ}%;background:${oc}"></div></div></div></td>
+    <td class="c">${guestHtml}</td>
+    <td>${finHtml}</td>
+    <td class="r" style="font-size:11px;color:var(--text2)">${t.total>0?'$'+n0(t.total):'—'}</td>
+    <td class="c">${badge}</td>
+  </tr>`;
+}
+
+function renderBMChart() {
+  const seasons = yearFilter==='all' ? ['2025-2026','2026-2027'] : Object.keys(BM_MONTHLY);
+  const rows = seasons.flatMap(s=>(BM_MONTHLY[s]||[]).map(m=>({...m,s})));
+  if (!rows.length) return;
+  if (mainChart) mainChart.destroy();
+  const cc = isLight
+    ? {barBg:'rgba(154,110,40,.18)',barBd:'rgba(154,110,40,.65)',line:'rgba(46,122,82,.6)',pt:'rgba(46,122,82,.85)',tick:'#7a6e58',grid:'#e4ddd0',tooltip:{bg:'#fff',border:'#d8d0c0',title:'#9a6e28',body:'#1e2820'}}
+    : {barBg:'rgba(200,160,90,.22)',barBd:'rgba(200,160,90,.7)',line:'rgba(114,179,145,.65)',pt:'rgba(114,179,145,.9)',tick:'#5a7068',grid:'#1a2822',tooltip:{bg:'#182923',border:'#223028',title:'#c8a05a',body:'#d8ceb8'}};
+  const ctx = document.getElementById('main-chart');
+  if (!ctx) return;
+  mainChart = new Chart(ctx, {
+    type:'bar',
+    data:{labels:rows.map(m=>yearFilter==='all'?`${m.m} '${m.s.slice(2,4)}`:m.m),
+      datasets:[
+        {label:'Ingreso (M MXN)',data:rows.map(m=>m.rev/1e6),backgroundColor:cc.barBg,borderColor:cc.barBd,borderWidth:1,borderRadius:2,yAxisID:'y'},
+        {label:'Huéspedes',data:rows.map(m=>m.g),type:'line',borderColor:cc.line,backgroundColor:'transparent',pointBackgroundColor:cc.pt,pointRadius:3,borderWidth:1.5,tension:0.3,yAxisID:'y2'}
+      ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:cc.tick,font:{family:'Inter',size:9},boxWidth:12,padding:10}},
+        tooltip:{backgroundColor:cc.tooltip.bg,borderColor:cc.tooltip.border,borderWidth:1,titleColor:cc.tooltip.title,bodyColor:cc.tooltip.body,titleFont:{family:'Inter',size:11},bodyFont:{family:'Inter',size:10},
+          callbacks:{label:c=>c.datasetIndex===0?` $${c.raw.toFixed(2)}M MXN`:` ${c.raw} huéspedes`}}},
+      scales:{
+        x:{ticks:{color:cc.tick,font:{family:'Inter',size:10}},grid:{color:cc.grid},border:{color:cc.grid}},
+        y:{position:'left',ticks:{color:cc.tick,font:{family:'Inter',size:9},callback:v=>`$${v.toFixed(1)}M`},grid:{color:cc.grid},border:{color:cc.grid}},
+        y2:{position:'right',ticks:{color:cc.tick,font:{family:'Inter',size:9}},grid:{drawOnChartArea:false},border:{color:cc.grid}}
+      }}
+  });
+}
+
+function renderRevenuePipelineChart() {
+  const canvas = document.getElementById('revenue-pipeline-chart');
+  if (!canvas) return;
+  if (revenuePipelineChart) { revenuePipelineChart.destroy(); revenuePipelineChart = null; }
+
+  // Weeks from BM_WEEKLY, sorted
+  const allWks = Object.keys(BM_WEEKLY).sort();
+
+  const cc = isLight
+    ? {tick:'#7a6e58',grid:'#e4ddd0',tooltip:{bg:'#fff',border:'#d8d0c0',title:'#9a6e28',body:'#1e2820'}}
+    : {tick:'#5a7068',grid:'#1a2822',tooltip:{bg:'#182923',border:'#223028',title:'#c8a05a',body:'#d8ceb8'}};
+
+  const bmCob  = allWks.map(wk => (BM_WEEKLY[wk]      || 0) / 1e3);
+  const bmPend = allWks.map(wk => (BM_WEEKLY_PEND[wk]  || 0) / 1e3);
+  const lvCob  = allWks.map(wk => lvWeekly(wk)               / 1e3);
+  const labels = allWks.map(wk => 'S' + wk.split('-W')[1].replace(/^0/,''));
+
+  revenuePipelineChart = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'BM Cobrado',
+          data: bmCob,
+          backgroundColor: isLight ? 'rgba(42,122,72,.50)' : 'rgba(74,138,98,.60)',
+          borderColor:     isLight ? 'rgba(42,122,72,.80)' : 'rgba(74,138,98,.90)',
+          borderWidth: 1, borderRadius: 2, stack: 'bm'
+        },
+        {
+          label: 'BM Pendiente',
+          data: bmPend,
+          backgroundColor: isLight ? 'rgba(138,96,32,.40)' : 'rgba(122,96,48,.60)',
+          borderColor:     isLight ? 'rgba(138,96,32,.70)' : 'rgba(200,160,90,.70)',
+          borderWidth: 1, borderRadius: 2, stack: 'bm'
+        },
+        {
+          label: 'La Ventana',
+          data: lvCob,
+          backgroundColor: isLight ? 'rgba(42,90,138,.40)' : 'rgba(90,138,176,.50)',
+          borderColor:     isLight ? 'rgba(42,90,138,.70)' : 'rgba(90,138,176,.85)',
+          borderWidth: 1, borderRadius: 2, stack: 'lv'
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: { color: cc.tick, font: { family:'Inter', size:9 }, boxWidth:10, padding:12 }
+        },
+        tooltip: {
+          backgroundColor: cc.tooltip.bg, borderColor: cc.tooltip.border, borderWidth: 1,
+          titleColor: cc.tooltip.title, bodyColor: cc.tooltip.body,
+          titleFont: { family:'Inter', size:11 }, bodyFont: { family:'Inter', size:10 },
+          callbacks: {
+            title: items => `Semana ${items[0].label}`,
+            label: c => {
+              const v = c.raw;
+              return v > 0 ? ` ${c.dataset.label}: $${v >= 1000 ? (v/1000).toFixed(2)+'M' : v.toFixed(0)+'k'} MXN` : null;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          stacked: true,
+          ticks: { color:cc.tick, font:{family:'Inter',size:9} },
+          grid: { color:cc.grid }, border: { color:cc.grid }
+        },
+        y: {
+          stacked: true,
+          ticks: { color:cc.tick, font:{family:'Inter',size:9}, callback: v => `$${v}k` },
+          grid: { color:cc.grid }, border: { color:cc.grid }
+        }
+      }
+    }
+  });
+}
+
+function renderBMMonthly() {
+  const seasons = yearFilter==='all' ? ['2025-2026','2026-2027'] : Object.keys(BM_MONTHLY);
+  const rows = seasons.flatMap(s=>(BM_MONTHLY[s]||[]).map(m=>({...m,s})));
+  const totG = rows.reduce((s,m)=>s+m.g,0), totR = rows.reduce((s,m)=>s+m.rev,0);
+  const avgOcc = rows.length ? rows.reduce((s,m)=>s+m.occ,0)/rows.length : 0;
+  const avgRpg = totG ? Math.round(totR/totG) : 0;
+  const tbody = document.getElementById('monthly-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = rows.map(m=>`<tr>
+    <td>${m.m}${yearFilter==='all'?` <span style="font-size:9px;color:var(--dim)">'${m.s.slice(2,4)}</span>`:''}</td>
+    <td>${n0(m.g)}</td><td>${m.occ.toFixed(1)}%</td><td>${n0(m.rpg)}</td>
+  </tr>`).join('') + `<tr><td>Total</td><td>${n0(totG)}</td><td>${avgOcc.toFixed(1)}%</td><td>${n0(avgRpg)}</td></tr>`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// RENDER: LA VENTANA (WeTravel cards)
+// ════════════════════════════════════════════════════════════════
+function renderLV() {
+  const totalRev = LV_TRIPS.reduce((s,t)=>s+t.payments.reduce((ss,p)=>ss+p.amount,0),0);
+  const totalPax = new Set(LV_TRIPS.flatMap(t=>t.payments.flatMap(p=>p.participants))).size;
+
+  const cards = LV_TRIPS.map(t => {
+    const rev  = t.payments.reduce((s,p)=>s+p.amount,0);
+    const pax  = new Set(t.payments.flatMap(p=>p.participants));
+    const fill = Math.round(pax.size / t.cap * 100);
+    const badge = t.status==='past' ? 'past' : t.status==='next' ? 'next' : 'future';
+    const badgeTxt = t.status==='past' ? 'Concluido' : t.status==='next' ? 'Próximo' : 'Próximamente';
+    const pymtRows = t.payments.map(p =>
+      `<div class="wt-payment-row">
+        <span>${p.date} · ${p.participants.length} pax</span>
+        <span class="amt">$${n0(p.amount)}</span>
+       </div>`).join('');
+    return `<div class="wt-card">
+      <div class="wt-card-header">
+        <div>
+          <div class="wt-trip-name">${t.dest}: ${t.name}</div>
+          <div class="wt-dates">${fmtD(t.start)} – ${fmtD(t.end)} ${t.start.slice(0,4)}</div>
+        </div>
+        <span class="wt-status ${badge}">${badgeTxt}</span>
+      </div>
+      <div class="wt-metrics">
+        <div><div class="wt-metric-label">Cobrado</div><div class="wt-metric-val rev">$${nM(rev)}</div></div>
+        <div><div class="wt-metric-label">Participantes</div><div class="wt-metric-val">${pax.size}<span style="font-size:10px;color:var(--muted)">/${t.cap}</span></div></div>
+        <div><div class="wt-metric-label">Llenado</div><div class="wt-metric-val">${fill}%</div></div>
+      </div>
+      <div class="wt-fill-bar"><div class="wt-fill-fill" style="width:${fill}%"></div></div>
+      <div class="wt-fill-label">${pax.size} de ${t.cap} lugares · ${t.cap - pax.size} disponibles</div>
+      <div class="wt-payments"><div class="wk-label" style="margin-bottom:6px;font-size:9px">Pagos recibidos</div>${pymtRows}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('content-lv').innerHTML = `
+    <div class="sec-head"><span class="sec-title lv">La Ventana · Viajes activos</span><span class="sec-line"></span>
+    <span class="sec-note">${LV_TRIPS.length} viajes · ${totalPax} participantes · $${nM(totalRev)} cobrado</span></div>
+    <div class="wt-grid">${cards}</div>
+    <div class="note"><b>La Ventana:</b> Reportes de pagos WeTravel · monto bruto (antes de fees) &nbsp;·&nbsp;
+    <b>Fees WeTravel:</b> ~1% organizer + ~1% WeTravel sobre el monto bruto &nbsp;·&nbsp;
+    <b>Comparativo semanal:</b> fecha exacta de pago registrada en WeTravel</div>`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// RENDER: YUCATÁN PLACEHOLDER
+// ════════════════════════════════════════════════════════════════
+function renderYuc() {
+  document.getElementById('content-yuc').innerHTML = `
+    <div class="placeholder">
+      <div class="placeholder-icon">🌿</div>
+      <div class="placeholder-title">Yucatán Jungle Safari</div>
+      <div class="placeholder-sub">Sin datos disponibles aún · Cap. máx. 30 personas por viaje<br>
+      Conecta el reporte de WeTravel para poblar esta sección</div>
+    </div>`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// HELPERS: DATE FILTER & MONTH SHORTCUTS
+// ════════════════════════════════════════════════════════════════
+function buildMonthShortcuts() {
+  const container = document.getElementById('month-shortcuts');
+  if (!container) return;
+  const tripMonths = [...new Set(getBMTrips().map(t=>t.start.slice(0,7)))].sort();
+  const monthCount = {};
+  tripMonths.forEach(ym => { const m=ym.split('-')[1]; monthCount[m]=(monthCount[m]||0)+1; });
+  container.innerHTML = tripMonths.map(ym => {
+    const [y,m] = ym.split('-');
+    const ld    = new Date(+y,+m,0).getDate();
+    const lbl   = yearFilter==='all' ? `${MNS[+m-1]} '${y.slice(2)}` : MNS[+m-1];
+    const act   = dateFrom===`${ym}-01` && dateTo===`${ym}-${String(ld).padStart(2,'0')}`;
+    return `<button class="mshort ${act?'active':''}" id="ms-${ym}"
+      onclick="setMonthFilter('${ym}-01','${ym}-${String(ld).padStart(2,'0')}')">${lbl}</button>`;
+  }).join('');
+}
+
+function setMonthFilter(f,t) {
+  dateFrom=f; dateTo=t;
+  const df=document.getElementById('date-from'), dt=document.getElementById('date-to');
+  if(df) df.value=f; if(dt) dt.value=t;
+  document.querySelectorAll('.mshort').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById(`ms-${f.slice(0,7)}`);
+  if(el) el.classList.add('active');
+  const cb=document.getElementById('date-clear-btn');
+  if(cb) cb.style.display='inline-block';
+  renderBM();
+}
+function setDateFilter() {
+  const df=document.getElementById('date-from'), dt=document.getElementById('date-to');
+  dateFrom=df?df.value:''; dateTo=dt?dt.value:'';
+  document.querySelectorAll('.mshort').forEach(b=>b.classList.remove('active'));
+  const cb=document.getElementById('date-clear-btn');
+  if(cb) cb.style.display=(dateFrom||dateTo)?'inline-block':'none';
+  renderBM();
+}
+function clearDateFilter() {
+  dateFrom=''; dateTo='';
+  const df=document.getElementById('date-from'), dt=document.getElementById('date-to');
+  if(df) df.value=''; if(dt) dt.value='';
+  document.querySelectorAll('.mshort').forEach(b=>b.classList.remove('active'));
+  const cb=document.getElementById('date-clear-btn');
+  if(cb) cb.style.display='none';
+  renderBM();
+}
+function setBandFilter(f) {
+  bandFilter=f; renderBM(); renderKPIs();
+}
+
+// ════════════════════════════════════════════════════════════════
+// CONTROLS
+// ════════════════════════════════════════════════════════════════
+function setDest(d) {
+  dest = d;
+  ['gen','bm','lv','yuc'].forEach(id => {
+    document.getElementById(`dt-${id}`).classList.remove('active-gen','active-bm','active-lv','active-yuc');
+    document.getElementById(`content-${id}`).style.display = 'none';
+  });
+  document.getElementById(`dt-${d}`).classList.add(`active-${d}`);
+  document.getElementById(`content-${d}`).style.display = 'block';
+  // Annual progress only on General
+  document.getElementById('annual-block').style.display = d==='gen' ? 'block' : 'none';
+  // Year tabs hidden for LV and YUC (not relevant)
+  document.getElementById('year-tabs-wrap').style.opacity = (d==='lv'||d==='yuc') ? '0.4' : '1';
+  renderAll();
+}
+
+function setYear(y) {
+  yearFilter = y;
+  document.querySelectorAll('.ytab').forEach(b=>b.classList.remove('active'));
+  document.getElementById(y==='all'?'yr-all':`yr-${y}`).classList.add('active');
+  renderAll();
+}
+
+function toggleTheme() {
+  isLight = !isLight;
+  document.documentElement.classList.toggle('light', isLight);
+  document.getElementById('theme-label').textContent = isLight ? 'Light' : 'Dark';
+  renderBMChart();
+  renderRevenuePipelineChart();
+}
+
+// ════════════════════════════════════════════════════════════════
+// MAIN
+// ════════════════════════════════════════════════════════════════
+function renderAll() {
+  renderProgress();
+  renderKPIs();
+  renderWeekly();
+  renderTimeline();
+  if (dest === 'gen') renderGeneral();
+  if (dest === 'bm')  renderBM();
+  if (dest === 'lv')  renderLV();
+  if (dest === 'yuc') renderYuc();
+}
+
+// Init
+setDest('gen');
+</script>
+</body>
+</html>

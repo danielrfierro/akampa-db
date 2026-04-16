@@ -1,0 +1,46 @@
+name: Daily Data Update
+
+on:
+  schedule:
+    # Lunes 8:30am hora México (UTC-6) = 14:30 UTC
+    # Para actualización diaria en semana cambia a: '30 14 * * 1-5'
+    - cron: '30 14 * * 1'
+  workflow_dispatch:   # permite correr manualmente desde GitHub UI
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Token con permisos de escritura para poder hacer push
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Download Excel from Gmail
+        env:
+          GMAIL_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
+          GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
+          GMAIL_REFRESH_TOKEN: ${{ secrets.GMAIL_REFRESH_TOKEN }}
+        run: python scripts/akampa_gmail_downloader.py
+
+      - name: Process data and update dashboard files
+        run: python scripts/akampa_processor_v3.py
+
+      - name: Commit and push updated data
+        run: |
+          git config --global user.name  'akampa-bot[data]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add akampa-data-v3.js akampa-data-v3.json
+          # Solo hace commit si hay cambios reales
+          git diff --staged --quiet || git commit -m "🔄 Auto-update data $(date +%Y-%m-%d)"
+          git push
