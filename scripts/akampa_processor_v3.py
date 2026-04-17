@@ -114,16 +114,20 @@ def iso_week(d):
     iso = d.isocalendar()
     return f"{iso[0]}-W{str(iso[1]).zfill(2)}"
 
-# ── Parse single XLSX with 4 sheets ──────────────────────────────
+# ── Parse single XLSX with tabs ──────────────────────────────────
 def parse_cloudbeds(path):
     wb = load_workbook(path, read_only=True)
+    sheets = wb.sheetnames
 
-    # 1. ReservationBalanceDue — clean format: Grand Total / Paid / Balance Due
+    # 1. ReservationBalanceDue — Grand Total / Paid / Balance Due per check-in date
+    # Columnas: 0=ResNum(puede ser None), 2=Status, 3=Check-In, 6=GrandTotal, 7=Paid, 8=BalanceDue
     rows = xl_rows(wb, 'ReservationBalanceDue')
     hi   = find_header(rows, 'Reservation Number')
     bal  = defaultdict(lambda: {'cobrado':0,'pend':0,'total':0})
     for r in rows[hi+1:]:
-        if not r[0] or not r[3]: continue
+        if not r[3]: continue                           # check-in date es obligatorio
+        status = str(r[2] or '').strip()
+        if status == 'Cancelled': continue              # excluir cancelaciones
         ci = parse_date(r[3])
         if not ci: continue
         try:
@@ -132,7 +136,7 @@ def parse_cloudbeds(path):
             bal[ci]['pend']    += float(r[8] or 0)
         except: pass
 
-    # 2. CheckinReview — guest and room counts
+    # 2. CheckinReview — guest and room counts per check-in date
     rows2 = xl_rows(wb, 'CheckinReview')
     hi2   = find_header(rows2, 'Check-In Date')
     ci_data = defaultdict(lambda: {'guests':0,'rooms':0})
@@ -164,7 +168,117 @@ def parse_cloudbeds(path):
             'rev': round(float(r[3] or 0))
         }
 
-    return bal, ci_data, monthly_new
+    # 4. ReservationsByBookingDate (opcional) — weekly/daily paid amounts by booking date
+    booking_weekly, booking_weekly_pend, booking_daily = {}, {}, {}
+    if 'ReservationsByBookingDate' in sheets:
+        booking_weekly, booking_weekly_pend, booking_daily = \
+            parse_booking_date_tab(xl_rows(wb, 'ReservationsByBookingDate'))
+        print(f"   ReservationsByBookingDate: "
+              f"{len(booking_weekly)} semanas · {len(booking_daily)} días")
+
+    # 5. OccupancyStatistics (opcional) — mejora occ% mensual
+    occ_monthly = {}
+    if 'OccupancyStatistics' in sheets:
+        occ_monthly = parse_occupancy_stats_tab(xl_rows(wb, 'OccupancyStatistics'))
+        # Patch occ field in monthly_new with real Occupancy Statistics data
+        for season, months in monthly_new.items():
+            for m_abbr, mdata in months.items():
+                ym = _abbr_to_ym(m_abbr, season)
+                if ym and ym in occ_monthly:
+                    mdata['occ'] = occ_monthly[ym]
+        print(f"   OccupancyStatistics: {len(occ_monthly)} meses")
+
+    wb.close()
+    return bal, ci_data, monthly_new, booking_weekly, booking_weekly_pend, booking_daily
+
+
+def parse_booking_date_tab(rows):
+    """
+    Parsea el tab ReservationsByBookingDate.
+    Columnas: 0=Booking Date, 2=Status, 15=Grand Total, 18=Paid, 19=Balance Due
+    Retorna: (weekly_paid, weekly_pend, daily_paid)
+    """
+    try:
+        hi = find_header(rows, 'Booking Date Time - Property')
+    except StopIteration:
+        return {}, {}, {}
+
+    weekly  = defaultdict(float)
+    weekly_pend = defaultdict(float)
+    daily   = defaultdict(float)
+
+    for r in rows[hi+1:]:
+        if not r[0]: continue
+        status = str(r[2] or '').strip()
+        if status == 'Cancelled': continue
+
+        booking_date = parse_date(str(r[0])[:10].replace('/', '-'))
+        if not booking_date: continue
+
+        try:
+            grand_total = float(r[15] or 0)
+            paid  = float(r[18] or 0)
+            pend  = float(r[19] or 0)
+        except (TypeError, ValueError):
+            continue
+
+        # Excluir correcciones negativas y filas sin monto
+        if grand_total <= 0 and paid <= 0 and pend <= 0:
+            continue
+
+        wk = iso_week(booking_date)
+        ds = str(booking_date)
+
+        if paid > 0:
+            weekly[wk] += paid
+            daily[ds]  += paid
+        if pend > 0:
+            weekly_pend[wk] += pend
+
+    # Redondear a enteros
+    return (
+        {k: round(v) for k, v in weekly.items()},
+        {k: round(v) for k, v in weekly_pend.items()},
+        {k: round(v) for k, v in daily.items()},
+    )
+
+
+def parse_occupancy_stats_tab(rows):
+    """
+    Parsea el tab OccupancyStatistics.
+    Columnas: 0=Stay Date, 7=Occupancy%
+    Retorna dict {YYYY-MM: avg_occ%}
+    """
+    try:
+        hi = find_header(rows, 'Stay Date')
+    except StopIteration:
+        return {}
+
+    monthly_occ = defaultdict(list)
+    for r in rows[hi+1:]:
+        if not r[0]: continue
+        d = parse_date(str(r[0])[:10])
+        if not d: continue
+        occ_val = r[7]
+        if occ_val is None or occ_val == '-': continue
+        try:
+            monthly_occ[str(d)[:7]].append(float(occ_val))
+        except (TypeError, ValueError):
+            pass
+
+    return {ym: round(sum(v)/len(v), 2) for ym, v in monthly_occ.items() if v}
+
+
+def _abbr_to_ym(abbr, season):
+    """Convierte abreviatura de mes + temporada a YYYY-MM."""
+    MN = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']
+    if abbr not in MN: return None
+    mo = MN.index(abbr) + 1
+    # Inferir año de la temporada
+    yr_start, yr_end = season.split('-')
+    # Temporada "alta" (oct-dic) → primer año; resto → segundo año
+    yr = int(yr_start) if mo >= 10 else int(yr_end)
+    return f"{yr}-{str(mo).zfill(2)}"
 
 # ── Merge monthly: new data wins, old data preserved ─────────────
 def merge_monthly(existing_monthly, new_monthly):
@@ -213,7 +327,9 @@ def build_trips(bal, ci_data, existing_trips):
             occ     = round((rooms / cap) * 100, 1) if rooms else 0
             cobrado = round(max(0, fin['cobrado']))
             pend    = round(max(0, fin['pend']))
-            total   = round(fin['total']) if fin['total'] > 0 else cobrado + pend
+            # Total: suma directa de componentes (Grand Total puede ser distorsionado
+            # por filas de corrección negativas en Cloudbeds)
+            total   = cobrado + pend
         elif prev:
             # No new data — preserve existing
             rooms   = prev.get('rooms', 0)
@@ -244,7 +360,12 @@ def build_trips(bal, ci_data, existing_trips):
     return trips, dict(weekly)
 
 # ── WeTravel parser ───────────────────────────────────────────────
-def parse_wetravel(path, dest_label, existing_trips):
+def parse_wetravel(path, dest_label, existing_trips, keyword=None):
+    """
+    Parsea un export XLSX de WeTravel Payments Reporting.
+    Si se pasa `keyword`, solo incluye viajes cuyo nombre contenga esa cadena
+    (útil cuando el archivo contiene múltiples destinos mezclados).
+    """
     wb   = load_workbook(path, read_only=True)
     rows = list(wb.active.iter_rows(values_only=True))
     hi   = next(i for i, r in enumerate(rows) if r[0] == 'Date created (UTC)')
@@ -258,6 +379,9 @@ def parse_wetravel(path, dest_label, existing_trips):
     for r in rows[hi+1:]:
         if not r[0] or r[4] != 'Successful': continue
         trip_name = str(r[21]) if r[21] else 'Sin nombre'
+        # Filtrar por keyword si se especificó (ej. 'La Ventana' o 'Yucatan')
+        if keyword and keyword.lower() not in trip_name.lower():
+            continue
         pdate = parse_date(str(r[0])[:10].replace('/','-'))
         participants = [p.strip() for p in str(r[20]).split(',') if p.strip()] if r[20] else []
         by_trip[trip_name].append({
@@ -266,12 +390,47 @@ def parse_wetravel(path, dest_label, existing_trips):
         })
 
     def extract_dates(name):
-        m = re.search(r'\((\d+)[- ]+(?:(\d+)\s+)?(\w+)\s+(\d{4})', name, re.IGNORECASE)
-        if not m: return None, None
-        d1, d2, mes, yr = m.group(1), m.group(2), m.group(3).lower(), m.group(4)
-        mo = MES.get(mes)
-        if not mo: return None, None
-        return f"{yr}-{mo}-{d1.zfill(2)}", f"{yr}-{mo}-{(d2 or d1).zfill(2)}"
+        """
+        Extrae (start, end) de nombres como:
+          "(19-22 abril 2026)"          → 2026-04-19, 2026-04-22
+          "(28 mayo -31 mayo 2026)"     → 2026-05-28, 2026-05-31
+          "(4 junio - 7 junio 2026)"    → 2026-06-04, 2026-06-07
+        """
+        # Patrón B: "D1 MES1 - D2 MES2 YYYY"  (mes puede repetirse)
+        m = re.search(
+            r'\((\d+)\s+(\w+)\s*[-–]\s*(\d+)\s+(\w+)\s+(\d{4})',
+            name, re.IGNORECASE
+        )
+        if m:
+            d1, mes1, d2, mes2, yr = (
+                m.group(1), m.group(2).lower(),
+                m.group(3), m.group(4).lower(), m.group(5)
+            )
+            mo1 = MES.get(mes1)
+            mo2 = MES.get(mes2)
+            if mo1 and mo2:
+                return f"{yr}-{mo1}-{d1.zfill(2)}", f"{yr}-{mo2}-{d2.zfill(2)}"
+
+        # Patrón A: "D1-D2 MES YYYY"  (mismo mes)
+        m = re.search(
+            r'\((\d+)[- ]+(\d+)\s+(\w+)\s+(\d{4})',
+            name, re.IGNORECASE
+        )
+        if m:
+            d1, d2, mes, yr = m.group(1), m.group(2), m.group(3).lower(), m.group(4)
+            mo = MES.get(mes)
+            if mo:
+                return f"{yr}-{mo}-{d1.zfill(2)}", f"{yr}-{mo}-{d2.zfill(2)}"
+
+        # Patrón C: "D MES YYYY"  (fecha única)
+        m = re.search(r'\((\d+)\s+(\w+)\s+(\d{4})', name, re.IGNORECASE)
+        if m:
+            d1, mes, yr = m.group(1), m.group(2).lower(), m.group(3)
+            mo = MES.get(mes)
+            if mo:
+                return f"{yr}-{mo}-{d1.zfill(2)}", f"{yr}-{mo}-{d1.zfill(2)}"
+
+        return None, None
 
     # Build trip list — merge with existing to preserve historical payments
     existing_map = {f"{t['start']}_{t['name']}": t for t in existing_trips}
@@ -291,6 +450,120 @@ def parse_wetravel(path, dest_label, existing_trips):
 
     trips.sort(key=lambda t: t['start'])
     return trips
+
+# ── HTML update helpers ───────────────────────────────────────────
+def _fmt_bm_trips(trips):
+    """Serializa BM_TRIPS como literal JS de una línea por viaje."""
+    lines = ['const BM_TRIPS = [']
+    for t in trips:
+        parts = [
+            f'id:{t["id"]}',
+            f'name:{json.dumps(t["name"], ensure_ascii=False)}',
+            f's:{json.dumps(t["s"])}',
+            f'start:{json.dumps(t["start"])}',
+            f'end:{json.dumps(t["end"])}',
+            f'rooms:{t.get("rooms", 0)}',
+            f'cap:{t.get("cap", 15)}',
+            f'occ:{t.get("occ", 0)}',
+            f'guests:{t.get("guests", 0)}',
+            f'status:{json.dumps(t["status"])}',
+            f'cobrado:{t.get("cobrado", 0)}',
+            f'pend:{t.get("pend", 0)}',
+            f'total:{t.get("total", 0)}',
+        ]
+        if t.get('buyout'):
+            parts.append('buyout:true')
+        lines.append('  {' + ', '.join(parts) + '},')
+    lines.append('];')
+    return '\n'.join(lines)
+
+
+def _fmt_lv_trips(trips, var_name='LV_TRIPS'):
+    """Serializa LV_TRIPS / YUC_TRIPS con pagos anidados."""
+    if not trips:
+        return f'const {var_name} = [];'
+    parts = [f'const {var_name} = [']
+    for t in trips:
+        pmts = []
+        for p in t.get('payments', []):
+            plist = json.dumps(p['participants'], ensure_ascii=False)
+            pmts.append(
+                f'      {{date:{json.dumps(p["date"])},'
+                f'amount:{p["amount"]},'
+                f'participants:{plist}}}'
+            )
+        pmts_str = ',\n'.join(pmts)
+        parts.append(
+            f'  {{\n'
+            f'    id:{t["id"]}, name:{json.dumps(t["name"], ensure_ascii=False)}, '
+            f'dest:{json.dumps(t.get("dest", ""))},\n'
+            f'    start:{json.dumps(t["start"])}, end:{json.dumps(t["end"])}, '
+            f'cap:{t.get("cap", 30)}, status:{json.dumps(t["status"])},\n'
+            f'    payments:[\n{pmts_str}\n    ]\n'
+            f'  }},'
+        )
+    parts.append('];')
+    return '\n'.join(parts)
+
+
+def _fmt_monthly(monthly):
+    """Serializa BM_MONTHLY. Entrada: dict {season: [meses...]}."""
+    # Asegurar que los valores sean listas (no dicts)
+    clean = {}
+    for season, v in monthly.items():
+        if isinstance(v, dict):
+            clean[season] = list(v.values())
+        else:
+            clean[season] = v
+    return 'const BM_MONTHLY = ' + json.dumps(clean, ensure_ascii=False, indent=2) + ';'
+
+
+def build_html_data_block(today_str, trips, monthly, weekly, weekly_pend, daily,
+                           lv_trips, yuc_trips):
+    """Genera el bloque completo entre marcadores AKAMPA:DATA_START/END."""
+    return (
+        '// AKAMPA:DATA_START\n'
+        f'const META = {{ kpi: 30000000, today: \'{today_str}\' }};\n'
+        '\n'
+        '// Bahía Mag trips\n'
+        + _fmt_bm_trips(trips) + '\n'
+        '\n'
+        '// La Ventana trips (WeTravel)\n'
+        + _fmt_lv_trips(lv_trips, 'LV_TRIPS') + '\n'
+        '\n'
+        '// Yucatán trips\n'
+        + _fmt_lv_trips(yuc_trips, 'YUC_TRIPS') + '\n'
+        '\n'
+        f'// Bahía Mag — ventas por semana de BOOKING DATE (Cloudbeds · {today_str})\n'
+        f'const BM_WEEKLY = {json.dumps(weekly, ensure_ascii=False)};\n'
+        '\n'
+        '// Bahía Mag — balance due pendiente por semana de booking\n'
+        f'const BM_WEEKLY_PEND = {json.dumps(weekly_pend, ensure_ascii=False)};\n'
+        '\n'
+        '// Bahía Mag — ventas diarias por BOOKING DATE\n'
+        f'const BM_DAILY  = {json.dumps(daily, ensure_ascii=False)};\n'
+        '\n'
+        + _fmt_monthly(monthly) + '\n'
+        '// AKAMPA:DATA_END'
+    )
+
+
+def update_html(html_path, data_block):
+    """Reemplaza la sección AKAMPA:DATA_START…END en index.html."""
+    content = html_path.read_text(encoding='utf-8')
+    if '// AKAMPA:DATA_START' not in content:
+        print(f'⚠  No se encontró marcador AKAMPA:DATA_START en {html_path.name} — saltando')
+        return False
+    updated = re.sub(
+        r'// AKAMPA:DATA_START.*?// AKAMPA:DATA_END',
+        data_block,
+        content,
+        flags=re.DOTALL
+    )
+    html_path.write_text(updated, encoding='utf-8')
+    print(f'✓ {html_path.name} actualizado')
+    return True
+
 
 # ── Netlify deploy ────────────────────────────────────────────────
 def deploy_to_netlify(js_path, site_id, token):
@@ -371,88 +644,138 @@ def deploy_to_netlify(js_path, site_id, token):
 # ── Main ─────────────────────────────────────────────────────────
 def main():
     p = argparse.ArgumentParser(description='Akampa v3 weekly processor')
-    p.add_argument('--reporte',       required=True,  help='XLSX con 4 pestañas de Cloudbeds')
-    p.add_argument('--wetravel_lv',   default=None)
-    p.add_argument('--wetravel_yuc',  default=None)
-    p.add_argument('--existing',      default=None,   help='akampa-data-v3.js anterior')
-    p.add_argument('--output',        default='akampa-data-v3.js')
-    p.add_argument('--netlify_site',  default=None)
-    p.add_argument('--netlify_token', default=None)
+    p.add_argument('--reporte',              required=True, help='XLSX combinado de Cloudbeds')
+    p.add_argument('--wetravel_lv',          default=None,  help='XLSX WeTravel La Ventana (o combinado)')
+    p.add_argument('--wetravel_lv_keyword',  default='La Ventana')
+    p.add_argument('--wetravel_yuc',         default=None,  help='XLSX WeTravel Yucatán (puede ser el mismo combinado)')
+    p.add_argument('--wetravel_yuc_keyword', default='Yucatan')
+    p.add_argument('--existing',             default=None,  help='akampa-data-v3.js anterior')
+    p.add_argument('--output',               default='akampa-data-v3.js')
+    p.add_argument('--html',                 default=None,  help='Ruta a index.html (para actualizar datos embebidos)')
+    p.add_argument('--netlify_site',         default=None)
+    p.add_argument('--netlify_token',        default=None)
     args = p.parse_args()
 
+    today_str = str(ddate.today())
+
     # ── Load existing data ────────────────────────────────────────
-    existing = {'bahia_mag':{'trips':[],'monthly':{},'weekly':{}},'la_ventana':{'trips':[]},'yucatan':{'trips':[]}}
+    existing = {
+        'bahia_mag': {'trips':[],'monthly':{},'weekly':{},'weekly_pend':{},'daily':{}},
+        'la_ventana': {'trips':[]},
+        'yucatan':    {'trips':[]}
+    }
     if args.existing:
         ep = Path(args.existing).expanduser()
         if ep.exists():
             raw = ep.read_text(encoding='utf-8')
-            # Strip JS wrapper: window.AKAMPA_DATA = {...};
-            raw = re.sub(r'^window\.AKAMPA_DATA\s*=\s*', '', raw.strip()).rstrip(';')
+            # Quitar comentarios iniciales y el wrapper window.AKAMPA_DATA = ...;
+            raw = re.sub(r'.*?window\.AKAMPA_DATA\s*=\s*', '', raw, flags=re.DOTALL).rstrip(';')
             try:
                 existing = json.loads(raw)
                 print(f"📂 Histórico cargado: {len(existing['bahia_mag']['trips'])} viajes BM")
             except Exception as e:
                 print(f"⚠ No se pudo leer histórico: {e} — comenzando desde cero")
 
-    # ── Parse new Cloudbeds report ────────────────────────────────
+    # ── Parse Cloudbeds report ────────────────────────────────────
     print(f"📂 Procesando reporte Cloudbeds: {args.reporte}")
-    bal, ci_data, monthly_new = parse_cloudbeds(args.reporte)
-    print(f"   Balance Due: {len(bal)} fechas · Check-in: {len(ci_data)} fechas · Monthly: {sum(len(v) for v in monthly_new.values())} meses")
+    bal, ci_data, monthly_new, new_booking_wk, new_booking_pend, new_booking_daily = \
+        parse_cloudbeds(args.reporte)
+    print(f"   Balance Due: {len(bal)} fechas · Check-in: {len(ci_data)} fechas "
+          f"· Monthly: {sum(len(v) for v in monthly_new.values())} meses")
 
-    # Merge monthly (new wins for its months)
-    merged_monthly = merge_monthly(existing['bahia_mag'].get('monthly',{}), monthly_new)
+    # Merge monthly (new wins)
+    merged_monthly = merge_monthly(existing['bahia_mag'].get('monthly', {}), monthly_new)
 
     # Build trips (new wins, historical preserved)
-    trips, new_weekly = build_trips(bal, ci_data, existing['bahia_mag'].get('trips',[]))
+    trips, _ = build_trips(bal, ci_data, existing['bahia_mag'].get('trips', []))
 
-    # Merge weekly (accumulate)
-    old_weekly = existing['bahia_mag'].get('weekly', {})
-    merged_weekly = {**old_weekly, **new_weekly}  # new wins for overlapping weeks
+    # Booking-date weekly (from ReservationsByBookingDate — replaces check-in based)
+    old_bk_wk   = existing['bahia_mag'].get('weekly',       {})
+    old_bk_pend = existing['bahia_mag'].get('weekly_pend',  {})
+    old_bk_daily= existing['bahia_mag'].get('daily',        {})
 
-    print(f"   Trips: {len(trips)} · Weekly weeks: {len(merged_weekly)}")
+    if new_booking_wk:
+        # New report wins for all weeks it covers; old weeks preserved for the rest
+        merged_bk_wk    = {**old_bk_wk,    **new_booking_wk}
+        merged_bk_pend  = {**old_bk_pend,  **new_booking_pend}
+        merged_bk_daily = {**old_bk_daily, **new_booking_daily}
+        print(f"   Booking weekly: {len(merged_bk_wk)} semanas · "
+              f"Pend: {len(merged_bk_pend)} · Daily: {len(merged_bk_daily)} días")
+    else:
+        merged_bk_wk    = old_bk_wk
+        merged_bk_pend  = old_bk_pend
+        merged_bk_daily = old_bk_daily
+        print(f"   Booking weekly: conservando {len(merged_bk_wk)} semanas anteriores")
+
+    print(f"   Trips: {len(trips)}")
 
     # ── WeTravel ─────────────────────────────────────────────────
     if args.wetravel_lv:
-        print(f"📂 Procesando WeTravel La Ventana...")
-        lv_trips = parse_wetravel(args.wetravel_lv, 'La Ventana', existing['la_ventana'].get('trips',[]))
+        print(f"📂 Procesando WeTravel La Ventana (keyword: '{args.wetravel_lv_keyword}')...")
+        lv_trips = parse_wetravel(args.wetravel_lv, 'La Ventana',
+                                  existing['la_ventana'].get('trips', []),
+                                  keyword=args.wetravel_lv_keyword)
         print(f"   {len(lv_trips)} viajes")
     else:
         lv_trips = existing['la_ventana'].get('trips', [])
         print(f"   La Ventana: conservando {len(lv_trips)} viajes existentes")
 
     if args.wetravel_yuc:
-        yuc_trips = parse_wetravel(args.wetravel_yuc, 'Yucatán', existing['yucatan'].get('trips',[]))
+        print(f"📂 Procesando WeTravel Yucatán (keyword: '{args.wetravel_yuc_keyword}')...")
+        yuc_trips = parse_wetravel(args.wetravel_yuc, 'Yucatán',
+                                   existing['yucatan'].get('trips', []),
+                                   keyword=args.wetravel_yuc_keyword)
+        print(f"   {len(yuc_trips)} viajes")
     else:
         yuc_trips = existing['yucatan'].get('trips', [])
+        print(f"   Yucatán: conservando {len(yuc_trips)} viajes existentes")
 
-    # ── Build final data ──────────────────────────────────────────
+    # ── Build final data object ───────────────────────────────────
     data = {
         'meta': {
             'kpi_anual':    30000000,
-            'last_updated': str(ddate.today()),
+            'last_updated': today_str,
             'property':     'Akampa · All Destinations'
         },
         'bahia_mag': {
-            'trips':   trips,
-            'monthly': merged_monthly,
-            'weekly':  merged_weekly
+            'trips':        trips,
+            'monthly':      merged_monthly,
+            'weekly':       merged_bk_wk,
+            'weekly_pend':  merged_bk_pend,
+            'daily':        merged_bk_daily,
         },
         'la_ventana': {'trips': lv_trips},
         'yucatan':    {'trips': yuc_trips}
     }
 
-    # ── Write .js file ────────────────────────────────────────────
+    # ── Write akampa-data-v3.js ───────────────────────────────────
     out = Path(args.output).expanduser()
-    js  = 'window.AKAMPA_DATA = ' + json.dumps(data, ensure_ascii=False, indent=2) + ';'
+    # Header comment with generation date
+    header = f'// akampa-data-v3.js — generado {today_str}\n'
+    header += '// Solo expone window.AKAMPA_DATA (sin conflictos de scope)\n'
+    js = header + 'window.AKAMPA_DATA = ' + json.dumps(data, ensure_ascii=False, indent=2) + ';'
     out.write_text(js, encoding='utf-8')
-    print(f"\n✅ {out.name} actualizado — {ddate.today()}")
+    print(f"\n✅ {out.name} actualizado — {today_str}")
 
-    # ── Deploy to Netlify ─────────────────────────────────────────
+    # ── Update index.html ─────────────────────────────────────────
+    if args.html:
+        hp = Path(args.html).expanduser()
+        if hp.exists():
+            block = build_html_data_block(
+                today_str, trips, merged_monthly,
+                merged_bk_wk, merged_bk_pend, merged_bk_daily,
+                lv_trips, yuc_trips
+            )
+            update_html(hp, block)
+        else:
+            print(f"⚠  --html apunta a un archivo que no existe: {hp}")
+
+    # ── Deploy to Netlify (legacy) ────────────────────────────────
     if args.netlify_site and args.netlify_token:
         print("🚀 Subiendo a Netlify...")
         deploy_to_netlify(str(out), args.netlify_site, args.netlify_token)
     else:
-        print("ℹ  Sin credenciales Netlify — sube el archivo manualmente")
+        print("ℹ  Git deploy activo — Netlify no configurado")
 
 if __name__ == '__main__':
     main()
