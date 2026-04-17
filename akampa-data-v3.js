@@ -971,36 +971,6 @@ window.AKAMPA_DATA = {
       }
     ],
     "monthly": {
-      "2025-2026": [
-        {
-          "m": "Ene",
-          "g": 168,
-          "occ": 16.89,
-          "rpg": 8311,
-          "rev": 1396267
-        },
-        {
-          "m": "Feb",
-          "g": 503,
-          "occ": 59.66,
-          "rpg": 7038,
-          "rev": 3540116
-        },
-        {
-          "m": "Mar",
-          "g": 371,
-          "occ": 39.47,
-          "rpg": 7815,
-          "rev": 2899208
-        },
-        {
-          "m": "Abr",
-          "g": 171,
-          "occ": 20.0,
-          "rpg": 7590,
-          "rev": 1297870
-        }
-      ],
       "2026-2027": [
         {
           "m": "Oct",
@@ -1029,6 +999,36 @@ window.AKAMPA_DATA = {
           "occ": 1.26,
           "rpg": 9692,
           "rev": 116300
+        }
+      ],
+      "2025-2026": [
+        {
+          "m": "Ene",
+          "g": 168,
+          "occ": 16.89,
+          "rpg": 8311,
+          "rev": 1396267
+        },
+        {
+          "m": "Feb",
+          "g": 503,
+          "occ": 59.66,
+          "rpg": 7038,
+          "rev": 3540116
+        },
+        {
+          "m": "Mar",
+          "g": 371,
+          "occ": 39.47,
+          "rpg": 7815,
+          "rev": 2899208
+        },
+        {
+          "m": "Abr",
+          "g": 171,
+          "occ": 20.0,
+          "rpg": 7590,
+          "rev": 1297870
         }
       ]
     },
@@ -1165,6 +1165,15 @@ window.AKAMPA_DATA = {
         "cap": 30,
         "status": "future",
         "payments": [
+          {
+            "date": "2026-04-17",
+            "amount": 70500.0,
+            "participants": [
+              "Marcela Alvarez Campos",
+              "Natalia Germenos Alvarez",
+              "Inés Germenos Alvarez"
+            ]
+          },
           {
             "date": "2026-04-13",
             "amount": 45000.0,
