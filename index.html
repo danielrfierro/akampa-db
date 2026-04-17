@@ -35,13 +35,16 @@ html.light {
   --yuc:#6a3a9a; --yuc-dim:rgba(106,58,154,.10);
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:13px;min-height:100vh;transition:background .25s,color .25s}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:13px;min-height:100vh;transition:background .25s,color .25s;overflow-x:hidden}
+html{overflow-x:hidden}
 
 /* ── HEADER ─────────────────────────────────────── */
 header{border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg);z-index:100;gap:16px}
-.brand{display:flex;align-items:baseline;gap:9px}
-.brand-name{font-size:15px;font-weight:500;color:var(--gold);letter-spacing:.16em;text-transform:uppercase}
-.brand-sub{font-size:10px;color:var(--muted);letter-spacing:.09em;text-transform:uppercase}
+.brand{display:flex;flex-direction:row;align-items:center;gap:12px}
+.brand-logo{height:80px;width:auto;display:block;object-fit:contain;filter:brightness(0) invert(1)}
+html.light .brand-logo{filter:none}
+.brand-name-fallback{font-size:15px;font-weight:500;color:var(--gold);letter-spacing:.16em;text-transform:uppercase}
+.brand-sub{font-size:10px;color:var(--muted);letter-spacing:.09em;text-transform:uppercase;padding-left:2px;align-self:center}
 .header-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 
 /* Destination tabs */
@@ -66,7 +69,7 @@ html.light .theme-toggle::after{transform:translateX(16px)}
 .updated{font-size:10px;color:var(--dim);letter-spacing:.05em;white-space:nowrap}
 
 /* ── MAIN ──────────────────────────────────────── */
-main{padding:0 28px 48px;max-width:1400px;margin:0 auto}
+main{padding:0 28px 48px;max-width:1400px;margin:0 auto;width:100%}
 
 /* ── ANNUAL PROGRESS ──────────────────────────── */
 .annual-block{margin:20px 0 16px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:20px 24px}
@@ -249,34 +252,114 @@ html.light .date-input::-webkit-calendar-picker-indicator{filter:none}
 
 /* ── MOBILE ─────────────────────────────────────── */
 @media (max-width: 768px) {
-  header{padding:10px 14px;flex-wrap:wrap;gap:10px}
-  .brand-name{font-size:13px}
-  .header-right{gap:8px;flex-wrap:wrap}
-  .dtab{padding:4px 10px;font-size:9px}
-  .ytab{padding:3px 9px;font-size:9px}
+  /* Header — columna centrada */
+  header{flex-direction:column;align-items:center;padding:14px 16px 10px;gap:10px}
+
+  /* Brand — logo centrado + texto abajo, sin espacio excesivo */
+  .brand{flex-direction:column;align-items:center;gap:1px;text-align:center}
+  .brand-logo{height:67px;margin-bottom:-4px}
+  .brand-sub{display:block !important;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);align-self:center;padding:0;margin-top:0}
+
+  /* Controls row */
+  .header-right{width:100%;flex-wrap:wrap;gap:6px;justify-content:space-between}
+
+  /* Dest tabs — ancho completo, 4 tabs en la misma fila */
+  .dest-tabs{flex:0 0 100%;width:100%;display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .dest-tabs::-webkit-scrollbar{display:none}
+  .dtab{flex:1;text-align:center;padding:6px 8px;font-size:9px;white-space:nowrap}
+
+  /* Year tabs + theme toggle en la misma fila */
+  .year-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .year-tabs::-webkit-scrollbar{display:none}
+  .ytab{padding:5px 10px;font-size:9px}
   .updated{display:none}
-  main{padding:12px 10px}
-  .annual-top{flex-direction:column;gap:10px}
-  .annual-kpis{gap:12px}
-  .gen-dest-grid{grid-template-columns:1fr}
-  .bottom-grid{grid-template-columns:1fr}
-  .wk-grid{grid-template-columns:1fr 1fr}
-  .sec-head{flex-wrap:wrap}
-  .sec-note{display:none}
-  .filters-row{flex-direction:column;align-items:flex-start;gap:8px}
-  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .tbl-wrap table{min-width:600px}
-  .timeline{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .wt-cards{grid-template-columns:1fr}
-  .chart-box{height:200px!important}
-  .annual-label{font-size:10px}
+  .theme-label{display:none}
+
+  /* Main */
+  main{padding:10px 12px 40px}
+
+  /* Annual block */
+  .annual-block{padding:14px 16px}
+  .annual-top{flex-direction:column;align-items:flex-start;gap:10px}
+  .annual-kpis{gap:16px;width:100%}
+  .akpi{text-align:left}
   .annual-total{font-size:22px}
-  .gen-rev{font-size:18px}
+  .annual-label{font-size:9px}
+  .progress-marks{display:none}
+
+  /* Weekly strip — fila única 3 columnas en mobile */
+  .weekly-strip{grid-template-columns:1fr 1fr 1fr;gap:1px}
+  .wk-cell{padding:10px 10px}
+  .wk-delta-cell{min-width:unset;padding:10px 8px}
+  .wk-amount{font-size:16px;letter-spacing:-.01em}
+  .wk-delta{font-size:16px}
+  .wk-label{font-size:8px;margin-bottom:4px}
+  .wk-sub{display:none}
+  .wk-delta-label{font-size:8px}
+
+  /* KPI row — 5 cols → 2 cols en mobile, 5to item full-width */
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+  .kpi-row .kpi:last-child{grid-column:1/-1}
+  .kpi-v{font-size:17px}
+
+  /* Section heads — título que envuelve en mobile */
+  .sec-head{flex-wrap:wrap;gap:6px}
+  .sec-title{white-space:normal;font-size:9.5px;letter-spacing:.09em}
+  .sec-note{display:none}
+  .sec-line{display:none}
+
+  /* Filters */
+  .filters-row{flex-direction:column;align-items:flex-start;gap:8px}
+  .fstrip{flex-direction:column;align-items:flex-start;gap:8px}
+  .date-strip{flex-direction:column;align-items:flex-start;gap:6px}
+  .month-shortcuts{flex-wrap:wrap}
+
+  /* Trips table — scroll horizontal contenido */
+  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%}
+  .trips-table{min-width:580px}
+
+  /* Timeline scroll */
+  .timeline-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%}
+
+  /* WeTravel cards — fix: era .wt-cards, clase real es .wt-grid */
+  .wt-grid{grid-template-columns:1fr}
+
+  /* General destination grid */
+  .gen-dest-grid{grid-template-columns:1fr}
+  .gen-rev{font-size:20px}
+
+  /* Bottom chart/table grid */
+  .bottom-grid{grid-template-columns:1fr}
+  .chart-box{height:180px!important}
 }
+
 @media (max-width: 480px) {
-  .wk-grid{grid-template-columns:1fr}
-  .dest-tabs{flex-wrap:wrap}
-  .dtab{flex:1;text-align:center}
+  /* Header ultra-compact */
+  header{padding:10px 14px 8px}
+  .brand-logo{height:58px}
+  .header-right{gap:5px}
+  .dtab{padding:5px 6px;font-size:8.5px}
+  .ytab{padding:4px 8px;font-size:8.5px}
+
+  /* Weekly strip — sigue en fila única a 480px, más compacto */
+  .weekly-strip{grid-template-columns:1fr 1fr 1fr}
+  .wk-cell{padding:8px 7px}
+  .wk-delta-cell{padding:8px 6px}
+  .wk-amount{font-size:14px}
+  .wk-delta{font-size:14px}
+
+  /* KPI row — 2 cols */
+  .kpi-row{grid-template-columns:1fr 1fr}
+  .kpi{padding:11px 12px}
+  .kpi-v{font-size:16px}
+
+  /* Annual */
+  .annual-total{font-size:20px}
+  .annual-block{padding:12px 14px}
+  .annual-kpis{flex-wrap:wrap;gap:12px}
+
+  /* Main */
+  main{padding:8px 10px 36px}
 }
 </style>
 </head>
@@ -284,7 +367,12 @@ html.light .date-input::-webkit-calendar-picker-indicator{filter:none}
 
 <header>
   <div class="brand">
-    <span class="brand-name">Akampa</span>
+    <!-- LOGO: reemplaza el src con la URL pública directa del logo blanco -->
+    <img class="brand-logo"
+         src="https://images.squarespace-cdn.com/content/62d9f4420be3b95fb922af09/38c78e86-1304-4fef-80ae-be934fdaccd8/Akampa+Logo+Verde.png?content-type=image%2Fpng"
+         alt="Akampa"
+         onerror="this.style.display='none';document.querySelector('.brand-name-fallback').style.display='inline'">
+    <span class="brand-name-fallback" style="display:none">Akampa</span>
     <span class="brand-sub">Sales Dashboard</span>
   </div>
   <div class="header-right">
@@ -550,8 +638,10 @@ let revenuePipelineChart = null;
 // ════════════════════════════════════════════════════════════════
 // UTILS
 // ════════════════════════════════════════════════════════════════
-const nM  = v => v >= 1e6 ? (v/1e6).toFixed(2)+'M' : v >= 1e3 ? (v/1e3).toFixed(0)+'k' : String(Math.round(v));
-const n0  = v => Math.round(v).toLocaleString('es-MX');
+const nM      = v => v >= 1e6 ? (v/1e6).toFixed(2)+'M' : v >= 1e3 ? (v/1e3).toFixed(0)+'k' : String(Math.round(v));
+const n0      = v => Math.round(v).toLocaleString('es-MX');
+const fmtShort = v => v >= 1e6 ? (v/1e6).toFixed(1).replace(/\.0$/,'')+'M' : v >= 1e3 ? Math.round(v/1e3)+'K' : String(Math.round(v));
+const isMobile = () => window.innerWidth < 768;
 const MNS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 const fmtD = d => { const [y,m,day] = d.split('-'); return `${+day} ${MNS[+m-1]}`; };
 
@@ -635,10 +725,11 @@ function renderWeekly() {
   const prev = weeklyForDest(dest, PREV_WK);
   const delta = prev > 0 ? ((curr - prev) / prev * 100) : null;
 
-  document.getElementById('wk-curr').textContent = '$' + n0(curr);
-  document.getElementById('wk-prev').textContent = '$' + n0(prev);
-  document.getElementById('wk-curr-label').textContent = `Esta semana (${TODAY_WK})`;
-  document.getElementById('wk-prev-label').textContent = `Semana anterior (${PREV_WK})`;
+  const mob = isMobile();
+  document.getElementById('wk-curr').textContent = '$' + (mob ? fmtShort(curr) : n0(curr));
+  document.getElementById('wk-prev').textContent = '$' + (mob ? fmtShort(prev) : n0(prev));
+  document.getElementById('wk-curr-label').textContent = mob ? 'Esta semana' : `Esta semana (${TODAY_WK})`;
+  document.getElementById('wk-prev-label').textContent = mob ? 'Sem. anterior' : `Semana anterior (${PREV_WK})`;
   document.getElementById('wk-curr-sub').textContent  = 'MXN · bruto';
   document.getElementById('wk-prev-sub').textContent  = 'MXN · bruto';
 
@@ -1219,6 +1310,13 @@ function renderAll() {
 
 // Init
 setDest('gen');
+
+// Re-render weekly on resize so K/full format stays correcto
+let _resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(_resizeTimer);
+  _resizeTimer = setTimeout(renderWeekly, 120);
+});
 </script>
 </body>
 </html>
