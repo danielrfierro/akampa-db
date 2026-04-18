@@ -60,41 +60,42 @@ TRIP_CATALOG = [
     (27,"Ocean Safari","2025-2026","2026-04-05","2026-04-08"),
     (28,"Retiro Kalea x La Magia del Caos","2025-2026","2026-04-09","2026-04-12"),
     (29,"Ocean Safari","2025-2026","2026-04-12","2026-04-15"),
-    (30,"Marlin & Sardine Run","2026-2027","2026-10-15","2026-10-18"),
-    (31,"Marlin & Sardine Run","2026-2027","2026-10-18","2026-10-21"),
-    (32,"Marlin & Sardine Run","2026-2027","2026-10-22","2026-10-25"),
-    (33,"Marlin & Sardine Run","2026-2027","2026-10-25","2026-10-28"),
-    (34,"Marlin & Sardine Run","2026-2027","2026-10-29","2026-11-01"),
-    (35,"Marlin & Sardine Run","2026-2027","2026-11-01","2026-11-04"),
-    (36,"Marlin & Sardine Run","2026-2027","2026-11-05","2026-11-08"),
-    (37,"Marlin & Sardine Run","2026-2027","2026-11-08","2026-11-11"),
-    (38,"Marlin & Sardine Run","2026-2027","2026-11-12","2026-11-15"),
-    (39,"Marlin & Sardine Run","2026-2027","2026-11-15","2026-11-18"),
-    (40,"Marlin & Sardine Run","2026-2027","2026-11-19","2026-11-22"),
-    (41,"Marlin & Sardine Run","2026-2027","2026-11-22","2026-11-25"),
-    (42,"Marlin & Sardine Run","2026-2027","2026-11-26","2026-11-29"),
-    (43,"Marlin & Sardine Run","2026-2027","2026-11-29","2026-12-02"),
-    (44,"Marlin & Sardine Run","2026-2027","2026-12-03","2026-12-06"),
-    (45,"Marlin & Sardine Run","2026-2027","2026-12-06","2026-12-09"),
-    (46,"Marlin & Sardine Run","2026-2027","2026-12-10","2026-12-13"),
-    (47,"Ballena Jorobada","2026-2027","2026-12-17","2026-12-20"),
-    (48,"Ballena Jorobada","2026-2027","2026-12-23","2026-12-26"),
-    (49,"Ballena Jorobada","2026-2027","2026-12-30","2027-01-02"),
-    (50,"Ballena Jorobada","2026-2027","2027-01-07","2027-01-10"),
-    (51,"Ballena Jorobada","2026-2027","2027-01-14","2027-01-17"),
-    (52,"Ballena Gris","2026-2027","2027-01-21","2027-01-24"),
-    (53,"Ballena Gris","2026-2027","2027-01-28","2027-01-31"),
-    (54,"Ballena Gris","2026-2027","2027-02-04","2027-02-07"),
-    (55,"Ballena Gris","2026-2027","2027-02-11","2027-02-14"),
-    (56,"Ballena Gris","2026-2027","2027-02-18","2027-02-21"),
-    (57,"Ballena Gris","2026-2027","2027-02-25","2027-02-28"),
-    (58,"Ballena Gris","2026-2027","2027-03-04","2027-03-07"),
-    (59,"Ballena Gris","2026-2027","2027-03-18","2027-03-21"),
-    (60,"Ballena Gris","2026-2027","2027-03-25","2027-03-28"),
-    (61,"Ballena Gris","2026-2027","2027-04-01","2027-04-04"),
-    (62,"Ballena Gris","2026-2027","2027-04-08","2027-04-11"),
-    (63,"Ballena Gris","2026-2027","2027-04-15","2027-04-18"),
-    (64,"Ballena Gris","2026-2027","2027-04-22","2027-04-25"),
+    (30,"Pablo Voortus","2025-2026","2026-04-15","2026-04-18"),
+    (31,"Marlin & Sardine Run","2026-2027","2026-10-15","2026-10-18"),
+    (32,"Marlin & Sardine Run","2026-2027","2026-10-18","2026-10-21"),
+    (33,"Marlin & Sardine Run","2026-2027","2026-10-22","2026-10-25"),
+    (34,"Marlin & Sardine Run","2026-2027","2026-10-25","2026-10-28"),
+    (35,"Marlin & Sardine Run","2026-2027","2026-10-29","2026-11-01"),
+    (36,"Marlin & Sardine Run","2026-2027","2026-11-01","2026-11-04"),
+    (37,"Marlin & Sardine Run","2026-2027","2026-11-05","2026-11-08"),
+    (38,"Marlin & Sardine Run","2026-2027","2026-11-08","2026-11-11"),
+    (39,"Marlin & Sardine Run","2026-2027","2026-11-12","2026-11-15"),
+    (40,"Marlin & Sardine Run","2026-2027","2026-11-15","2026-11-18"),
+    (41,"Marlin & Sardine Run","2026-2027","2026-11-19","2026-11-22"),
+    (42,"Marlin & Sardine Run","2026-2027","2026-11-22","2026-11-25"),
+    (43,"Marlin & Sardine Run","2026-2027","2026-11-26","2026-11-29"),
+    (44,"Marlin & Sardine Run","2026-2027","2026-11-29","2026-12-02"),
+    (45,"Marlin & Sardine Run","2026-2027","2026-12-03","2026-12-06"),
+    (46,"Marlin & Sardine Run","2026-2027","2026-12-06","2026-12-09"),
+    (47,"Marlin & Sardine Run","2026-2027","2026-12-10","2026-12-13"),
+    (48,"Ballena Jorobada","2026-2027","2026-12-17","2026-12-20"),
+    (49,"Ballena Jorobada","2026-2027","2026-12-23","2026-12-26"),
+    (50,"Ballena Jorobada","2026-2027","2026-12-30","2027-01-02"),
+    (51,"Ballena Jorobada","2026-2027","2027-01-07","2027-01-10"),
+    (52,"Ballena Jorobada","2026-2027","2027-01-14","2027-01-17"),
+    (53,"Ballena Gris","2026-2027","2027-01-21","2027-01-24"),
+    (54,"Ballena Gris","2026-2027","2027-01-28","2027-01-31"),
+    (55,"Ballena Gris","2026-2027","2027-02-04","2027-02-07"),
+    (56,"Ballena Gris","2026-2027","2027-02-11","2027-02-14"),
+    (57,"Ballena Gris","2026-2027","2027-02-18","2027-02-21"),
+    (58,"Ballena Gris","2026-2027","2027-02-25","2027-02-28"),
+    (59,"Ballena Gris","2026-2027","2027-03-04","2027-03-07"),
+    (60,"Ballena Gris","2026-2027","2027-03-18","2027-03-21"),
+    (61,"Ballena Gris","2026-2027","2027-03-25","2027-03-28"),
+    (62,"Ballena Gris","2026-2027","2027-04-01","2027-04-04"),
+    (63,"Ballena Gris","2026-2027","2027-04-08","2027-04-11"),
+    (64,"Ballena Gris","2026-2027","2027-04-15","2027-04-18"),
+    (65,"Ballena Gris","2026-2027","2027-04-22","2027-04-25"),
 ]
 BUYOUT_IDS = {28}
 
@@ -297,14 +298,33 @@ def merge_monthly(existing_monthly, new_monthly):
     return result
 
 # ── Build trips: new data wins, historical preserved ─────────────
+def _merge_bal(bal, dates):
+    """Merge multiple balance-due buckets (from different check-in dates) into one."""
+    merged = {'cobrado': 0, 'pend': 0, 'total': 0}
+    for d in dates:
+        if d in bal:
+            merged['cobrado'] += bal[d]['cobrado']
+            merged['pend']    += bal[d]['pend']
+            merged['total']   += bal[d]['total']
+    return merged if merged['cobrado'] or merged['pend'] else None
+
 def build_trips(bal, ci_data, existing_trips):
     """
     For each trip in catalog:
-    - If new report has data for that check-in date → use it
+    - If new report has data for any check-in date within the trip window → use it
+      (handles late check-ins where guest arrives after the official trip start date)
     - If not → keep existing data from previous JSON
     """
+    from datetime import timedelta
     today = ddate.today()
-    existing_map = {t['id']: t for t in existing_trips}
+    # Index by start date (more robust than ID when catalog order changes)
+    existing_map = {t['start']: t for t in existing_trips}
+
+    # Determine the date range covered by the current Cloudbeds report
+    # Only use historical data for trips OUTSIDE this range to avoid
+    # carrying over stale/corrupted values for trips the report covers
+    report_min = min(bal.keys()) if bal else None
+    report_max = max(bal.keys()) if bal else None
 
     trips = []
     weekly = defaultdict(float)
@@ -314,10 +334,23 @@ def build_trips(bal, ci_data, existing_trips):
         end   = datetime.strptime(end_s,   '%Y-%m-%d').date()
         status = 'past' if end < today else 'next' if start <= today else 'future'
 
-        # Check if new report has data for this trip
-        ci    = ci_data.get(start)
-        fin   = bal.get(start)
-        prev  = existing_map.get(tid, {})
+        # Collect all check-in dates that fall within this trip's window
+        # Window: [start, end) — any guest who checked in during the trip belongs here
+        # This handles late check-ins (e.g., guest arrives day 2 of a 3-day trip)
+        trip_dates = [start + timedelta(days=i)
+                      for i in range(0, (end - start).days)
+                      if start + timedelta(days=i) in bal]
+
+        # Find guest/room data: prefer exact start date, then first match
+        ci_date = start if start in ci_data else \
+                  next((d for d in trip_dates if d in ci_data), None)
+        ci   = ci_data.get(ci_date) if ci_date else None
+        fin  = _merge_bal(bal, trip_dates) if trip_dates else None
+
+        # Only fall back to historical if this trip is OUTSIDE the current report's range
+        # (prevents stale historical values from overriding zero-cobrado trips in the report)
+        in_report_range = report_min and report_max and (report_min <= start <= report_max)
+        prev = existing_map.get(start_s, {}) if not in_report_range else {}
 
         if fin:
             # New data available — use it
@@ -548,18 +581,45 @@ def build_html_data_block(today_str, trips, monthly, weekly, weekly_pend, daily,
     )
 
 
-def update_html(html_path, data_block):
-    """Reemplaza la sección AKAMPA:DATA_START…END en index.html."""
+def _fmt_date_es(date_str):
+    """Formatea '2026-04-17' → '17 abr 2026'."""
+    meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic']
+    try:
+        d = datetime.strptime(date_str, '%Y-%m-%d')
+        return f"{d.day} {meses[d.month-1]} {d.year}"
+    except:
+        return date_str
+
+def update_html(html_path, data_block, today_str=None, report_max_str=None):
+    """Reemplaza la sección AKAMPA:DATA_START…END en index.html
+    y actualiza el timestamp visible en el header."""
     content = html_path.read_text(encoding='utf-8')
     if '// AKAMPA:DATA_START' not in content:
         print(f'⚠  No se encontró marcador AKAMPA:DATA_START en {html_path.name} — saltando')
         return False
+
+    # 1. Replace data block
     updated = re.sub(
         r'// AKAMPA:DATA_START.*?// AKAMPA:DATA_END',
         data_block,
         content,
         flags=re.DOTALL
     )
+
+    # 2. Update visible timestamp in header
+    if today_str:
+        fecha_str = _fmt_date_es(today_str)
+        if report_max_str and report_max_str != today_str:
+            datos_str = _fmt_date_es(report_max_str)
+            label = f'Actualizado {fecha_str} · Datos al {datos_str}'
+        else:
+            label = f'Actualizado {fecha_str}'
+        updated = re.sub(
+            r'(<span[^>]*id="last-updated"[^>]*>)[^<]*(</span>)',
+            rf'\g<1>{label}\g<2>',
+            updated
+        )
+
     html_path.write_text(updated, encoding='utf-8')
     print(f'✓ {html_path.name} actualizado')
     return True
@@ -766,7 +826,9 @@ def main():
                 merged_bk_wk, merged_bk_pend, merged_bk_daily,
                 lv_trips, yuc_trips
             )
-            update_html(hp, block)
+            # Pass report_max so the timestamp shows "Datos al X"
+            report_max_str = str(max(bal.keys())) if bal else None
+            update_html(hp, block, today_str=today_str, report_max_str=report_max_str)
         else:
             print(f"⚠  --html apunta a un archivo que no existe: {hp}")
 

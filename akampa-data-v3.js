@@ -274,9 +274,9 @@ window.AKAMPA_DATA = {
         "occ": 33.3,
         "guests": 10,
         "status": "past",
-        "cobrado": 284032,
+        "cobrado": 445480,
         "pend": 0,
-        "total": 284032
+        "total": 445480
       },
       {
         "id": 19,
@@ -304,9 +304,9 @@ window.AKAMPA_DATA = {
         "occ": 93.3,
         "guests": 23,
         "status": "past",
-        "cobrado": 628681,
+        "cobrado": 658681,
         "pend": 0,
-        "total": 628681
+        "total": 658681
       },
       {
         "id": 21,
@@ -344,14 +344,14 @@ window.AKAMPA_DATA = {
         "s": "2025-2026",
         "start": "2026-03-22",
         "end": "2026-03-25",
-        "rooms": 0,
+        "rooms": 15,
         "cap": 15,
-        "occ": 0,
-        "guests": 0,
+        "occ": 100.0,
+        "guests": 30,
         "status": "past",
-        "cobrado": 0,
+        "cobrado": 520464,
         "pend": 0,
-        "total": 0
+        "total": 520464
       },
       {
         "id": 24,
@@ -446,6 +446,21 @@ window.AKAMPA_DATA = {
       },
       {
         "id": 30,
+        "name": "Pablo Voortus",
+        "s": "2025-2026",
+        "start": "2026-04-15",
+        "end": "2026-04-18",
+        "rooms": 9,
+        "cap": 15,
+        "occ": 60.0,
+        "guests": 13,
+        "status": "next",
+        "cobrado": 292940,
+        "pend": 49290,
+        "total": 342230
+      },
+      {
+        "id": 31,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-10-15",
@@ -460,7 +475,7 @@ window.AKAMPA_DATA = {
         "total": 201000
       },
       {
-        "id": 31,
+        "id": 32,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-10-18",
@@ -475,7 +490,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 32,
+        "id": 33,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-10-22",
@@ -490,7 +505,7 @@ window.AKAMPA_DATA = {
         "total": 728600
       },
       {
-        "id": 33,
+        "id": 34,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-10-25",
@@ -505,7 +520,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 34,
+        "id": 35,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-10-29",
@@ -520,7 +535,7 @@ window.AKAMPA_DATA = {
         "total": 485400
       },
       {
-        "id": 35,
+        "id": 36,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-11-01",
@@ -535,7 +550,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 36,
+        "id": 37,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-11-05",
@@ -550,7 +565,7 @@ window.AKAMPA_DATA = {
         "total": 53900
       },
       {
-        "id": 37,
+        "id": 38,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-11-08",
@@ -565,7 +580,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 38,
+        "id": 39,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-11-12",
@@ -580,7 +595,7 @@ window.AKAMPA_DATA = {
         "total": 676444
       },
       {
-        "id": 39,
+        "id": 40,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-11-15",
@@ -595,7 +610,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 40,
+        "id": 41,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-11-19",
@@ -610,7 +625,7 @@ window.AKAMPA_DATA = {
         "total": 167700
       },
       {
-        "id": 41,
+        "id": 42,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-11-22",
@@ -625,7 +640,7 @@ window.AKAMPA_DATA = {
         "total": 67200
       },
       {
-        "id": 42,
+        "id": 43,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-11-26",
@@ -640,7 +655,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 43,
+        "id": 44,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-11-29",
@@ -655,7 +670,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 44,
+        "id": 45,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-12-03",
@@ -670,7 +685,7 @@ window.AKAMPA_DATA = {
         "total": 646800
       },
       {
-        "id": 45,
+        "id": 46,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-12-06",
@@ -685,7 +700,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 46,
+        "id": 47,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-12-10",
@@ -700,7 +715,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 47,
+        "id": 48,
         "name": "Ballena Jorobada",
         "s": "2026-2027",
         "start": "2026-12-17",
@@ -715,7 +730,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 48,
+        "id": 49,
         "name": "Ballena Jorobada",
         "s": "2026-2027",
         "start": "2026-12-23",
@@ -730,7 +745,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 49,
+        "id": 50,
         "name": "Ballena Jorobada",
         "s": "2026-2027",
         "start": "2026-12-30",
@@ -745,7 +760,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 50,
+        "id": 51,
         "name": "Ballena Jorobada",
         "s": "2026-2027",
         "start": "2027-01-07",
@@ -760,7 +775,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 51,
+        "id": 52,
         "name": "Ballena Jorobada",
         "s": "2026-2027",
         "start": "2027-01-14",
@@ -775,7 +790,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 52,
+        "id": 53,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-01-21",
@@ -790,7 +805,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 53,
+        "id": 54,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-01-28",
@@ -805,7 +820,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 54,
+        "id": 55,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-02-04",
@@ -820,7 +835,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 55,
+        "id": 56,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-02-11",
@@ -835,7 +850,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 56,
+        "id": 57,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-02-18",
@@ -850,7 +865,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 57,
+        "id": 58,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-02-25",
@@ -865,7 +880,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 58,
+        "id": 59,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-03-04",
@@ -880,7 +895,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 59,
+        "id": 60,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-03-18",
@@ -895,7 +910,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 60,
+        "id": 61,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-03-25",
@@ -910,7 +925,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 61,
+        "id": 62,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-04-01",
@@ -925,7 +940,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 62,
+        "id": 63,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-04-08",
@@ -940,7 +955,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 63,
+        "id": 64,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-04-15",
@@ -955,7 +970,7 @@ window.AKAMPA_DATA = {
         "total": 0
       },
       {
-        "id": 64,
+        "id": 65,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-04-22",
@@ -971,36 +986,6 @@ window.AKAMPA_DATA = {
       }
     ],
     "monthly": {
-      "2026-2027": [
-        {
-          "m": "Oct",
-          "g": 159,
-          "occ": 15.37,
-          "rpg": 8899,
-          "rev": 1415000
-        },
-        {
-          "m": "Nov",
-          "g": 108,
-          "occ": 10.59,
-          "rpg": 8937,
-          "rev": 965245
-        },
-        {
-          "m": "Dic",
-          "g": 72,
-          "occ": 6.83,
-          "rpg": 8983,
-          "rev": 646800
-        },
-        {
-          "m": "Feb",
-          "g": 12,
-          "occ": 1.26,
-          "rpg": 9692,
-          "rev": 116300
-        }
-      ],
       "2025-2026": [
         {
           "m": "Ene",
@@ -1029,6 +1014,36 @@ window.AKAMPA_DATA = {
           "occ": 20.0,
           "rpg": 7590,
           "rev": 1297870
+        }
+      ],
+      "2026-2027": [
+        {
+          "m": "Oct",
+          "g": 159,
+          "occ": 15.37,
+          "rpg": 8899,
+          "rev": 1415000
+        },
+        {
+          "m": "Nov",
+          "g": 108,
+          "occ": 10.59,
+          "rpg": 8937,
+          "rev": 965245
+        },
+        {
+          "m": "Dic",
+          "g": 72,
+          "occ": 6.83,
+          "rpg": 8983,
+          "rev": 646800
+        },
+        {
+          "m": "Feb",
+          "g": 12,
+          "occ": 1.26,
+          "rpg": 9692,
+          "rev": 116300
         }
       ]
     },
