@@ -720,8 +720,14 @@ function isoWeek(dateStr) {
 // Current and previous ISO week for today
 const TODAY_WK = isoWeek(META.today);
 const [TWY, TWN] = TODAY_WK.split('-W');
-const prevWkN = +TWN - 1;
-const PREV_WK = prevWkN < 1 ? `${+TWY-1}-W52` : `${TWY}-W${String(prevWkN).padStart(2,'0')}`;
+// Semana cerrada más reciente = la anterior a hoy
+const prevWkN  = +TWN - 1;
+const PREV_WK  = prevWkN  < 1 ? `${+TWY-1}-W52` : `${TWY}-W${String(prevWkN).padStart(2,'0')}`;
+// Semana anterior a esa
+const prev2WkN = +TWN - 2;
+const PREV2_WK = prev2WkN < 1
+  ? `${+TWY-1}-W${String(52 + prev2WkN).padStart(2,'0')}`
+  : `${TWY}-W${String(prev2WkN).padStart(2,'0')}`;
 
 function lvWeekly(wk) {
   let total = 0;
@@ -786,15 +792,16 @@ const occColor = o => o >= 75 ? 'var(--ok)' : o >= 45 ? 'var(--warn)' : 'var(--d
 // RENDER: WEEKLY COMPARISON
 // ════════════════════════════════════════════════════════════════
 function renderWeekly() {
-  const curr = weeklyForDest(dest, TODAY_WK);
-  const prev = weeklyForDest(dest, PREV_WK);
+  // Mostrar las dos últimas semanas cerradas (no la semana en curso)
+  const curr = weeklyForDest(dest, PREV_WK);
+  const prev = weeklyForDest(dest, PREV2_WK);
   const delta = prev > 0 ? ((curr - prev) / prev * 100) : null;
 
   const mob = isMobile();
   document.getElementById('wk-curr').textContent = '$' + (mob ? fmtShort(curr) : n0(curr));
   document.getElementById('wk-prev').textContent = '$' + (mob ? fmtShort(prev) : n0(prev));
-  document.getElementById('wk-curr-label').textContent = mob ? 'Esta semana' : `Esta semana (${TODAY_WK})`;
-  document.getElementById('wk-prev-label').textContent = mob ? 'Sem. anterior' : `Semana anterior (${PREV_WK})`;
+  document.getElementById('wk-curr-label').textContent = mob ? 'Sem. cerrada' : `Última semana cerrada (${PREV_WK})`;
+  document.getElementById('wk-prev-label').textContent = mob ? 'Sem. anterior' : `Semana anterior (${PREV2_WK})`;
   document.getElementById('wk-curr-sub').textContent  = 'MXN · bruto';
   document.getElementById('wk-prev-sub').textContent  = 'MXN · bruto';
 
