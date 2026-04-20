@@ -391,7 +391,7 @@ html.light .date-input::-webkit-calendar-picker-indicator{filter:none}
       <span class="theme-label" id="theme-label">Dark</span>
       <div class="theme-toggle"></div>
     </div>
-    <span class="updated" id="last-updated">Actualizado 20 abr 2026 · 10:55 · Datos al 18 feb 2027</span>
+    <span class="updated" id="last-updated">Actualizado 20 abr 2026 · 11:11 · Datos al 18 feb 2027</span>
   </div>
 </header>
 
@@ -599,8 +599,8 @@ const LV_TRIPS = [
 // Yucatán trips
 const YUC_TRIPS = [
   {
-    id:1, name:"Osom People - Play Is Sacred | Yucatan Jungle Camp", dest:"Yucat\u00e1n",
-    start:"2026-04-19", end:"2026-04-19", cap:30, status:"past",
+    id:1, name:"Osom People - Play Is Sacred", dest:"Yucat\u00e1n",
+    start:"2026-10-01", end:"2026-10-04", cap:30, status:"future",
     payments:[
       {date:"2026-04-19",amount:14750.0,participants:["Victoria Medina"]}
     ]
@@ -1260,13 +1260,56 @@ function renderLV() {
 // RENDER: YUCATÁN PLACEHOLDER
 // ════════════════════════════════════════════════════════════════
 function renderYuc() {
-  document.getElementById('content-yuc').innerHTML = `
-    <div class="placeholder">
-      <div class="placeholder-icon">🌿</div>
-      <div class="placeholder-title">Yucatán Jungle Safari</div>
-      <div class="placeholder-sub">Sin datos disponibles aún · Cap. máx. 30 personas por viaje<br>
-      Conecta el reporte de WeTravel para poblar esta sección</div>
+  if (!YUC_TRIPS || YUC_TRIPS.length === 0) {
+    document.getElementById('content-yuc').innerHTML = `
+      <div class="placeholder">
+        <div class="placeholder-icon">🌿</div>
+        <div class="placeholder-title">Yucatán Jungle Safari</div>
+        <div class="placeholder-sub">Sin datos disponibles aún · Cap. máx. 30 personas por viaje<br>
+        Conecta el reporte de WeTravel para poblar esta sección</div>
+      </div>`;
+    return;
+  }
+
+  const totalRev = YUC_TRIPS.reduce((s,t)=>s+t.payments.reduce((ss,p)=>ss+p.amount,0),0);
+  const totalPax = new Set(YUC_TRIPS.flatMap(t=>t.payments.flatMap(p=>p.participants))).size;
+
+  const cards = YUC_TRIPS.map(t => {
+    const rev  = t.payments.reduce((s,p)=>s+p.amount,0);
+    const pax  = new Set(t.payments.flatMap(p=>p.participants));
+    const fill = Math.round(pax.size / t.cap * 100);
+    const badge = t.status==='past' ? 'past' : t.status==='next' ? 'next' : 'future';
+    const badgeTxt = t.status==='past' ? 'Concluido' : t.status==='next' ? 'Próximo' : 'Próximamente';
+    const pymtRows = t.payments.map(p =>
+      `<div class="wt-payment-row">
+        <span>${p.date} · ${p.participants.length} pax</span>
+        <span class="amt">$${n0(p.amount)}</span>
+       </div>`).join('');
+    return `<div class="wt-card yuc">
+      <div class="wt-card-header">
+        <div>
+          <div class="wt-trip-name">${t.dest}: ${t.name}</div>
+          <div class="wt-dates">${fmtD(t.start)} – ${fmtD(t.end)} ${t.start.slice(0,4)}</div>
+        </div>
+        <span class="wt-status ${badge}">${badgeTxt}</span>
+      </div>
+      <div class="wt-metrics">
+        <div><div class="wt-metric-label">Cobrado</div><div class="wt-metric-val rev">$${nM(rev)}</div></div>
+        <div><div class="wt-metric-label">Participantes</div><div class="wt-metric-val">${pax.size}<span style="font-size:10px;color:var(--muted)">/${t.cap}</span></div></div>
+        <div><div class="wt-metric-label">Llenado</div><div class="wt-metric-val">${fill}%</div></div>
+      </div>
+      <div class="wt-fill-bar"><div class="wt-fill-fill" style="width:${fill}%"></div></div>
+      <div class="wt-fill-label">${pax.size} de ${t.cap} lugares · ${t.cap - pax.size} disponibles</div>
+      <div class="wt-payments"><div class="wk-label" style="margin-bottom:6px;font-size:9px">Pagos recibidos</div>${pymtRows}</div>
     </div>`;
+  }).join('');
+
+  document.getElementById('content-yuc').innerHTML = `
+    <div class="sec-head"><span class="sec-title yuc">Yucatán · Viajes activos</span><span class="sec-line"></span>
+    <span class="sec-note">${YUC_TRIPS.length} viaje${YUC_TRIPS.length!==1?'s':''} · ${totalPax} participante${totalPax!==1?'s':''} · $${nM(totalRev)} cobrado</span></div>
+    <div class="wt-grid">${cards}</div>
+    <div class="note"><b>Yucatán:</b> Reportes de pagos WeTravel · monto bruto (antes de fees) &nbsp;·&nbsp;
+    <b>Fees WeTravel:</b> ~1% organizer + ~1% WeTravel sobre el monto bruto</div>`;
 }
 
 // ════════════════════════════════════════════════════════════════

@@ -392,6 +392,12 @@ def build_trips(bal, ci_data, existing_trips):
 
     return trips, dict(weekly)
 
+# ── Fechas conocidas para viajes sin fechas en el nombre (WeTravel) ──
+# Clave: substring del trip name (case-insensitive) → (start YYYY-MM-DD, end YYYY-MM-DD)
+WETRAVEL_DATE_OVERRIDES = {
+    'osom people': ('2026-10-01', '2026-10-04'),
+}
+
 # ── WeTravel parser ───────────────────────────────────────────────
 def parse_wetravel(path, dest_label, existing_trips, keyword=None):
     """
@@ -471,13 +477,23 @@ def parse_wetravel(path, dest_label, existing_trips, keyword=None):
     for i, (trip_name, payments) in enumerate(by_trip.items(), 1):
         start_s, end_s = extract_dates(trip_name)
         if not start_s:
-            start_s = payments[0]['date'] if payments else str(today)
-            end_s   = start_s
+            # Buscar override de fechas por nombre conocido
+            name_lower = trip_name.lower()
+            override = next(
+                (v for k, v in WETRAVEL_DATE_OVERRIDES.items() if k in name_lower),
+                None
+            )
+            if override:
+                start_s, end_s = override
+            else:
+                start_s = payments[0]['date'] if payments else str(today)
+                end_s   = start_s
         start  = datetime.strptime(start_s, '%Y-%m-%d').date()
         end    = datetime.strptime(end_s,   '%Y-%m-%d').date()
         status = 'past' if end < today else 'next' if start <= today else 'future'
-        clean  = re.sub(r'\s*\(.*?\)\s*$', '', trip_name).strip()
-        clean  = re.sub(r'^[^:]+:\s*', '', clean)
+        clean  = re.sub(r'\s*\(.*?\)\s*$', '', trip_name).strip()  # quita fecha al final
+        clean  = re.sub(r'^[^:]+:\s*', '', clean)                   # quita "Destino: "
+        clean  = re.sub(r'\s*\|.*$', '', clean).strip()             # quita " | Camp name"
         trips.append({'id':i,'name':clean,'dest':dest_label,'start':start_s,
                       'end':end_s,'cap':30,'status':status,'payments':payments})
 

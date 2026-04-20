@@ -3,7 +3,7 @@
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-04-20 10:55",
+    "last_updated": "2026-04-20 11:11",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -1298,12 +1298,12 @@ window.AKAMPA_DATA = {
     "trips": [
       {
         "id": 1,
-        "name": "Osom People - Play Is Sacred | Yucatan Jungle Camp",
+        "name": "Osom People - Play Is Sacred",
         "dest": "Yucatán",
-        "start": "2026-04-19",
-        "end": "2026-04-19",
+        "start": "2026-10-01",
+        "end": "2026-10-04",
         "cap": 30,
-        "status": "past",
+        "status": "future",
         "payments": [
           {
             "date": "2026-04-19",
