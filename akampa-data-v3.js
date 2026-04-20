@@ -1,9 +1,9 @@
-// akampa-data-v3.js — generado 2026-04-19
+// akampa-data-v3.js — generado 2026-04-20
 // Solo expone window.AKAMPA_DATA (sin conflictos de scope)
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-04-19",
+    "last_updated": "2026-04-20 10:55",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -389,10 +389,10 @@ window.AKAMPA_DATA = {
         "s": "2025-2026",
         "start": "2026-04-02",
         "end": "2026-04-05",
-        "rooms": 17,
+        "rooms": 16,
         "cap": 17,
-        "occ": 100.0,
-        "guests": 28,
+        "occ": 94.1,
+        "guests": 27,
         "status": "past",
         "cobrado": 619685,
         "pend": 0,
@@ -465,10 +465,10 @@ window.AKAMPA_DATA = {
         "s": "2026-2027",
         "start": "2026-10-15",
         "end": "2026-10-18",
-        "rooms": 5,
+        "rooms": 3,
         "cap": 15,
-        "occ": 33.3,
-        "guests": 10,
+        "occ": 20.0,
+        "guests": 6,
         "status": "future",
         "cobrado": 33600,
         "pend": 167400,
@@ -855,14 +855,14 @@ window.AKAMPA_DATA = {
         "s": "2026-2027",
         "start": "2027-02-18",
         "end": "2027-02-21",
-        "rooms": 0,
+        "rooms": 2,
         "cap": 15,
-        "occ": 0,
-        "guests": 0,
+        "occ": 13.3,
+        "guests": 4,
         "status": "future",
-        "cobrado": 0,
-        "pend": 0,
-        "total": 0
+        "cobrado": 58150,
+        "pend": 58150,
+        "total": 116300
       },
       {
         "id": 58,
@@ -986,36 +986,6 @@ window.AKAMPA_DATA = {
       }
     ],
     "monthly": {
-      "2026-2027": [
-        {
-          "m": "Oct",
-          "g": 159,
-          "occ": 15.37,
-          "rpg": 8899,
-          "rev": 1415000
-        },
-        {
-          "m": "Nov",
-          "g": 108,
-          "occ": 10.59,
-          "rpg": 8937,
-          "rev": 965245
-        },
-        {
-          "m": "Dic",
-          "g": 72,
-          "occ": 6.83,
-          "rpg": 8983,
-          "rev": 646800
-        },
-        {
-          "m": "Feb",
-          "g": 12,
-          "occ": 1.26,
-          "rpg": 9692,
-          "rev": 116300
-        }
-      ],
       "2025-2026": [
         {
           "m": "Ene",
@@ -1044,6 +1014,36 @@ window.AKAMPA_DATA = {
           "occ": 20.0,
           "rpg": 7590,
           "rev": 1297870
+        }
+      ],
+      "2026-2027": [
+        {
+          "m": "Oct",
+          "g": 159,
+          "occ": 15.37,
+          "rpg": 8899,
+          "rev": 1415000
+        },
+        {
+          "m": "Nov",
+          "g": 108,
+          "occ": 10.59,
+          "rpg": 8937,
+          "rev": 965245
+        },
+        {
+          "m": "Dic",
+          "g": 72,
+          "occ": 6.83,
+          "rpg": 8983,
+          "rev": 646800
+        },
+        {
+          "m": "Feb",
+          "g": 12,
+          "occ": 1.26,
+          "rpg": 9692,
+          "rev": 116300
         }
       ]
     },
@@ -1132,7 +1132,7 @@ window.AKAMPA_DATA = {
   "la_ventana": {
     "trips": [
       {
-        "id": 2,
+        "id": 1,
         "name": "Móbulas",
         "dest": "La Ventana",
         "start": "2026-04-19",
@@ -1140,6 +1140,22 @@ window.AKAMPA_DATA = {
         "cap": 30,
         "status": "next",
         "payments": [
+          {
+            "date": "2026-04-19",
+            "amount": 17324.0,
+            "participants": [
+              "Maria del Mar Arias Gordoa"
+            ]
+          },
+          {
+            "date": "2026-04-18",
+            "amount": 21037.0,
+            "participants": [
+              "Marisol González Ficachi",
+              "MARIA DEL MAR ARIAS",
+              "Marisol González Ficachi"
+            ]
+          },
           {
             "date": "2026-04-12",
             "amount": 21037.0,
@@ -1166,13 +1182,14 @@ window.AKAMPA_DATA = {
             "amount": 24750.0,
             "participants": [
               "Marisol González Ficachi",
-              "MARIA DEL MAR ARIAS"
+              "MARIA DEL MAR ARIAS",
+              "Marisol González Ficachi"
             ]
           }
         ]
       },
       {
-        "id": 1,
+        "id": 2,
         "name": "La Ventana Expedition Camp",
         "dest": "La Ventana",
         "start": "2026-05-28",
@@ -1180,6 +1197,13 @@ window.AKAMPA_DATA = {
         "cap": 30,
         "status": "future",
         "payments": [
+          {
+            "date": "2026-04-18",
+            "amount": 25500.0,
+            "participants": [
+              "Jonatan Oregon"
+            ]
+          },
           {
             "date": "2026-04-17",
             "amount": 70500.0,
@@ -1271,6 +1295,25 @@ window.AKAMPA_DATA = {
     ]
   },
   "yucatan": {
-    "trips": []
+    "trips": [
+      {
+        "id": 1,
+        "name": "Osom People - Play Is Sacred | Yucatan Jungle Camp",
+        "dest": "Yucatán",
+        "start": "2026-04-19",
+        "end": "2026-04-19",
+        "cap": 30,
+        "status": "past",
+        "payments": [
+          {
+            "date": "2026-04-19",
+            "amount": 14750.0,
+            "participants": [
+              "Victoria Medina"
+            ]
+          }
+        ]
+      }
+    ]
   }
 };

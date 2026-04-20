@@ -28,11 +28,12 @@ TAB_MAP = {
 }
 
 def find_file(keyword):
-    """Busca un archivo en reportes/ cuyo nombre contenga el keyword."""
+    """Busca el archivo más reciente en reportes/ cuyo nombre contenga el keyword.
+    Si hay múltiples coincidencias (ej. 17abr y 20abr), toma el mayor por nombre."""
     matches = [f for f in REPORTES.glob('*.xlsx')
                if keyword.lower() in f.name.lower()
                and not f.name.startswith('~$')]
-    return matches[0] if matches else None
+    return sorted(matches)[-1] if matches else None
 
 def copy_sheet(src_path, dest_wb, tab_name):
     """Lee la primera hoja del archivo fuente y la copia al workbook destino."""

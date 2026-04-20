@@ -598,10 +598,10 @@ def update_html(html_path, data_block, today_str=None, report_max_str=None):
         print(f'⚠  No se encontró marcador AKAMPA:DATA_START en {html_path.name} — saltando')
         return False
 
-    # 1. Replace data block
+    # 1. Replace data block (use lambda to avoid \u escape issues in replacement)
     updated = re.sub(
         r'// AKAMPA:DATA_START.*?// AKAMPA:DATA_END',
-        data_block,
+        lambda m: data_block,
         content,
         flags=re.DOTALL
     )
@@ -609,11 +609,12 @@ def update_html(html_path, data_block, today_str=None, report_max_str=None):
     # 2. Update visible timestamp in header
     if today_str:
         fecha_str = _fmt_date_es(today_str)
+        now_time  = datetime.now().strftime('%H:%M')
         if report_max_str and report_max_str != today_str:
             datos_str = _fmt_date_es(report_max_str)
-            label = f'Actualizado {fecha_str} · Datos al {datos_str}'
+            label = f'Actualizado {fecha_str} · {now_time} · Datos al {datos_str}'
         else:
-            label = f'Actualizado {fecha_str}'
+            label = f'Actualizado {fecha_str} · {now_time}'
         updated = re.sub(
             r'(<span[^>]*id="last-updated"[^>]*>)[^<]*(</span>)',
             rf'\g<1>{label}\g<2>',
@@ -717,6 +718,7 @@ def main():
     args = p.parse_args()
 
     today_str = str(ddate.today())
+    now_time  = datetime.now().strftime('%H:%M')
 
     # ── Load existing data ────────────────────────────────────────
     existing = {
@@ -794,7 +796,7 @@ def main():
     data = {
         'meta': {
             'kpi_anual':    30000000,
-            'last_updated': today_str,
+            'last_updated': f'{today_str} {now_time}',
             'property':     'Akampa · All Destinations'
         },
         'bahia_mag': {
