@@ -729,13 +729,19 @@ function lvWeekly(wk) {
   return total;
 }
 
+function yucWeekly(wk) {
+  let total = 0;
+  YUC_TRIPS.forEach(t => t.payments.forEach(p => { if (isoWeek(p.date) === wk) total += p.amount; }));
+  return total;
+}
+
 function bmWeekly(wk) { return BM_WEEKLY[wk] || 0; }
 
 function weeklyForDest(d, wk) {
   if (d === 'bm')  return bmWeekly(wk);
   if (d === 'lv')  return lvWeekly(wk);
-  if (d === 'yuc') return 0;
-  return bmWeekly(wk) + lvWeekly(wk); // general
+  if (d === 'yuc') return yucWeekly(wk);
+  return bmWeekly(wk) + lvWeekly(wk) + yucWeekly(wk); // general
 }
 
 function getBMTrips() {
@@ -828,9 +834,18 @@ function renderKPIs() {
       guests  += pax; trips++;
     });
   }
+  if (dest === 'gen' || dest === 'yuc') {
+    YUC_TRIPS.forEach(t => {
+      const amt = t.payments.reduce((s,p)=>s+p.amount,0);
+      const pax = new Set(t.payments.flatMap(p=>p.participants)).size;
+      rev     += amt; cobrado += amt;
+      guests  += pax; trips++;
+    });
+  }
 
   const rpg = guests > 0 ? Math.round(rev / guests) : 0;
   const pendTotal = dest === 'bm' ? getBMTrips().reduce((s,t)=>s+t.pend,0)
+                  : dest === 'yuc' ? 0
                   : dest === 'gen' ? BM_TRIPS.reduce((s,t)=>s+t.pend,0)
                   : 0;
 
@@ -852,9 +867,10 @@ function renderProgress() {
   const bmTot = BM_TRIPS.reduce((s,t)=>s+t.total,0);
   const bmCob = BM_TRIPS.reduce((s,t)=>s+t.cobrado,0);
   const bmPend= BM_TRIPS.reduce((s,t)=>s+t.pend,0);
-  const lvTot = LV_TRIPS.reduce((s,t)=>s+t.payments.reduce((ss,p)=>ss+p.amount,0),0);
+  const lvTot  = LV_TRIPS.reduce((s,t)=>s+t.payments.reduce((ss,p)=>ss+p.amount,0),0);
+  const yucTot = YUC_TRIPS.reduce((s,t)=>s+t.payments.reduce((ss,p)=>ss+p.amount,0),0);
 
-  const cobrado = bmCob + lvTot;
+  const cobrado = bmCob + lvTot + yucTot;
   const pend    = bmPend;
   const total   = cobrado + pend;
   const pct     = Math.min(100, total / META.kpi * 100);
@@ -890,6 +906,17 @@ function renderTimeline() {
   }
   if (dest === 'lv' || dest === 'gen') {
     LV_TRIPS.forEach(t => {
+      const ym = t.start.slice(0,7);
+      if (yearFilter !== 'all' && t.start.slice(0,4) !== yearFilter) return;
+      const amt = t.payments.reduce((s,p)=>s+p.amount,0);
+      if (!buckets[ym]) buckets[ym] = {rev:0,trips:0,hasData:false};
+      buckets[ym].rev   += amt;
+      buckets[ym].trips++;
+      if (amt > 0) buckets[ym].hasData = true;
+    });
+  }
+  if (dest === 'yuc' || dest === 'gen') {
+    YUC_TRIPS.forEach(t => {
       const ym = t.start.slice(0,7);
       if (yearFilter !== 'all' && t.start.slice(0,4) !== yearFilter) return;
       const amt = t.payments.reduce((s,p)=>s+p.amount,0);
@@ -937,14 +964,17 @@ function renderTimeline() {
 function renderGeneral() {
   const bmTot = BM_TRIPS.reduce((s,t)=>s+t.total,0);
   const bmCob = BM_TRIPS.reduce((s,t)=>s+t.cobrado,0);
-  const lvTot = LV_TRIPS.reduce((s,t)=>s+t.payments.reduce((ss,p)=>ss+p.amount,0),0);
-  const allTot = bmTot + lvTot;
+  const lvTot  = LV_TRIPS.reduce((s,t)=>s+t.payments.reduce((ss,p)=>ss+p.amount,0),0);
+  const yucTot = YUC_TRIPS.reduce((s,t)=>s+t.payments.reduce((ss,p)=>ss+p.amount,0),0);
+  const allTot = bmTot + lvTot + yucTot;
 
-  const bmPct = Math.round(bmTot / allTot * 100);
-  const lvPct = Math.round(lvTot / allTot * 100);
+  const bmPct  = allTot > 0 ? Math.round(bmTot  / allTot * 100) : 0;
+  const lvPct  = allTot > 0 ? Math.round(lvTot  / allTot * 100) : 0;
+  const yucPct = allTot > 0 ? Math.round(yucTot / allTot * 100) : 0;
 
   const bmGuests = BM_TRIPS.reduce((s,t)=>s+t.guests,0);
   const lvPax    = new Set(LV_TRIPS.flatMap(t=>t.payments.flatMap(p=>p.participants))).size;
+  const yucPax   = new Set(YUC_TRIPS.flatMap(t=>t.payments.flatMap(p=>p.participants))).size;
 
   document.getElementById('content-gen').innerHTML = `
     <div class="gen-dest-grid">
@@ -962,12 +992,12 @@ function renderGeneral() {
         <div class="gen-bar-wrap"><div class="gen-bar-fill lv" style="width:${lvPct}%"></div></div>
         <div class="gen-pct">${lvPct}% del total de destinos</div>
       </div>
-      <div class="gen-card" style="opacity:.5">
+      <div class="gen-card${yucTot === 0 ? ' style="opacity:.5"' : ''}">
         <div class="gen-card-title yuc">Yucatán Jungle Safari</div>
-        <div class="gen-rev" style="color:var(--dim)">—</div>
-        <div class="gen-sub">Sin datos · próxima temporada</div>
-        <div class="gen-bar-wrap"><div class="gen-bar-fill yuc" style="width:0%"></div></div>
-        <div class="gen-pct">0% del total</div>
+        <div class="gen-rev"${yucTot === 0 ? ' style="color:var(--dim)"' : ''}>$${yucTot > 0 ? nM(yucTot) : '—'}</div>
+        <div class="gen-sub">${yucTot > 0 ? 'cobrado WeTravel · '+yucPax+' participante'+(yucPax!==1?'s':'')+' · '+YUC_TRIPS.length+' viaje'+(YUC_TRIPS.length!==1?'s':'') : 'Sin datos · próxima temporada'}</div>
+        <div class="gen-bar-wrap"><div class="gen-bar-fill yuc" style="width:${yucPct}%"></div></div>
+        <div class="gen-pct">${yucPct}% del total de destinos</div>
       </div>
     </div>
     <div class="sec-head" style="margin-top:8px">
