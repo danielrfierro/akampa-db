@@ -1,7 +1,7 @@
 {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-04-13",
+    "last_updated": "2026-04-19",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -153,8 +153,8 @@
         "guests": 15,
         "status": "past",
         "cobrado": 324571,
-        "pend": 550,
-        "total": 325121
+        "pend": 50050,
+        "total": 374621
       },
       {
         "id": 11,
@@ -164,7 +164,7 @@
         "end": "2026-02-11",
         "rooms": 15,
         "cap": 15,
-        "occ": 100,
+        "occ": 100.0,
         "guests": 30,
         "status": "past",
         "cobrado": 329559,
@@ -182,9 +182,9 @@
         "occ": 93.3,
         "guests": 24,
         "status": "past",
-        "cobrado": 618698,
+        "cobrado": 649396,
         "pend": 18598,
-        "total": 637296
+        "total": 667994
       },
       {
         "id": 13,
@@ -242,9 +242,9 @@
         "occ": 93.3,
         "guests": 23,
         "status": "past",
-        "cobrado": 537270,
+        "cobrado": 551760,
         "pend": 2700,
-        "total": 539970
+        "total": 554460
       },
       {
         "id": 17,
@@ -267,14 +267,14 @@
         "s": "2025-2026",
         "start": "2026-03-05",
         "end": "2026-03-08",
-        "rooms": 9,
+        "rooms": 5,
         "cap": 15,
-        "occ": 60.0,
-        "guests": 18,
+        "occ": 33.3,
+        "guests": 10,
         "status": "past",
-        "cobrado": 420730,
+        "cobrado": 445480,
         "pend": 0,
-        "total": 420730
+        "total": 445480
       },
       {
         "id": 19,
@@ -302,9 +302,9 @@
         "occ": 93.3,
         "guests": 23,
         "status": "past",
-        "cobrado": 628681,
+        "cobrado": 658681,
         "pend": 0,
-        "total": 628681
+        "total": 658681
       },
       {
         "id": 21,
@@ -344,7 +344,7 @@
         "end": "2026-03-25",
         "rooms": 15,
         "cap": 15,
-        "occ": 100,
+        "occ": 100.0,
         "guests": 30,
         "status": "past",
         "cobrado": 520464,
@@ -374,7 +374,7 @@
         "end": "2026-04-01",
         "rooms": 15,
         "cap": 15,
-        "occ": 100,
+        "occ": 100.0,
         "guests": 26,
         "status": "past",
         "cobrado": 667005,
@@ -389,11 +389,11 @@
         "end": "2026-04-05",
         "rooms": 17,
         "cap": 17,
-        "occ": 100,
+        "occ": 100.0,
         "guests": 28,
         "status": "past",
-        "cobrado": 594575,
-        "pend": 25110,
+        "cobrado": 619685,
+        "pend": 0,
         "total": 619685
       },
       {
@@ -406,10 +406,10 @@
         "cap": 15,
         "occ": 26.7,
         "guests": 8,
-        "status": "next",
-        "cobrado": 188430,
+        "status": "past",
+        "cobrado": 193125,
         "pend": 0,
-        "total": 188430
+        "total": 193125
       },
       {
         "id": 28,
@@ -421,7 +421,7 @@
         "cap": 15,
         "occ": 100,
         "guests": 30,
-        "status": "future",
+        "status": "past",
         "cobrado": 0,
         "pend": 0,
         "total": 0,
@@ -437,28 +437,43 @@
         "cap": 15,
         "occ": 33.3,
         "guests": 9,
-        "status": "future",
+        "status": "past",
         "cobrado": 177000,
-        "pend": 73695,
-        "total": 250695
+        "pend": 0,
+        "total": 177000
       },
       {
         "id": 30,
+        "name": "Pablo Voortus",
+        "s": "2025-2026",
+        "start": "2026-04-15",
+        "end": "2026-04-18",
+        "rooms": 9,
+        "cap": 15,
+        "occ": 60.0,
+        "guests": 13,
+        "status": "past",
+        "cobrado": 292940,
+        "pend": 49290,
+        "total": 342230
+      },
+      {
+        "id": 31,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-10-15",
         "end": "2026-10-18",
-        "rooms": 0,
+        "rooms": 5,
         "cap": 15,
-        "occ": 0,
-        "guests": 0,
+        "occ": 33.3,
+        "guests": 10,
         "status": "future",
-        "cobrado": 0,
-        "pend": 0,
-        "total": 0
+        "cobrado": 33600,
+        "pend": 167400,
+        "total": 201000
       },
       {
-        "id": 31,
+        "id": 32,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-10-18",
@@ -473,14 +488,14 @@
         "total": 0
       },
       {
-        "id": 32,
+        "id": 33,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-10-22",
         "end": "2026-10-25",
         "rooms": 15,
         "cap": 15,
-        "occ": 100,
+        "occ": 100.0,
         "guests": 29,
         "status": "future",
         "cobrado": 338350,
@@ -488,7 +503,7 @@
         "total": 728600
       },
       {
-        "id": 33,
+        "id": 34,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-10-25",
@@ -503,7 +518,7 @@
         "total": 0
       },
       {
-        "id": 34,
+        "id": 35,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-10-29",
@@ -518,7 +533,7 @@
         "total": 485400
       },
       {
-        "id": 35,
+        "id": 36,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-11-01",
@@ -533,7 +548,7 @@
         "total": 0
       },
       {
-        "id": 36,
+        "id": 37,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-11-05",
@@ -548,7 +563,7 @@
         "total": 53900
       },
       {
-        "id": 37,
+        "id": 38,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-11-08",
@@ -563,7 +578,7 @@
         "total": 0
       },
       {
-        "id": 38,
+        "id": 39,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-11-12",
@@ -573,12 +588,12 @@
         "occ": 86.7,
         "guests": 26,
         "status": "future",
-        "cobrado": 284322,
-        "pend": 392122,
+        "cobrado": 338222,
+        "pend": 338222,
         "total": 676444
       },
       {
-        "id": 39,
+        "id": 40,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-11-15",
@@ -593,7 +608,7 @@
         "total": 0
       },
       {
-        "id": 40,
+        "id": 41,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-11-19",
@@ -608,11 +623,26 @@
         "total": 167700
       },
       {
-        "id": 41,
+        "id": 42,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-11-22",
         "end": "2026-11-25",
+        "rooms": 1,
+        "cap": 15,
+        "occ": 6.7,
+        "guests": 2,
+        "status": "future",
+        "cobrado": 33600,
+        "pend": 33600,
+        "total": 67200
+      },
+      {
+        "id": 43,
+        "name": "Marlin & Sardine Run",
+        "s": "2026-2027",
+        "start": "2026-11-26",
+        "end": "2026-11-29",
         "rooms": 0,
         "cap": 15,
         "occ": 0,
@@ -623,22 +653,7 @@
         "total": 0
       },
       {
-        "id": 42,
-        "name": "Marlin & Sardine Run",
-        "s": "2026-2027",
-        "start": "2026-11-26",
-        "end": "2026-11-29",
-        "rooms": 12,
-        "cap": 15,
-        "occ": 80.0,
-        "guests": 24,
-        "status": "future",
-        "cobrado": 323400,
-        "pend": 323400,
-        "total": 646800
-      },
-      {
-        "id": 43,
+        "id": 44,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-11-29",
@@ -653,22 +668,22 @@
         "total": 0
       },
       {
-        "id": 44,
+        "id": 45,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-12-03",
         "end": "2026-12-06",
-        "rooms": 0,
+        "rooms": 12,
         "cap": 15,
-        "occ": 0,
-        "guests": 0,
+        "occ": 80.0,
+        "guests": 24,
         "status": "future",
-        "cobrado": 0,
-        "pend": 0,
-        "total": 0
+        "cobrado": 323400,
+        "pend": 323400,
+        "total": 646800
       },
       {
-        "id": 45,
+        "id": 46,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-12-06",
@@ -683,7 +698,7 @@
         "total": 0
       },
       {
-        "id": 46,
+        "id": 47,
         "name": "Marlin & Sardine Run",
         "s": "2026-2027",
         "start": "2026-12-10",
@@ -698,7 +713,7 @@
         "total": 0
       },
       {
-        "id": 47,
+        "id": 48,
         "name": "Ballena Jorobada",
         "s": "2026-2027",
         "start": "2026-12-17",
@@ -713,7 +728,7 @@
         "total": 0
       },
       {
-        "id": 48,
+        "id": 49,
         "name": "Ballena Jorobada",
         "s": "2026-2027",
         "start": "2026-12-23",
@@ -728,7 +743,7 @@
         "total": 0
       },
       {
-        "id": 49,
+        "id": 50,
         "name": "Ballena Jorobada",
         "s": "2026-2027",
         "start": "2026-12-30",
@@ -743,7 +758,7 @@
         "total": 0
       },
       {
-        "id": 50,
+        "id": 51,
         "name": "Ballena Jorobada",
         "s": "2026-2027",
         "start": "2027-01-07",
@@ -758,7 +773,7 @@
         "total": 0
       },
       {
-        "id": 51,
+        "id": 52,
         "name": "Ballena Jorobada",
         "s": "2026-2027",
         "start": "2027-01-14",
@@ -773,7 +788,7 @@
         "total": 0
       },
       {
-        "id": 52,
+        "id": 53,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-01-21",
@@ -788,7 +803,7 @@
         "total": 0
       },
       {
-        "id": 53,
+        "id": 54,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-01-28",
@@ -803,7 +818,7 @@
         "total": 0
       },
       {
-        "id": 54,
+        "id": 55,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-02-04",
@@ -818,7 +833,7 @@
         "total": 0
       },
       {
-        "id": 55,
+        "id": 56,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-02-11",
@@ -833,7 +848,7 @@
         "total": 0
       },
       {
-        "id": 56,
+        "id": 57,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-02-18",
@@ -848,7 +863,7 @@
         "total": 0
       },
       {
-        "id": 57,
+        "id": 58,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-02-25",
@@ -863,7 +878,7 @@
         "total": 0
       },
       {
-        "id": 58,
+        "id": 59,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-03-04",
@@ -878,7 +893,7 @@
         "total": 0
       },
       {
-        "id": 59,
+        "id": 60,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-03-18",
@@ -893,7 +908,7 @@
         "total": 0
       },
       {
-        "id": 60,
+        "id": 61,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-03-25",
@@ -908,7 +923,7 @@
         "total": 0
       },
       {
-        "id": 61,
+        "id": 62,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-04-01",
@@ -923,7 +938,7 @@
         "total": 0
       },
       {
-        "id": 62,
+        "id": 63,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-04-08",
@@ -938,7 +953,7 @@
         "total": 0
       },
       {
-        "id": 63,
+        "id": 64,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-04-15",
@@ -953,7 +968,7 @@
         "total": 0
       },
       {
-        "id": 64,
+        "id": 65,
         "name": "Ballena Gris",
         "s": "2026-2027",
         "start": "2027-04-22",
@@ -993,56 +1008,129 @@
         },
         {
           "m": "Abr",
-          "g": 143,
-          "occ": 16.08,
-          "rpg": 7819,
-          "rev": 1118085
+          "g": 171,
+          "occ": 20.0,
+          "rpg": 7590,
+          "rev": 1297870
         }
       ],
       "2026-2027": [
         {
           "m": "Oct",
-          "g": 141,
-          "occ": 13.66,
-          "rpg": 8610,
-          "rev": 1214000
+          "g": 159,
+          "occ": 15.37,
+          "rpg": 8899,
+          "rev": 1415000
         },
         {
           "m": "Nov",
-          "g": 174,
-          "occ": 17.06,
-          "rpg": 8878,
-          "rev": 1544845
+          "g": 108,
+          "occ": 10.59,
+          "rpg": 8937,
+          "rev": 965245
+        },
+        {
+          "m": "Dic",
+          "g": 72,
+          "occ": 6.83,
+          "rpg": 8983,
+          "rev": 646800
+        },
+        {
+          "m": "Feb",
+          "g": 12,
+          "occ": 1.26,
+          "rpg": 9692,
+          "rev": 116300
         }
       ]
     },
     "weekly": {
-      "2026-W01": 83132,
-      "2026-W02": 416760,
-      "2026-W03": 99500,
-      "2026-W04": 284135,
-      "2026-W05": 707910,
-      "2026-W06": 993521,
-      "2026-W07": 942904,
-      "2026-W08": 1072927,
-      "2026-W09": 750330,
-      "2026-W10": 520300,
-      "2026-W11": 658681,
-      "2026-W12": 458400,
-      "2026-W13": 1473333,
-      "2026-W14": 783005,
-      "2026-W15": 177000,
-      "2026-W16": 218805,
-      "2026-W43": 338350,
-      "2026-W44": 122800,
-      "2026-W46": 284322,
-      "2026-W48": 323400
+      "2026-W01": 28060,
+      "2026-W02": 164556,
+      "2026-W03": 401481,
+      "2026-W04": 484088,
+      "2026-W05": 918844,
+      "2026-W06": 427715,
+      "2026-W07": 798555,
+      "2026-W08": 161110,
+      "2026-W09": 757266,
+      "2026-W10": 421535,
+      "2026-W11": 149065,
+      "2026-W12": 192045,
+      "2026-W13": 307720,
+      "2026-W15": 107420,
+      "2026-W16": 65650
+    },
+    "weekly_pend": {
+      "2026-W04": 168680,
+      "2026-W05": 15000,
+      "2026-W06": 45388,
+      "2026-W10": 162000,
+      "2026-W11": 26950,
+      "2026-W13": 53900,
+      "2026-W15": 74700,
+      "2026-W16": 191950
+    },
+    "daily": {
+      "2026-01-01": 28060,
+      "2026-01-07": 28290,
+      "2026-01-08": 50570,
+      "2026-01-09": 29898,
+      "2026-01-10": 55798,
+      "2026-01-12": 103830,
+      "2026-01-13": 85696,
+      "2026-01-14": 111596,
+      "2026-01-15": 72009,
+      "2026-01-18": 28350,
+      "2026-01-19": 127918,
+      "2026-01-20": 49800,
+      "2026-01-21": 74610,
+      "2026-01-22": 95510,
+      "2026-01-23": 87800,
+      "2026-01-24": 48450,
+      "2026-01-26": 76400,
+      "2026-01-27": 206650,
+      "2026-01-28": 307898,
+      "2026-01-29": 115200,
+      "2026-01-30": 212696,
+      "2026-02-02": 27900,
+      "2026-02-03": 254930,
+      "2026-02-04": 144885,
+      "2026-02-09": 168930,
+      "2026-02-10": 208600,
+      "2026-02-11": 77290,
+      "2026-02-12": 251340,
+      "2026-02-13": 17610,
+      "2026-02-15": 74785,
+      "2026-02-18": 75970,
+      "2026-02-19": 85140,
+      "2026-02-24": 157330,
+      "2026-02-25": 575664,
+      "2026-02-27": 24272,
+      "2026-03-04": 185895,
+      "2026-03-05": 77400,
+      "2026-03-06": 158240,
+      "2026-03-09": 56950,
+      "2026-03-11": 92115,
+      "2026-03-17": 28370,
+      "2026-03-18": 135375,
+      "2026-03-22": 28300,
+      "2026-03-23": 152810,
+      "2026-03-25": 50905,
+      "2026-03-26": 53900,
+      "2026-03-28": 50105,
+      "2026-04-09": 33600,
+      "2026-04-10": 40220,
+      "2026-04-12": 33600,
+      "2026-04-13": 7500,
+      "2026-04-17": 58150
     }
   },
   "la_ventana": {
     "trips": [
       {
-        "id": 1,
+        "id": 2,
         "name": "Móbulas",
         "dest": "La Ventana",
         "start": "2026-04-19",
@@ -1051,58 +1139,75 @@
         "status": "next",
         "payments": [
           {
-            "date": "2025-11-22",
-            "amount": 24750,
-            "participants": [
-              "Marisol González Ficachi",
-              "MARIA DEL MAR ARIAS"
-            ]
-          },
-          {
-            "date": "2026-04-08",
-            "amount": 17500,
-            "participants": [
-              "Carmen Matiella"
-            ]
-          },
-          {
             "date": "2026-04-12",
-            "amount": 21037,
+            "amount": 21037.0,
             "participants": [
               "Olga de la Fuente"
             ]
           },
           {
             "date": "2026-04-12",
-            "amount": 21037,
+            "amount": 21037.0,
             "participants": [
               "Regina Cabal"
+            ]
+          },
+          {
+            "date": "2026-04-08",
+            "amount": 17500.0,
+            "participants": [
+              "Carmen Matiella"
+            ]
+          },
+          {
+            "date": "2025-11-22",
+            "amount": 24750.0,
+            "participants": [
+              "Marisol González Ficachi",
+              "MARIA DEL MAR ARIAS"
             ]
           }
         ]
       },
       {
-        "id": 2,
-        "name": "Expedition Camp",
+        "id": 1,
+        "name": "La Ventana Expedition Camp",
         "dest": "La Ventana",
         "start": "2026-05-28",
-        "end": "2026-06-01",
+        "end": "2026-05-31",
         "cap": 30,
         "status": "future",
         "payments": [
           {
-            "date": "2026-04-09",
-            "amount": 45000,
+            "date": "2026-04-17",
+            "amount": 70500.0,
             "participants": [
-              "Francisco Javier Vera",
-              "Maria Fernanda Osorio Chavez"
+              "Marcela Alvarez Campos",
+              "Natalia Germenos Alvarez",
+              "Inés Germenos Alvarez"
+            ]
+          },
+          {
+            "date": "2026-04-13",
+            "amount": 45000.0,
+            "participants": [
+              "Carlos Mendoza",
+              "Maria Elena Ortal Ortega"
+            ]
+          },
+          {
+            "date": "2026-04-13",
+            "amount": 45000.0,
+            "participants": [
+              "Ana paula Isaac",
+              "Gabriela Vazquez"
             ]
           }
         ]
       },
       {
         "id": 3,
-        "name": "Expedition Camp",
+        "name": "La Ventana Expedition Camp",
         "dest": "La Ventana",
         "start": "2026-06-04",
         "end": "2026-06-07",
@@ -1110,8 +1215,16 @@
         "status": "future",
         "payments": [
           {
+            "date": "2026-04-09",
+            "amount": 45000.0,
+            "participants": [
+              "Francisco Javier Vera",
+              "Maria Fernanda Osorio Chavez"
+            ]
+          },
+          {
             "date": "2026-04-07",
-            "amount": 31500,
+            "amount": 31500.0,
             "participants": [
               "Eduardo Zago",
               "Michelle Ralph"
@@ -1119,7 +1232,7 @@
           },
           {
             "date": "2026-04-07",
-            "amount": 25500,
+            "amount": 25500.0,
             "participants": [
               "Ana Maria Mateo Reyes"
             ]
@@ -1128,7 +1241,7 @@
       },
       {
         "id": 4,
-        "name": "Expedition Camp",
+        "name": "La Ventana Expedition Camp",
         "dest": "La Ventana",
         "start": "2026-06-11",
         "end": "2026-06-14",
@@ -1136,19 +1249,19 @@
         "status": "future",
         "payments": [
           {
-            "date": "2026-04-07",
-            "amount": 45000,
-            "participants": [
-              "Sofia Carrion",
-              "Ana María Carrion"
-            ]
-          },
-          {
             "date": "2026-04-08",
-            "amount": 45000,
+            "amount": 45000.0,
             "participants": [
               "MARDOQUEO Rodriguez",
               "Lorena Rodriguez"
+            ]
+          },
+          {
+            "date": "2026-04-07",
+            "amount": 45000.0,
+            "participants": [
+              "Sofia Carrion",
+              "Ana María Carrion"
             ]
           }
         ]

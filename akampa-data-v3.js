@@ -1,9 +1,9 @@
-// akampa-data-v3.js — generado 2026-04-17
+// akampa-data-v3.js — generado 2026-04-19
 // Solo expone window.AKAMPA_DATA (sin conflictos de scope)
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-04-17",
+    "last_updated": "2026-04-19",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -454,7 +454,7 @@ window.AKAMPA_DATA = {
         "cap": 15,
         "occ": 60.0,
         "guests": 13,
-        "status": "next",
+        "status": "past",
         "cobrado": 292940,
         "pend": 49290,
         "total": 342230
@@ -986,36 +986,6 @@ window.AKAMPA_DATA = {
       }
     ],
     "monthly": {
-      "2025-2026": [
-        {
-          "m": "Ene",
-          "g": 168,
-          "occ": 16.89,
-          "rpg": 8311,
-          "rev": 1396267
-        },
-        {
-          "m": "Feb",
-          "g": 503,
-          "occ": 59.66,
-          "rpg": 7038,
-          "rev": 3540116
-        },
-        {
-          "m": "Mar",
-          "g": 371,
-          "occ": 39.47,
-          "rpg": 7815,
-          "rev": 2899208
-        },
-        {
-          "m": "Abr",
-          "g": 171,
-          "occ": 20.0,
-          "rpg": 7590,
-          "rev": 1297870
-        }
-      ],
       "2026-2027": [
         {
           "m": "Oct",
@@ -1044,6 +1014,36 @@ window.AKAMPA_DATA = {
           "occ": 1.26,
           "rpg": 9692,
           "rev": 116300
+        }
+      ],
+      "2025-2026": [
+        {
+          "m": "Ene",
+          "g": 168,
+          "occ": 16.89,
+          "rpg": 8311,
+          "rev": 1396267
+        },
+        {
+          "m": "Feb",
+          "g": 503,
+          "occ": 59.66,
+          "rpg": 7038,
+          "rev": 3540116
+        },
+        {
+          "m": "Mar",
+          "g": 371,
+          "occ": 39.47,
+          "rpg": 7815,
+          "rev": 2899208
+        },
+        {
+          "m": "Abr",
+          "g": 171,
+          "occ": 20.0,
+          "rpg": 7590,
+          "rev": 1297870
         }
       ]
     },
@@ -1138,7 +1138,7 @@ window.AKAMPA_DATA = {
         "start": "2026-04-19",
         "end": "2026-04-22",
         "cap": 30,
-        "status": "future",
+        "status": "next",
         "payments": [
           {
             "date": "2026-04-12",
