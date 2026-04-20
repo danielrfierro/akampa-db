@@ -361,9 +361,65 @@ html.light .date-input::-webkit-calendar-picker-indicator{filter:none}
   /* Main */
   main{padding:8px 10px 36px}
 }
+
+/* ── PASSWORD GATE ───────────────────────────────── */
+#pw-gate{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center}
+#pw-gate.hidden{display:none}
+.pw-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:48px 40px;display:flex;flex-direction:column;align-items:center;gap:20px;width:340px;max-width:90vw}
+.pw-logo{color:var(--gold);font-size:13px;font-weight:500;letter-spacing:.22em;text-transform:uppercase}
+.pw-sub{color:var(--muted);font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-top:-10px}
+.pw-divider{width:36px;height:1px;background:var(--border);margin:2px 0}
+.pw-label{color:var(--text2);font-size:10px;letter-spacing:.08em;text-transform:uppercase;align-self:flex-start}
+.pw-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:10px 14px;color:var(--text);font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:border .18s;text-align:center;letter-spacing:.18em}
+.pw-input:focus{border-color:var(--gold)}
+.pw-input.shake{animation:pw-shake .35s ease}
+.pw-btn{width:100%;background:var(--gold-dim);border:1px solid var(--gold);color:var(--gold);font-family:'Inter',sans-serif;font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:10px;border-radius:4px;cursor:pointer;transition:all .18s}
+.pw-btn:hover{background:var(--gold);color:var(--bg)}
+.pw-error{color:var(--danger);font-size:10px;letter-spacing:.06em;opacity:0;transition:opacity .2s;min-height:14px}
+.pw-error.visible{opacity:1}
+@keyframes pw-shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 </style>
 </head>
 <body>
+
+<div id="pw-gate">
+  <div class="pw-box">
+    <div class="pw-logo">Akampa</div>
+    <div class="pw-sub">Sales Intelligence</div>
+    <div class="pw-divider"></div>
+    <div class="pw-label">Contraseña de acceso</div>
+    <input id="pw-input" class="pw-input" type="password" placeholder="••••••••" autocomplete="current-password"/>
+    <div id="pw-error" class="pw-error">Contraseña incorrecta</div>
+    <button class="pw-btn" onclick="checkPw()">Ingresar →</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  if(sessionStorage.getItem('akampa_auth')==='ok'){
+    document.getElementById('pw-gate').classList.add('hidden');
+  }
+})();
+function checkPw(){
+  var v=document.getElementById('pw-input').value;
+  if(v==='30MILL'){
+    sessionStorage.setItem('akampa_auth','ok');
+    document.getElementById('pw-gate').classList.add('hidden');
+  } else {
+    var inp=document.getElementById('pw-input');
+    var err=document.getElementById('pw-error');
+    err.classList.add('visible');
+    inp.classList.add('shake');
+    inp.value='';
+    setTimeout(function(){inp.classList.remove('shake');},400);
+  }
+}
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('pw-input').addEventListener('keydown',function(e){
+    if(e.key==='Enter') checkPw();
+  });
+});
+</script>
 
 <header>
   <div class="brand">
