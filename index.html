@@ -1003,7 +1003,7 @@ function renderGeneral() {
     <div class="sec-head" style="margin-top:8px">
       <span class="sec-title gen">Pipeline de Revenue — Cobrado &amp; Pendiente por Semana</span>
       <span class="sec-line"></span>
-      <span class="sec-note">Cobrado + pendiente de esa semana de booking · BM (verde/gold) + La Ventana (azul)</span>
+      <span class="sec-note">Cobrado + pendiente de esa semana de booking · BM (verde/gold) + La Ventana (azul) + Yucatán (morado)</span>
     </div>
     <div class="card" style="margin-bottom:4px">
       <div class="chart-box" style="height:290px"><canvas id="revenue-pipeline-chart"></canvas></div>
@@ -1161,6 +1161,7 @@ function renderRevenuePipelineChart() {
   const bmCob  = allWks.map(wk => (BM_WEEKLY[wk]      || 0) / 1e3);
   const bmPend = allWks.map(wk => (BM_WEEKLY_PEND[wk]  || 0) / 1e3);
   const lvCob  = allWks.map(wk => lvWeekly(wk)               / 1e3);
+  const yucCob = allWks.map(wk => yucWeekly(wk)              / 1e3);
   const labels = allWks.map(wk => 'S' + wk.split('-W')[1].replace(/^0/,''));
 
   revenuePipelineChart = new Chart(canvas, {
@@ -1188,6 +1189,13 @@ function renderRevenuePipelineChart() {
           backgroundColor: isLight ? 'rgba(42,90,138,.40)' : 'rgba(90,138,176,.50)',
           borderColor:     isLight ? 'rgba(42,90,138,.70)' : 'rgba(90,138,176,.85)',
           borderWidth: 1, borderRadius: 2, stack: 'lv'
+        },
+        {
+          label: 'Yucatán',
+          data: yucCob,
+          backgroundColor: isLight ? 'rgba(106,58,154,.35)' : 'rgba(138,106,176,.50)',
+          borderColor:     isLight ? 'rgba(106,58,154,.65)' : 'rgba(138,106,176,.85)',
+          borderWidth: 1, borderRadius: 2, stack: 'yuc'
         }
       ]
     },
