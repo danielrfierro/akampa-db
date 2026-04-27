@@ -433,7 +433,14 @@ def parse_wetravel(path, dest_label, existing_trips, keyword=None):
 
     by_trip = defaultdict(list)
     for r in rows[hi+1:]:
-        if not r[0] or r[4] != 'Successful': continue
+        if not r[0]: continue
+        # Aceptar Successful y Refunded. Para Refunded computamos el neto
+        # (Amount - Refunded) que sigue cobrado. Si el refund es total → omitir.
+        if r[4] not in ('Successful', 'Refunded'):
+            continue
+        amount = float(r[3] or 0) - float(r[9] or 0)
+        if amount <= 0:
+            continue
         trip_name = str(r[21]) if r[21] else 'Sin nombre'
         # Filtrar por keyword si se especificó (ej. 'La Ventana' o 'Yucatan')
         if keyword and keyword.lower() not in trip_name.lower():
@@ -441,7 +448,7 @@ def parse_wetravel(path, dest_label, existing_trips, keyword=None):
         pdate = parse_date(str(r[0])[:10].replace('/','-'))
         participants = [p.strip() for p in str(r[20]).split(',') if p.strip()] if r[20] else []
         by_trip[trip_name].append({
-            'date': str(pdate), 'amount': float(r[3] or 0),
+            'date': str(pdate), 'amount': amount,
             'participants': participants
         })
 
