@@ -3,7 +3,7 @@
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-04-27 11:16",
+    "last_updated": "2026-04-27 11:20",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -986,6 +986,36 @@ window.AKAMPA_DATA = {
       }
     ],
     "monthly": {
+      "2025-2026": [
+        {
+          "m": "Ene",
+          "g": 168,
+          "occ": 16.89,
+          "rpg": 8311,
+          "rev": 1396267
+        },
+        {
+          "m": "Feb",
+          "g": 503,
+          "occ": 59.66,
+          "rpg": 7038,
+          "rev": 3540116
+        },
+        {
+          "m": "Mar",
+          "g": 371,
+          "occ": 39.47,
+          "rpg": 7815,
+          "rev": 2899208
+        },
+        {
+          "m": "Abr",
+          "g": 171,
+          "occ": 20.0,
+          "rpg": 8369,
+          "rev": 1431140
+        }
+      ],
       "2026-2027": [
         {
           "m": "Oct",
@@ -1021,36 +1051,6 @@ window.AKAMPA_DATA = {
           "occ": 0.38,
           "rpg": 9692,
           "rev": 38767
-        }
-      ],
-      "2025-2026": [
-        {
-          "m": "Ene",
-          "g": 168,
-          "occ": 16.89,
-          "rpg": 8311,
-          "rev": 1396267
-        },
-        {
-          "m": "Feb",
-          "g": 503,
-          "occ": 59.66,
-          "rpg": 7038,
-          "rev": 3540116
-        },
-        {
-          "m": "Mar",
-          "g": 371,
-          "occ": 39.47,
-          "rpg": 7815,
-          "rev": 2899208
-        },
-        {
-          "m": "Abr",
-          "g": 171,
-          "occ": 20.0,
-          "rpg": 8369,
-          "rev": 1431140
         }
       ]
     },
@@ -1146,45 +1146,6 @@ window.AKAMPA_DATA = {
         "id": 1,
         "name": "Móbulas",
         "dest": "La Ventana",
-        "start": "2025-05-23",
-        "end": "2025-05-23",
-        "cap": 30,
-        "status": "past",
-        "payments": [
-          {
-            "date": "2025-05-23",
-            "amount": 20800.0,
-            "participants": [
-              "JESUS RICARDO ALGOMEDA ESCOBAR"
-            ]
-          },
-          {
-            "date": "2025-04-28",
-            "amount": 33100.0,
-            "participants": [
-              "Bernardo Loyola Guizar"
-            ]
-          },
-          {
-            "date": "2025-04-03",
-            "amount": 20800.0,
-            "participants": [
-              "JESUS RICARDO ALGOMEDA ESCOBAR"
-            ]
-          },
-          {
-            "date": "2025-03-13",
-            "amount": 37600.0,
-            "participants": [
-              "Bernardo Loyola Guizar"
-            ]
-          }
-        ]
-      },
-      {
-        "id": 2,
-        "name": "Móbulas",
-        "dest": "La Ventana",
         "start": "2026-04-19",
         "end": "2026-04-22",
         "cap": 30,
@@ -1230,7 +1191,7 @@ window.AKAMPA_DATA = {
         ]
       },
       {
-        "id": 3,
+        "id": 2,
         "name": "La Ventana Expedition Camp",
         "dest": "La Ventana",
         "start": "2026-05-28",
@@ -1289,7 +1250,7 @@ window.AKAMPA_DATA = {
         ]
       },
       {
-        "id": 4,
+        "id": 3,
         "name": "La Ventana Expedition Camp",
         "dest": "La Ventana",
         "start": "2026-06-04",
@@ -1323,7 +1284,7 @@ window.AKAMPA_DATA = {
         ]
       },
       {
-        "id": 5,
+        "id": 4,
         "name": "La Ventana Expedition Camp",
         "dest": "La Ventana",
         "start": "2026-06-11",

@@ -406,6 +406,12 @@ WETRAVEL_DATE_OVERRIDES = {
     'osom people': ('2026-10-01', '2026-10-04'),
 }
 
+# ── Cutoff temporal de WeTravel ───────────────────────────────────
+# Cualquier viaje cuya fecha de FIN sea anterior a esta fecha se excluye
+# del dashboard. Sirve para no traer operación legacy (ej. Móbulas 2025).
+# Cambiar este valor cuando se quiera correr la ventana de visibilidad.
+WETRAVEL_MIN_END_DATE = '2026-01-01'
+
 # ── Stub trips: viajes confirmados que aún no tienen pagos en WeTravel ──
 # Se agregan al dashboard con $0 cobrado para visibilidad de pipeline.
 # Cuando lleguen pagos en futuras semanas, el processor los integra automáticamente
@@ -522,6 +528,10 @@ def parse_wetravel(path, dest_label, existing_trips, keyword=None):
                 end_s   = start_s
         start  = datetime.strptime(start_s, '%Y-%m-%d').date()
         end    = datetime.strptime(end_s,   '%Y-%m-%d').date()
+        # Excluir viajes legacy cuya fecha fin sea anterior al cutoff configurado
+        cutoff = datetime.strptime(WETRAVEL_MIN_END_DATE, '%Y-%m-%d').date()
+        if end < cutoff:
+            continue
         status = 'past' if end < today else 'next' if start <= today else 'future'
         clean  = re.sub(r'\s*\(.*?\)\s*$', '', trip_name).strip()  # quita fecha al final
         clean  = re.sub(r'^[^:]+:\s*', '', clean)                   # quita "Destino: "
