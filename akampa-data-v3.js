@@ -3,7 +3,7 @@
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-04-27 16:42",
+    "last_updated": "2026-04-27 16:54",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -1143,7 +1143,7 @@ window.AKAMPA_DATA = {
   "la_ventana": {
     "trips": [
       {
-        "id": 4,
+        "id": 1,
         "name": "Móbulas",
         "dest": "La Ventana",
         "start": "2025-05-23",
@@ -1182,7 +1182,7 @@ window.AKAMPA_DATA = {
         ]
       },
       {
-        "id": 1,
+        "id": 2,
         "name": "La Ventana Expedition Camp",
         "dest": "La Ventana",
         "start": "2026-05-28",
@@ -1275,7 +1275,7 @@ window.AKAMPA_DATA = {
         ]
       },
       {
-        "id": 2,
+        "id": 4,
         "name": "La Ventana Expedition Camp",
         "dest": "La Ventana",
         "start": "2026-06-11",
@@ -1314,191 +1314,6 @@ window.AKAMPA_DATA = {
   "yucatan": {
     "trips": [
       {
-        "id": 5,
-        "name": "Yucatan Jungle Safari",
-        "dest": "Yucatán",
-        "start": "2024-11-05",
-        "end": "2024-11-05",
-        "cap": 30,
-        "status": "past",
-        "payments": [
-          {
-            "date": "2024-11-05",
-            "amount": 55000.0,
-            "participants": [
-              "Alejandra Castellanos Caloca",
-              "Hugo Gutierrez"
-            ]
-          },
-          {
-            "date": "2024-10-28",
-            "amount": 13750.0,
-            "participants": [
-              "José Gerardo Pérez Hernández",
-              "Alejandro Adame Rabago"
-            ]
-          },
-          {
-            "date": "2024-10-28",
-            "amount": 14250.0,
-            "participants": [
-              "Elisa Rábago",
-              "Gerardo Adame"
-            ]
-          },
-          {
-            "date": "2024-10-26",
-            "amount": 28500.0,
-            "participants": [
-              "Luis Javier Fernández Barragán",
-              "Belinda Cardoso Velázquez"
-            ]
-          },
-          {
-            "date": "2024-10-24",
-            "amount": 37500.0,
-            "participants": [
-              "Maribel Quiroz Gutiérrez",
-              "Valentina Diaz Ureña",
-              "Cynthia Rodríguez Sánchez"
-            ]
-          },
-          {
-            "date": "2024-10-07",
-            "amount": 28500.0,
-            "participants": [
-              "Luis Javier Fernández Barragán",
-              "Belinda Cardoso Velázquez"
-            ]
-          },
-          {
-            "date": "2024-09-29",
-            "amount": 13750.0,
-            "participants": [
-              "José Gerardo Pérez Hernández",
-              "Alejandro Adame Rabago"
-            ]
-          },
-          {
-            "date": "2024-09-28",
-            "amount": 14250.0,
-            "participants": [
-              "Elisa Rábago",
-              "Gerardo Adame"
-            ]
-          },
-          {
-            "date": "2024-08-22",
-            "amount": 12500.0,
-            "participants": [
-              "Maribel Quiroz Gutiérrez",
-              "Valentina Diaz Ureña",
-              "Cynthia Rodríguez Sánchez"
-            ]
-          },
-          {
-            "date": "2024-08-22",
-            "amount": 25000.0,
-            "participants": [
-              "Maribel Quiroz Gutiérrez",
-              "Valentina Diaz Ureña",
-              "Cynthia Rodríguez Sánchez"
-            ]
-          },
-          {
-            "date": "2024-08-13",
-            "amount": 27500.0,
-            "participants": [
-              "José Gerardo Pérez Hernández",
-              "Alejandro Adame Rabago"
-            ]
-          },
-          {
-            "date": "2024-08-13",
-            "amount": 28500.0,
-            "participants": [
-              "Elisa Rábago",
-              "Gerardo Adame"
-            ]
-          }
-        ]
-      },
-      {
-        "id": 4,
-        "name": "Yucatan Jungle Safari",
-        "dest": "Yucatán",
-        "start": "2025-01-09",
-        "end": "2025-01-09",
-        "cap": 30,
-        "status": "past",
-        "payments": [
-          {
-            "date": "2025-01-09",
-            "amount": 29900.0,
-            "participants": [
-              "Andrea Wenzel Lopez"
-            ]
-          }
-        ]
-      },
-      {
-        "id": 3,
-        "name": "Yucatan Jungle Safari",
-        "dest": "Yucatán",
-        "start": "2025-09-22",
-        "end": "2025-09-22",
-        "cap": 30,
-        "status": "past",
-        "payments": [
-          {
-            "date": "2025-09-22",
-            "amount": 14950.0,
-            "participants": [
-              "Elba Machain"
-            ]
-          },
-          {
-            "date": "2025-08-26",
-            "amount": 14950.0,
-            "participants": [
-              "Elba Machain"
-            ]
-          }
-        ]
-      },
-      {
-        "id": 2,
-        "name": "Yucatan Jungle Safari",
-        "dest": "Yucatán",
-        "start": "2026-02-04",
-        "end": "2026-02-08",
-        "cap": 30,
-        "status": "past",
-        "payments": [
-          {
-            "date": "2026-01-07",
-            "amount": 13950.0,
-            "participants": [
-              "Melisa Guerra"
-            ]
-          },
-          {
-            "date": "2026-01-06",
-            "amount": 27900.0,
-            "participants": [
-              "MIRIAM ABRIL FRIAS MONDRAGON"
-            ]
-          },
-          {
-            "date": "2025-12-08",
-            "amount": 13950.0,
-            "participants": [
-              "Melisa Guerra"
-            ]
-          }
-        ]
-      },
-      {
         "id": 1,
         "name": "Osom People - Play Is Sacred",
         "dest": "Yucatán",
@@ -1522,6 +1337,16 @@ window.AKAMPA_DATA = {
             ]
           }
         ]
+      },
+      {
+        "id": 2,
+        "name": "Daniela Mendoza - Sahaja",
+        "dest": "Yucatán",
+        "start": "2026-11-13",
+        "end": "2026-11-16",
+        "cap": 30,
+        "status": "future",
+        "payments": []
       }
     ]
   }

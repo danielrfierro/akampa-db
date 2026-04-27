@@ -398,6 +398,23 @@ WETRAVEL_DATE_OVERRIDES = {
     'osom people': ('2026-10-01', '2026-10-04'),
 }
 
+# ── Stub trips: viajes confirmados que aún no tienen pagos en WeTravel ──
+# Se agregan al dashboard con $0 cobrado para visibilidad de pipeline.
+# Cuando lleguen pagos en futuras semanas, el processor los integra automáticamente
+# (siempre que el `match` haga substring case-insensitive sobre el trip name de WeTravel).
+# Estructura: {dest_label: [ {match, name, start, end, cap?} ]}
+STUB_TRIPS = {
+    'Yucatán': [
+        {
+            'match': 'daniela mendoza',
+            'name':  'Daniela Mendoza - Sahaja',
+            'start': '2026-11-13',
+            'end':   '2026-11-16',
+            'cap':   30,
+        },
+    ],
+}
+
 # ── WeTravel parser ───────────────────────────────────────────────
 def parse_wetravel(path, dest_label, existing_trips, keyword=None):
     """
@@ -497,7 +514,32 @@ def parse_wetravel(path, dest_label, existing_trips, keyword=None):
         trips.append({'id':i,'name':clean,'dest':dest_label,'start':start_s,
                       'end':end_s,'cap':30,'status':status,'payments':payments})
 
+    # ── Agregar stub trips que no estén ya representados por pagos ────
+    for stub in STUB_TRIPS.get(dest_label, []):
+        match = stub['match'].lower()
+        already = any(match in t['name'].lower() for t in trips)
+        if already:
+            continue
+        s_start = stub['start']
+        s_end   = stub['end']
+        s_start_d = datetime.strptime(s_start, '%Y-%m-%d').date()
+        s_end_d   = datetime.strptime(s_end,   '%Y-%m-%d').date()
+        s_status  = 'past' if s_end_d < today else 'next' if s_start_d <= today else 'future'
+        trips.append({
+            'id': len(trips) + 1,
+            'name': stub['name'],
+            'dest': dest_label,
+            'start': s_start,
+            'end':   s_end,
+            'cap':   stub.get('cap', 30),
+            'status': s_status,
+            'payments': [],
+        })
+
     trips.sort(key=lambda t: t['start'])
+    # Re-numerar IDs después del sort para mantener consistencia
+    for i, t in enumerate(trips, 1):
+        t['id'] = i
     return trips
 
 # ── HTML update helpers ───────────────────────────────────────────

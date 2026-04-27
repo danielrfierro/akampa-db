@@ -18,22 +18,32 @@ from openpyxl import load_workbook, Workbook
 REPO = Path(__file__).parent.parent
 REPORTES = REPO / 'reportes'
 
-# ── Mapeo: patrón de nombre → nombre de pestaña esperado ─────────
+# ── Mapeo: lista de patrones (EN + ES) → nombre de pestaña esperado ─
+# Cloudbeds puede exportar los reportes con nombre en inglés o en español
+# dependiendo del idioma de la cuenta. Aceptamos ambos.
 TAB_MAP = {
-    'Reservation Balance Due':      'ReservationBalanceDue',
-    'Check-in Review':              'CheckinReview',
-    'Total Revenue Per Guest':      'TotalRevenuePerGuest',
-    'Reservations by Booking Date': 'ReservationsByBookingDate',
-    'Occupancy Statistics':         'OccupancyStatistics',
+    'ReservationBalanceDue':      ['Reservation Balance Due',      'Saldo pendiente de reserva'],
+    'CheckinReview':              ['Check-in Review',              'Revisión de entradas'],
+    'TotalRevenuePerGuest':       ['Total Revenue Per Guest',      'Ingresos totales por huésped'],
+    'ReservationsByBookingDate':  ['Reservations by Booking Date', 'Reservas por fecha de reserva'],
+    'OccupancyStatistics':        ['Occupancy Statistics',         'Estadísticas de ocupación'],
 }
 
-def find_file(keyword):
-    """Busca el archivo más reciente en reportes/ cuyo nombre contenga el keyword.
-    Si hay múltiples coincidencias (ej. 17abr y 20abr), toma el mayor por nombre."""
-    matches = [f for f in REPORTES.glob('*.xlsx')
-               if keyword.lower() in f.name.lower()
-               and not f.name.startswith('~$')]
-    return sorted(matches)[-1] if matches else None
+def find_file(keywords):
+    """Busca el archivo más reciente en reportes/ cuyo nombre contenga
+    cualquiera de los keywords (ej. nombre EN o ES de Cloudbeds).
+    Acepta tanto string como lista de strings.
+    Selecciona el archivo con la fecha de modificación más reciente para
+    evitar problemas cuando los nombres mezclan EN/ES de distintas semanas."""
+    if isinstance(keywords, str):
+        keywords = [keywords]
+    matches = []
+    for f in REPORTES.glob('*.xlsx'):
+        if f.name.startswith('~$'):
+            continue
+        if any(k.lower() in f.name.lower() for k in keywords):
+            matches.append(f)
+    return max(matches, key=lambda f: f.stat().st_mtime) if matches else None
 
 def copy_sheet(src_path, dest_wb, tab_name):
     """Lee la primera hoja del archivo fuente y la copia al workbook destino."""
@@ -54,12 +64,13 @@ def main():
     combined_wb.remove(combined_wb.active)  # quitar hoja vacía default
 
     missing = []
-    for keyword, tab_name in TAB_MAP.items():
-        f = find_file(keyword)
+    for tab_name, keywords in TAB_MAP.items():
+        f = find_file(keywords)
         if f:
             copy_sheet(f, combined_wb, tab_name)
         else:
-            print(f"  ⚠ No encontrado: '{keyword}*.xlsx' en reportes/")
+            kw_str = ' | '.join(keywords)
+            print(f"  ⚠ No encontrado: ningún archivo con '{kw_str}' en reportes/")
             missing.append(tab_name)
 
     if 'ReservationBalanceDue' in missing:
@@ -96,7 +107,7 @@ def main():
             '--wetravel_lv',          str(wt_file),
             '--wetravel_lv_keyword',  'La Ventana',
             '--wetravel_yuc',         str(wt_file),
-            '--wetravel_yuc_keyword', 'Yucatan',
+            '--wetravel_yuc_keyword', 'Yucatan Jungle Camp',
         ]
 
     result = subprocess.run(cmd, cwd=str(REPO))
