@@ -1,9 +1,9 @@
-// akampa-data-v3.js — generado 2026-04-20
+// akampa-data-v3.js — generado 2026-04-27
 // Solo expone window.AKAMPA_DATA (sin conflictos de scope)
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-04-20 11:11",
+    "last_updated": "2026-04-27 16:42",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -184,9 +184,9 @@ window.AKAMPA_DATA = {
         "occ": 93.3,
         "guests": 24,
         "status": "past",
-        "cobrado": 649396,
-        "pend": 18598,
-        "total": 667994
+        "cobrado": 667996,
+        "pend": 0,
+        "total": 667996
       },
       {
         "id": 13,
@@ -455,9 +455,9 @@ window.AKAMPA_DATA = {
         "occ": 60.0,
         "guests": 13,
         "status": "past",
-        "cobrado": 292940,
-        "pend": 49290,
-        "total": 342230
+        "cobrado": 475500,
+        "pend": 0,
+        "total": 475500
       },
       {
         "id": 31,
@@ -720,14 +720,14 @@ window.AKAMPA_DATA = {
         "s": "2026-2027",
         "start": "2026-12-17",
         "end": "2026-12-20",
-        "rooms": 0,
+        "rooms": 1,
         "cap": 15,
-        "occ": 0,
-        "guests": 0,
+        "occ": 6.7,
+        "guests": 2,
         "status": "future",
-        "cobrado": 0,
-        "pend": 0,
-        "total": 0
+        "cobrado": 29075,
+        "pend": 29075,
+        "total": 58150
       },
       {
         "id": 49,
@@ -750,14 +750,14 @@ window.AKAMPA_DATA = {
         "s": "2026-2027",
         "start": "2026-12-30",
         "end": "2027-01-02",
-        "rooms": 0,
+        "rooms": 2,
         "cap": 15,
-        "occ": 0,
-        "guests": 0,
+        "occ": 13.3,
+        "guests": 4,
         "status": "future",
-        "cobrado": 0,
-        "pend": 0,
-        "total": 0
+        "cobrado": 58150,
+        "pend": 58150,
+        "total": 116300
       },
       {
         "id": 51,
@@ -1012,8 +1012,8 @@ window.AKAMPA_DATA = {
           "m": "Abr",
           "g": 171,
           "occ": 20.0,
-          "rpg": 7590,
-          "rev": 1297870
+          "rpg": 8369,
+          "rev": 1431140
         }
       ],
       "2026-2027": [
@@ -1033,10 +1033,10 @@ window.AKAMPA_DATA = {
         },
         {
           "m": "Dic",
-          "g": 72,
-          "occ": 6.83,
-          "rpg": 8983,
-          "rev": 646800
+          "g": 86,
+          "occ": 8.16,
+          "rpg": 9099,
+          "rev": 782483
         },
         {
           "m": "Feb",
@@ -1044,6 +1044,13 @@ window.AKAMPA_DATA = {
           "occ": 1.26,
           "rpg": 9692,
           "rev": 116300
+        },
+        {
+          "m": "Ene",
+          "g": 4,
+          "occ": 0.38,
+          "rpg": 9692,
+          "rev": 38767
         }
       ]
     },
@@ -1052,8 +1059,8 @@ window.AKAMPA_DATA = {
       "2026-W02": 164556,
       "2026-W03": 401481,
       "2026-W04": 484088,
-      "2026-W05": 918844,
-      "2026-W06": 427715,
+      "2026-W05": 933844,
+      "2026-W06": 606375,
       "2026-W07": 798555,
       "2026-W08": 161110,
       "2026-W09": 757266,
@@ -1061,8 +1068,9 @@ window.AKAMPA_DATA = {
       "2026-W11": 149065,
       "2026-W12": 192045,
       "2026-W13": 307720,
-      "2026-W15": 107420,
-      "2026-W16": 65650
+      "2026-W15": 114920,
+      "2026-W16": 65650,
+      "2026-W17": 87225
     },
     "weekly_pend": {
       "2026-W04": 168680,
@@ -1071,8 +1079,9 @@ window.AKAMPA_DATA = {
       "2026-W10": 162000,
       "2026-W11": 26950,
       "2026-W13": 53900,
-      "2026-W15": 74700,
-      "2026-W16": 191950
+      "2026-W15": 67200,
+      "2026-W16": 191950,
+      "2026-W17": 87225
     },
     "daily": {
       "2026-01-01": 28060,
@@ -1094,10 +1103,10 @@ window.AKAMPA_DATA = {
       "2026-01-26": 76400,
       "2026-01-27": 206650,
       "2026-01-28": 307898,
-      "2026-01-29": 115200,
+      "2026-01-29": 130200,
       "2026-01-30": 212696,
       "2026-02-02": 27900,
-      "2026-02-03": 254930,
+      "2026-02-03": 433590,
       "2026-02-04": 144885,
       "2026-02-09": 168930,
       "2026-02-10": 208600,
@@ -1123,73 +1132,57 @@ window.AKAMPA_DATA = {
       "2026-03-26": 53900,
       "2026-03-28": 50105,
       "2026-04-09": 33600,
-      "2026-04-10": 40220,
+      "2026-04-10": 47720,
       "2026-04-12": 33600,
       "2026-04-13": 7500,
-      "2026-04-17": 58150
+      "2026-04-17": 58150,
+      "2026-04-24": 29075,
+      "2026-04-26": 58150
     }
   },
   "la_ventana": {
     "trips": [
       {
-        "id": 1,
+        "id": 4,
         "name": "Móbulas",
         "dest": "La Ventana",
-        "start": "2026-04-19",
-        "end": "2026-04-22",
+        "start": "2025-05-23",
+        "end": "2025-05-23",
         "cap": 30,
-        "status": "next",
+        "status": "past",
         "payments": [
           {
-            "date": "2026-04-19",
-            "amount": 17324.0,
+            "date": "2025-05-23",
+            "amount": 20800.0,
             "participants": [
-              "Maria del Mar Arias Gordoa"
+              "JESUS RICARDO ALGOMEDA ESCOBAR"
             ]
           },
           {
-            "date": "2026-04-18",
-            "amount": 21037.0,
+            "date": "2025-04-28",
+            "amount": 33100.0,
             "participants": [
-              "Marisol González Ficachi",
-              "MARIA DEL MAR ARIAS",
-              "Marisol González Ficachi"
+              "Bernardo Loyola Guizar"
             ]
           },
           {
-            "date": "2026-04-12",
-            "amount": 21037.0,
+            "date": "2025-04-03",
+            "amount": 20800.0,
             "participants": [
-              "Olga de la Fuente"
+              "JESUS RICARDO ALGOMEDA ESCOBAR"
             ]
           },
           {
-            "date": "2026-04-12",
-            "amount": 21037.0,
+            "date": "2025-03-13",
+            "amount": 37600.0,
             "participants": [
-              "Regina Cabal"
-            ]
-          },
-          {
-            "date": "2026-04-08",
-            "amount": 17500.0,
-            "participants": [
-              "Carmen Matiella"
-            ]
-          },
-          {
-            "date": "2025-11-22",
-            "amount": 24750.0,
-            "participants": [
-              "Marisol González Ficachi",
-              "MARIA DEL MAR ARIAS",
-              "Marisol González Ficachi"
+              "Bernardo Loyola Guizar"
             ]
           }
         ]
       },
       {
-        "id": 2,
+        "id": 1,
         "name": "La Ventana Expedition Camp",
         "dest": "La Ventana",
         "start": "2026-05-28",
@@ -1197,6 +1190,22 @@ window.AKAMPA_DATA = {
         "cap": 30,
         "status": "future",
         "payments": [
+          {
+            "date": "2026-04-21",
+            "amount": 22500.0,
+            "participants": [
+              "MARIA DE MONTSERRAT CERON",
+              "CARLA CERON"
+            ]
+          },
+          {
+            "date": "2026-04-21",
+            "amount": 22500.0,
+            "participants": [
+              "RICARDO CAMACHO BOFILL",
+              "Daniela Pages Salgado"
+            ]
+          },
           {
             "date": "2026-04-18",
             "amount": 25500.0,
@@ -1266,7 +1275,7 @@ window.AKAMPA_DATA = {
         ]
       },
       {
-        "id": 4,
+        "id": 2,
         "name": "La Ventana Expedition Camp",
         "dest": "La Ventana",
         "start": "2026-06-11",
@@ -1274,6 +1283,14 @@ window.AKAMPA_DATA = {
         "cap": 30,
         "status": "future",
         "payments": [
+          {
+            "date": "2026-04-21",
+            "amount": 22500.0,
+            "participants": [
+              "Daniel Alberto Ríos Anaya",
+              "Melissa Araiza"
+            ]
+          },
           {
             "date": "2026-04-08",
             "amount": 45000.0,
@@ -1297,6 +1314,191 @@ window.AKAMPA_DATA = {
   "yucatan": {
     "trips": [
       {
+        "id": 5,
+        "name": "Yucatan Jungle Safari",
+        "dest": "Yucatán",
+        "start": "2024-11-05",
+        "end": "2024-11-05",
+        "cap": 30,
+        "status": "past",
+        "payments": [
+          {
+            "date": "2024-11-05",
+            "amount": 55000.0,
+            "participants": [
+              "Alejandra Castellanos Caloca",
+              "Hugo Gutierrez"
+            ]
+          },
+          {
+            "date": "2024-10-28",
+            "amount": 13750.0,
+            "participants": [
+              "José Gerardo Pérez Hernández",
+              "Alejandro Adame Rabago"
+            ]
+          },
+          {
+            "date": "2024-10-28",
+            "amount": 14250.0,
+            "participants": [
+              "Elisa Rábago",
+              "Gerardo Adame"
+            ]
+          },
+          {
+            "date": "2024-10-26",
+            "amount": 28500.0,
+            "participants": [
+              "Luis Javier Fernández Barragán",
+              "Belinda Cardoso Velázquez"
+            ]
+          },
+          {
+            "date": "2024-10-24",
+            "amount": 37500.0,
+            "participants": [
+              "Maribel Quiroz Gutiérrez",
+              "Valentina Diaz Ureña",
+              "Cynthia Rodríguez Sánchez"
+            ]
+          },
+          {
+            "date": "2024-10-07",
+            "amount": 28500.0,
+            "participants": [
+              "Luis Javier Fernández Barragán",
+              "Belinda Cardoso Velázquez"
+            ]
+          },
+          {
+            "date": "2024-09-29",
+            "amount": 13750.0,
+            "participants": [
+              "José Gerardo Pérez Hernández",
+              "Alejandro Adame Rabago"
+            ]
+          },
+          {
+            "date": "2024-09-28",
+            "amount": 14250.0,
+            "participants": [
+              "Elisa Rábago",
+              "Gerardo Adame"
+            ]
+          },
+          {
+            "date": "2024-08-22",
+            "amount": 12500.0,
+            "participants": [
+              "Maribel Quiroz Gutiérrez",
+              "Valentina Diaz Ureña",
+              "Cynthia Rodríguez Sánchez"
+            ]
+          },
+          {
+            "date": "2024-08-22",
+            "amount": 25000.0,
+            "participants": [
+              "Maribel Quiroz Gutiérrez",
+              "Valentina Diaz Ureña",
+              "Cynthia Rodríguez Sánchez"
+            ]
+          },
+          {
+            "date": "2024-08-13",
+            "amount": 27500.0,
+            "participants": [
+              "José Gerardo Pérez Hernández",
+              "Alejandro Adame Rabago"
+            ]
+          },
+          {
+            "date": "2024-08-13",
+            "amount": 28500.0,
+            "participants": [
+              "Elisa Rábago",
+              "Gerardo Adame"
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Yucatan Jungle Safari",
+        "dest": "Yucatán",
+        "start": "2025-01-09",
+        "end": "2025-01-09",
+        "cap": 30,
+        "status": "past",
+        "payments": [
+          {
+            "date": "2025-01-09",
+            "amount": 29900.0,
+            "participants": [
+              "Andrea Wenzel Lopez"
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Yucatan Jungle Safari",
+        "dest": "Yucatán",
+        "start": "2025-09-22",
+        "end": "2025-09-22",
+        "cap": 30,
+        "status": "past",
+        "payments": [
+          {
+            "date": "2025-09-22",
+            "amount": 14950.0,
+            "participants": [
+              "Elba Machain"
+            ]
+          },
+          {
+            "date": "2025-08-26",
+            "amount": 14950.0,
+            "participants": [
+              "Elba Machain"
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Yucatan Jungle Safari",
+        "dest": "Yucatán",
+        "start": "2026-02-04",
+        "end": "2026-02-08",
+        "cap": 30,
+        "status": "past",
+        "payments": [
+          {
+            "date": "2026-01-07",
+            "amount": 13950.0,
+            "participants": [
+              "Melisa Guerra"
+            ]
+          },
+          {
+            "date": "2026-01-06",
+            "amount": 27900.0,
+            "participants": [
+              "MIRIAM ABRIL FRIAS MONDRAGON"
+            ]
+          },
+          {
+            "date": "2025-12-08",
+            "amount": 13950.0,
+            "participants": [
+              "Melisa Guerra"
+            ]
+          }
+        ]
+      },
+      {
         "id": 1,
         "name": "Osom People - Play Is Sacred",
         "dest": "Yucatán",
@@ -1305,6 +1507,13 @@ window.AKAMPA_DATA = {
         "cap": 30,
         "status": "future",
         "payments": [
+          {
+            "date": "2026-04-22",
+            "amount": 9833.0,
+            "participants": [
+              "Dania Bahena"
+            ]
+          },
           {
             "date": "2026-04-19",
             "amount": 14750.0,
