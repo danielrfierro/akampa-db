@@ -211,6 +211,9 @@ html.light .date-input::-webkit-calendar-picker-indicator{filter:none}
 .wt-payment-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:10px;color:var(--muted)}
 .wt-payment-row .amt{color:var(--text);font-variant-numeric:tabular-nums}
 .wt-payment-row .ppl{color:var(--dim);font-size:9px}
+.wt-refund-note{font-size:9px;color:var(--muted);margin-top:4px;letter-spacing:.02em;line-height:1.3}
+.wt-refund-note .gross{color:var(--dim)}
+.refund-pill{display:inline-block;font-size:9px;color:#c97f4a;margin-left:6px;font-variant-numeric:tabular-nums;font-weight:500}
 
 /* ── GENERAL VIEW ──────────────────────────────── */
 .gen-dest-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
@@ -447,7 +450,7 @@ document.addEventListener('DOMContentLoaded',function(){
       <span class="theme-label" id="theme-label">Dark</span>
       <div class="theme-toggle"></div>
     </div>
-    <span class="updated" id="last-updated">Actualizado 27 abr 2026 · 11:20 · Datos al 18 feb 2027</span>
+    <span class="updated" id="last-updated">Actualizado 27 abr 2026 · 16:16 · Datos al 18 feb 2027</span>
   </div>
 </header>
 
@@ -615,11 +618,11 @@ const LV_TRIPS = [
     id:1, name:"Móbulas", dest:"La Ventana",
     start:"2026-04-19", end:"2026-04-22", cap:30, status:"past",
     payments:[
-      {date:"2026-04-19",amount:12126.8,participants:["Maria del Mar Arias Gordoa"]},
-      {date:"2026-04-18",amount:14725.9,participants:["Marisol González Ficachi", "MARIA DEL MAR ARIAS", "Marisol González Ficachi"]},
-      {date:"2026-04-12",amount:14725.9,participants:["Olga de la Fuente"]},
-      {date:"2026-04-12",amount:14725.9,participants:["Regina Cabal"]},
-      {date:"2026-04-08",amount:12250.0,participants:["Carmen Matiella"]}
+      {date:"2026-04-19",amount:12126.8,gross:17324.0,refund:5197.2,participants:["Maria del Mar Arias Gordoa"]},
+      {date:"2026-04-18",amount:14725.9,gross:21037.0,refund:6311.1,participants:["Marisol González Ficachi", "MARIA DEL MAR ARIAS", "Marisol González Ficachi"]},
+      {date:"2026-04-12",amount:14725.9,gross:21037.0,refund:6311.1,participants:["Olga de la Fuente"]},
+      {date:"2026-04-12",amount:14725.9,gross:21037.0,refund:6311.1,participants:["Regina Cabal"]},
+      {date:"2026-04-08",amount:12250.0,gross:17500.0,refund:5250.0,participants:["Carmen Matiella"]}
     ]
   },
   {
@@ -683,36 +686,6 @@ const BM_WEEKLY_PEND = {"2026-W04": 168680, "2026-W05": 15000, "2026-W06": 45388
 const BM_DAILY  = {"2026-01-01": 28060, "2026-01-07": 28290, "2026-01-08": 50570, "2026-01-09": 29898, "2026-01-10": 55798, "2026-01-12": 103830, "2026-01-13": 85696, "2026-01-14": 111596, "2026-01-15": 72009, "2026-01-18": 28350, "2026-01-19": 127918, "2026-01-20": 49800, "2026-01-21": 74610, "2026-01-22": 95510, "2026-01-23": 87800, "2026-01-24": 48450, "2026-01-26": 76400, "2026-01-27": 206650, "2026-01-28": 307898, "2026-01-29": 130200, "2026-01-30": 212696, "2026-02-02": 27900, "2026-02-03": 433590, "2026-02-04": 144885, "2026-02-09": 168930, "2026-02-10": 208600, "2026-02-11": 77290, "2026-02-12": 251340, "2026-02-13": 17610, "2026-02-15": 74785, "2026-02-18": 75970, "2026-02-19": 85140, "2026-02-24": 157330, "2026-02-25": 575664, "2026-02-27": 24272, "2026-03-04": 185895, "2026-03-05": 77400, "2026-03-06": 158240, "2026-03-09": 56950, "2026-03-11": 92115, "2026-03-17": 28370, "2026-03-18": 135375, "2026-03-22": 28300, "2026-03-23": 152810, "2026-03-25": 50905, "2026-03-26": 53900, "2026-03-28": 50105, "2026-04-09": 33600, "2026-04-10": 47720, "2026-04-12": 33600, "2026-04-13": 7500, "2026-04-17": 58150, "2026-04-24": 29075, "2026-04-26": 58150};
 
 const BM_MONTHLY = {
-  "2025-2026": [
-    {
-      "m": "Ene",
-      "g": 168,
-      "occ": 16.89,
-      "rpg": 8311,
-      "rev": 1396267
-    },
-    {
-      "m": "Feb",
-      "g": 503,
-      "occ": 59.66,
-      "rpg": 7038,
-      "rev": 3540116
-    },
-    {
-      "m": "Mar",
-      "g": 371,
-      "occ": 39.47,
-      "rpg": 7815,
-      "rev": 2899208
-    },
-    {
-      "m": "Abr",
-      "g": 171,
-      "occ": 20.0,
-      "rpg": 8369,
-      "rev": 1431140
-    }
-  ],
   "2026-2027": [
     {
       "m": "Oct",
@@ -748,6 +721,36 @@ const BM_MONTHLY = {
       "occ": 0.38,
       "rpg": 9692,
       "rev": 38767
+    }
+  ],
+  "2025-2026": [
+    {
+      "m": "Ene",
+      "g": 168,
+      "occ": 16.89,
+      "rpg": 8311,
+      "rev": 1396267
+    },
+    {
+      "m": "Feb",
+      "g": 503,
+      "occ": 59.66,
+      "rpg": 7038,
+      "rev": 3540116
+    },
+    {
+      "m": "Mar",
+      "g": 371,
+      "occ": 39.47,
+      "rpg": 7815,
+      "rev": 2899208
+    },
+    {
+      "m": "Abr",
+      "g": 171,
+      "occ": 20.0,
+      "rpg": 8369,
+      "rev": 1431140
     }
   ]
 };
@@ -1337,15 +1340,23 @@ function renderLV() {
 
   const cards = LV_TRIPS.map(t => {
     const rev  = t.payments.reduce((s,p)=>s+p.amount,0);
+    const grossSum  = t.payments.reduce((s,p)=>s+(p.gross  || p.amount),0);
+    const refundSum = t.payments.reduce((s,p)=>s+(p.refund || 0),0);
+    const refundCount = t.payments.filter(p => p.refund).length;
     const pax  = new Set(t.payments.flatMap(p=>p.participants));
     const fill = Math.round(pax.size / t.cap * 100);
     const badge = t.status==='past' ? 'past' : t.status==='next' ? 'next' : 'future';
     const badgeTxt = t.status==='past' ? 'Concluido' : t.status==='next' ? 'Próximo' : 'Próximamente';
-    const pymtRows = t.payments.map(p =>
-      `<div class="wt-payment-row">
-        <span>${p.date} · ${p.participants.length} pax</span>
+    const refundNote = refundSum > 0
+      ? `<div class="wt-refund-note">↩ -$${n0(refundSum)} reembolso${refundCount>1?'s':''} · <span class="gross">bruto $${n0(grossSum)}</span></div>`
+      : '';
+    const pymtRows = t.payments.map(p => {
+      const pill = p.refund ? `<span class="refund-pill">↩ -$${n0(p.refund)}</span>` : '';
+      return `<div class="wt-payment-row">
+        <span>${p.date} · ${p.participants.length} pax${pill}</span>
         <span class="amt">$${n0(p.amount)}</span>
-       </div>`).join('');
+       </div>`;
+    }).join('');
     return `<div class="wt-card">
       <div class="wt-card-header">
         <div>
@@ -1355,7 +1366,7 @@ function renderLV() {
         <span class="wt-status ${badge}">${badgeTxt}</span>
       </div>
       <div class="wt-metrics">
-        <div><div class="wt-metric-label">Cobrado</div><div class="wt-metric-val rev">$${nM(rev)}</div></div>
+        <div><div class="wt-metric-label">Cobrado</div><div class="wt-metric-val rev">$${nM(rev)}</div>${refundNote}</div>
         <div><div class="wt-metric-label">Participantes</div><div class="wt-metric-val">${pax.size}<span style="font-size:10px;color:var(--muted)">/${t.cap}</span></div></div>
         <div><div class="wt-metric-label">Llenado</div><div class="wt-metric-val">${fill}%</div></div>
       </div>
@@ -1394,15 +1405,23 @@ function renderYuc() {
 
   const cards = YUC_TRIPS.map(t => {
     const rev  = t.payments.reduce((s,p)=>s+p.amount,0);
+    const grossSum  = t.payments.reduce((s,p)=>s+(p.gross  || p.amount),0);
+    const refundSum = t.payments.reduce((s,p)=>s+(p.refund || 0),0);
+    const refundCount = t.payments.filter(p => p.refund).length;
     const pax  = new Set(t.payments.flatMap(p=>p.participants));
     const fill = Math.round(pax.size / t.cap * 100);
     const badge = t.status==='past' ? 'past' : t.status==='next' ? 'next' : 'future';
     const badgeTxt = t.status==='past' ? 'Concluido' : t.status==='next' ? 'Próximo' : 'Próximamente';
-    const pymtRows = t.payments.map(p =>
-      `<div class="wt-payment-row">
-        <span>${p.date} · ${p.participants.length} pax</span>
+    const refundNote = refundSum > 0
+      ? `<div class="wt-refund-note">↩ -$${n0(refundSum)} reembolso${refundCount>1?'s':''} · <span class="gross">bruto $${n0(grossSum)}</span></div>`
+      : '';
+    const pymtRows = t.payments.map(p => {
+      const pill = p.refund ? `<span class="refund-pill">↩ -$${n0(p.refund)}</span>` : '';
+      return `<div class="wt-payment-row">
+        <span>${p.date} · ${p.participants.length} pax${pill}</span>
         <span class="amt">$${n0(p.amount)}</span>
-       </div>`).join('');
+       </div>`;
+    }).join('');
     return `<div class="wt-card yuc">
       <div class="wt-card-header">
         <div>
@@ -1412,7 +1431,7 @@ function renderYuc() {
         <span class="wt-status ${badge}">${badgeTxt}</span>
       </div>
       <div class="wt-metrics">
-        <div><div class="wt-metric-label">Cobrado</div><div class="wt-metric-val rev">$${nM(rev)}</div></div>
+        <div><div class="wt-metric-label">Cobrado</div><div class="wt-metric-val rev">$${nM(rev)}</div>${refundNote}</div>
         <div><div class="wt-metric-label">Participantes</div><div class="wt-metric-val">${pax.size}<span style="font-size:10px;color:var(--muted)">/${t.cap}</span></div></div>
         <div><div class="wt-metric-label">Llenado</div><div class="wt-metric-val">${fill}%</div></div>
       </div>

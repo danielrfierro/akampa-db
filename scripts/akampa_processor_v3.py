@@ -452,7 +452,9 @@ def parse_wetravel(path, dest_label, existing_trips, keyword=None):
         # (Amount - Refunded) que sigue cobrado. Si el refund es total → omitir.
         if r[4] not in ('Successful', 'Refunded'):
             continue
-        amount = float(r[3] or 0) - float(r[9] or 0)
+        gross  = float(r[3] or 0)
+        refund = float(r[9] or 0)
+        amount = gross - refund
         if amount <= 0:
             continue
         trip_name = str(r[21]) if r[21] else 'Sin nombre'
@@ -461,10 +463,15 @@ def parse_wetravel(path, dest_label, existing_trips, keyword=None):
             continue
         pdate = parse_date(str(r[0])[:10].replace('/','-'))
         participants = [p.strip() for p in str(r[20]).split(',') if p.strip()] if r[20] else []
-        by_trip[trip_name].append({
+        payment = {
             'date': str(pdate), 'amount': amount,
             'participants': participants
-        })
+        }
+        # Solo expone gross/refund cuando hubo reembolso parcial
+        if refund > 0:
+            payment['gross']  = gross
+            payment['refund'] = refund
+        by_trip[trip_name].append(payment)
 
     def extract_dates(name):
         """
@@ -603,11 +610,15 @@ def _fmt_lv_trips(trips, var_name='LV_TRIPS'):
         pmts = []
         for p in t.get('payments', []):
             plist = json.dumps(p['participants'], ensure_ascii=False)
-            pmts.append(
-                f'      {{date:{json.dumps(p["date"])},'
-                f'amount:{p["amount"]},'
-                f'participants:{plist}}}'
-            )
+            fields = [
+                f'date:{json.dumps(p["date"])}',
+                f'amount:{p["amount"]}',
+                f'participants:{plist}',
+            ]
+            if 'refund' in p:
+                fields.insert(2, f'gross:{p["gross"]}')
+                fields.insert(3, f'refund:{p["refund"]}')
+            pmts.append('      {' + ','.join(fields) + '}')
         pmts_str = ',\n'.join(pmts)
         parts.append(
             f'  {{\n'

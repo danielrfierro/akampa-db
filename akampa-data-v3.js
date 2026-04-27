@@ -3,7 +3,7 @@
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-04-27 11:20",
+    "last_updated": "2026-04-27 16:15",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -986,36 +986,6 @@ window.AKAMPA_DATA = {
       }
     ],
     "monthly": {
-      "2025-2026": [
-        {
-          "m": "Ene",
-          "g": 168,
-          "occ": 16.89,
-          "rpg": 8311,
-          "rev": 1396267
-        },
-        {
-          "m": "Feb",
-          "g": 503,
-          "occ": 59.66,
-          "rpg": 7038,
-          "rev": 3540116
-        },
-        {
-          "m": "Mar",
-          "g": 371,
-          "occ": 39.47,
-          "rpg": 7815,
-          "rev": 2899208
-        },
-        {
-          "m": "Abr",
-          "g": 171,
-          "occ": 20.0,
-          "rpg": 8369,
-          "rev": 1431140
-        }
-      ],
       "2026-2027": [
         {
           "m": "Oct",
@@ -1051,6 +1021,36 @@ window.AKAMPA_DATA = {
           "occ": 0.38,
           "rpg": 9692,
           "rev": 38767
+        }
+      ],
+      "2025-2026": [
+        {
+          "m": "Ene",
+          "g": 168,
+          "occ": 16.89,
+          "rpg": 8311,
+          "rev": 1396267
+        },
+        {
+          "m": "Feb",
+          "g": 503,
+          "occ": 59.66,
+          "rpg": 7038,
+          "rev": 3540116
+        },
+        {
+          "m": "Mar",
+          "g": 371,
+          "occ": 39.47,
+          "rpg": 7815,
+          "rev": 2899208
+        },
+        {
+          "m": "Abr",
+          "g": 171,
+          "occ": 20.0,
+          "rpg": 8369,
+          "rev": 1431140
         }
       ]
     },
@@ -1156,7 +1156,9 @@ window.AKAMPA_DATA = {
             "amount": 12126.8,
             "participants": [
               "Maria del Mar Arias Gordoa"
-            ]
+            ],
+            "gross": 17324.0,
+            "refund": 5197.2
           },
           {
             "date": "2026-04-18",
@@ -1165,28 +1167,36 @@ window.AKAMPA_DATA = {
               "Marisol González Ficachi",
               "MARIA DEL MAR ARIAS",
               "Marisol González Ficachi"
-            ]
+            ],
+            "gross": 21037.0,
+            "refund": 6311.1
           },
           {
             "date": "2026-04-12",
             "amount": 14725.9,
             "participants": [
               "Olga de la Fuente"
-            ]
+            ],
+            "gross": 21037.0,
+            "refund": 6311.1
           },
           {
             "date": "2026-04-12",
             "amount": 14725.9,
             "participants": [
               "Regina Cabal"
-            ]
+            ],
+            "gross": 21037.0,
+            "refund": 6311.1
           },
           {
             "date": "2026-04-08",
             "amount": 12250.0,
             "participants": [
               "Carmen Matiella"
-            ]
+            ],
+            "gross": 17500.0,
+            "refund": 5250.0
           }
         ]
       },
