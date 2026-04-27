@@ -23,6 +23,14 @@ import argparse, json, sys, re
 from collections import defaultdict
 from datetime import datetime, date as ddate
 from pathlib import Path
+from zoneinfo import ZoneInfo
+
+# Zona horaria de operación (México opera permanentemente en UTC-6, sin DST desde 2022)
+MX_TZ = ZoneInfo('America/Mexico_City')
+
+def now_mx():
+    """Hora actual en CDMX, naive (sin tzinfo) para que strftime no incluya offset."""
+    return datetime.now(MX_TZ).replace(tzinfo=None)
 
 try:
     from openpyxl import load_workbook
@@ -674,7 +682,7 @@ def update_html(html_path, data_block, today_str=None, report_max_str=None):
     # 2. Update visible timestamp in header
     if today_str:
         fecha_str = _fmt_date_es(today_str)
-        now_time  = datetime.now().strftime('%H:%M')
+        now_time  = now_mx().strftime('%H:%M')
         if report_max_str and report_max_str != today_str:
             datos_str = _fmt_date_es(report_max_str)
             label = f'Actualizado {fecha_str} · {now_time} · Datos al {datos_str}'
@@ -782,8 +790,9 @@ def main():
     p.add_argument('--netlify_token',        default=None)
     args = p.parse_args()
 
-    today_str = str(ddate.today())
-    now_time  = datetime.now().strftime('%H:%M')
+    _now_mx   = now_mx()
+    today_str = _now_mx.strftime('%Y-%m-%d')
+    now_time  = _now_mx.strftime('%H:%M')
 
     # ── Load existing data ────────────────────────────────────────
     existing = {
