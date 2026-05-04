@@ -11,7 +11,7 @@ Uso:
   python3 scripts/combine_cloudbeds.py
 """
 
-import glob, subprocess, sys
+import glob, subprocess, sys, unicodedata
 from pathlib import Path
 from openpyxl import load_workbook, Workbook
 
@@ -29,6 +29,13 @@ TAB_MAP = {
     'OccupancyStatistics':        ['Occupancy Statistics',         'Estadísticas de ocupación'],
 }
 
+def _norm(s):
+    """Normaliza Unicode a NFC y minúsculas. macOS guarda nombres con acentos
+    en NFD (descompuestos: 'o' + U+0301), pero los keywords del script están en
+    NFC ('ó'). Sin normalizar, el `in` falla en archivos como 'Revisión...'
+    o 'Estadísticas...'."""
+    return unicodedata.normalize('NFC', s).lower()
+
 def find_file(keywords):
     """Busca el archivo más reciente en reportes/ cuyo nombre contenga
     cualquiera de los keywords (ej. nombre EN o ES de Cloudbeds).
@@ -37,11 +44,13 @@ def find_file(keywords):
     evitar problemas cuando los nombres mezclan EN/ES de distintas semanas."""
     if isinstance(keywords, str):
         keywords = [keywords]
+    norm_kw = [_norm(k) for k in keywords]
     matches = []
     for f in REPORTES.glob('*.xlsx'):
         if f.name.startswith('~$'):
             continue
-        if any(k.lower() in f.name.lower() for k in keywords):
+        nf = _norm(f.name)
+        if any(k in nf for k in norm_kw):
             matches.append(f)
     return max(matches, key=lambda f: f.stat().st_mtime) if matches else None
 

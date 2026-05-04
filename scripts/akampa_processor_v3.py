@@ -360,10 +360,33 @@ def build_trips(bal, ci_data, existing_trips):
         in_report_range = report_min and report_max and (report_min <= start <= report_max)
         prev = existing_map.get(start_s, {}) if not in_report_range else {}
 
+        # Preservación de guests/rooms para viajes pasados:
+        # Cloudbeds Check-in Review reduce su ventana semana a semana —
+        # primero pierde check-ins enteros, luego empieza a traer sólo una
+        # fracción de los huéspedes de viajes ya cerrados. Para viajes con
+        # status='past' tomamos el MÁXIMO entre el dato nuevo y el JSON
+        # previo: una vez que un viaje pasó, los huéspedes registrados
+        # sólo pueden mantenerse o crecer (correcciones tardías), nunca
+        # bajar.
+        prev_for_past = existing_map.get(start_s, {}) if status == 'past' else {}
+
         if fin:
             # New data available — use it
-            rooms   = ci['rooms']  if ci  else prev.get('rooms', 0)
-            guests  = ci['guests'] if ci  else prev.get('guests', 0)
+            if ci:
+                rooms  = ci['rooms']
+                guests = ci['guests']
+            elif prev.get('rooms') or prev.get('guests'):
+                rooms  = prev.get('rooms', 0)
+                guests = prev.get('guests', 0)
+            else:
+                # Past trip whose ci_data dropped from the report — preserve previous
+                rooms  = prev_for_past.get('rooms', 0)
+                guests = prev_for_past.get('guests', 0)
+            # Para viajes pasados: nunca dejar que los nuevos datos reduzcan
+            # guests/rooms por debajo del histórico ya conocido.
+            if status == 'past' and prev_for_past:
+                rooms  = max(rooms,  prev_for_past.get('rooms',  0))
+                guests = max(guests, prev_for_past.get('guests', 0))
             cap     = 17 if rooms > 15 else 15
             occ     = round((rooms / cap) * 100, 1) if rooms else 0
             cobrado = round(max(0, fin['cobrado']))
@@ -518,7 +541,9 @@ def parse_wetravel(path, dest_label, existing_trips, keyword=None):
 
     # Build trip list — merge with existing to preserve historical payments
     existing_map = {f"{t['start']}_{t['name']}": t for t in existing_trips}
+    cutoff = datetime.strptime(WETRAVEL_MIN_END_DATE, '%Y-%m-%d').date()
     trips = []
+    seen_keys = set()
     for i, (trip_name, payments) in enumerate(by_trip.items(), 1):
         start_s, end_s = extract_dates(trip_name)
         if not start_s:
@@ -536,7 +561,6 @@ def parse_wetravel(path, dest_label, existing_trips, keyword=None):
         start  = datetime.strptime(start_s, '%Y-%m-%d').date()
         end    = datetime.strptime(end_s,   '%Y-%m-%d').date()
         # Excluir viajes legacy cuya fecha fin sea anterior al cutoff configurado
-        cutoff = datetime.strptime(WETRAVEL_MIN_END_DATE, '%Y-%m-%d').date()
         if end < cutoff:
             continue
         status = 'past' if end < today else 'next' if start <= today else 'future'
@@ -545,6 +569,31 @@ def parse_wetravel(path, dest_label, existing_trips, keyword=None):
         clean  = re.sub(r'\s*\|.*$', '', clean).strip()             # quita " | Camp name"
         trips.append({'id':i,'name':clean,'dest':dest_label,'start':start_s,
                       'end':end_s,'cap':30,'status':status,'payments':payments})
+        seen_keys.add(f"{start_s}_{clean}")
+
+    # Preservar viajes históricos pasados que existían en el JSON previo y
+    # que el export actual de WeTravel ya no trae. WeTravel limita la ventana
+    # de su export semana a semana, pero el dashboard debe mantener el
+    # histórico para no perder revenue acumulado.
+    for prev_t in existing_trips:
+        key = f"{prev_t.get('start')}_{prev_t.get('name')}"
+        if key in seen_keys:
+            continue
+        end_s = prev_t.get('end') or prev_t.get('start')
+        try:
+            end_d = datetime.strptime(end_s, '%Y-%m-%d').date()
+        except (TypeError, ValueError):
+            continue
+        if end_d < cutoff:
+            continue
+        # Sólo conservar viajes que ya pasaron — los futuros que no estén en el
+        # export actual probablemente fueron cancelados/movidos.
+        if end_d >= today:
+            continue
+        kept = dict(prev_t)
+        kept['status'] = 'past'
+        trips.append(kept)
+        seen_keys.add(key)
 
     # ── Agregar stub trips que no estén ya representados por pagos ────
     for stub in STUB_TRIPS.get(dest_label, []):

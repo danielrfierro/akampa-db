@@ -1,9 +1,9 @@
-// akampa-data-v3.js — generado 2026-04-27
+// akampa-data-v3.js — generado 2026-05-04
 // Solo expone window.AKAMPA_DATA (sin conflictos de scope)
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-04-27 16:15",
+    "last_updated": "2026-05-04 11:11",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -424,9 +424,9 @@ window.AKAMPA_DATA = {
         "occ": 100,
         "guests": 30,
         "status": "past",
-        "cobrado": 0,
+        "cobrado": 356120,
         "pend": 0,
-        "total": 0,
+        "total": 356120,
         "buyout": true
       },
       {
@@ -455,9 +455,9 @@ window.AKAMPA_DATA = {
         "occ": 60.0,
         "guests": 13,
         "status": "past",
-        "cobrado": 475500,
+        "cobrado": 484350,
         "pend": 0,
-        "total": 475500
+        "total": 484350
       },
       {
         "id": 31,
@@ -555,14 +555,14 @@ window.AKAMPA_DATA = {
         "s": "2026-2027",
         "start": "2026-11-05",
         "end": "2026-11-08",
-        "rooms": 1,
+        "rooms": 0,
         "cap": 15,
-        "occ": 6.7,
-        "guests": 2,
+        "occ": 0,
+        "guests": 0,
         "status": "future",
         "cobrado": 0,
-        "pend": 53900,
-        "total": 53900
+        "pend": 0,
+        "total": 0
       },
       {
         "id": 38,
@@ -996,10 +996,10 @@ window.AKAMPA_DATA = {
         },
         {
           "m": "Nov",
-          "g": 108,
-          "occ": 10.59,
-          "rpg": 8937,
-          "rev": 965245
+          "g": 102,
+          "occ": 10.0,
+          "rpg": 8935,
+          "rev": 911345
         },
         {
           "m": "Dic",
@@ -1047,10 +1047,10 @@ window.AKAMPA_DATA = {
         },
         {
           "m": "Abr",
-          "g": 171,
-          "occ": 20.0,
-          "rpg": 8369,
-          "rev": 1431140
+          "g": 216,
+          "occ": 28.82,
+          "rpg": 8274,
+          "rev": 1787260
         }
       ]
     },
@@ -1060,7 +1060,7 @@ window.AKAMPA_DATA = {
       "2026-W03": 401481,
       "2026-W04": 484088,
       "2026-W05": 933844,
-      "2026-W06": 606375,
+      "2026-W06": 615225,
       "2026-W07": 798555,
       "2026-W08": 161110,
       "2026-W09": 757266,
@@ -1070,7 +1070,8 @@ window.AKAMPA_DATA = {
       "2026-W13": 307720,
       "2026-W15": 114920,
       "2026-W16": 65650,
-      "2026-W17": 87225
+      "2026-W17": 87225,
+      "2026-W18": 356120
     },
     "weekly_pend": {
       "2026-W04": 168680,
@@ -1106,7 +1107,7 @@ window.AKAMPA_DATA = {
       "2026-01-29": 130200,
       "2026-01-30": 212696,
       "2026-02-02": 27900,
-      "2026-02-03": 433590,
+      "2026-02-03": 442440,
       "2026-02-04": 144885,
       "2026-02-09": 168930,
       "2026-02-10": 208600,
@@ -1137,7 +1138,8 @@ window.AKAMPA_DATA = {
       "2026-04-13": 7500,
       "2026-04-17": 58150,
       "2026-04-24": 29075,
-      "2026-04-26": 58150
+      "2026-04-26": 58150,
+      "2026-04-30": 356120
     }
   },
   "la_ventana": {
@@ -1210,6 +1212,22 @@ window.AKAMPA_DATA = {
         "status": "future",
         "payments": [
           {
+            "date": "2026-04-28",
+            "amount": 22500.0,
+            "participants": [
+              "VALERIA PORTILLA",
+              "Natalia Portilla"
+            ]
+          },
+          {
+            "date": "2026-04-28",
+            "amount": 18000.0,
+            "participants": [
+              "MARIA DE MONTSERRAT CERON",
+              "CARLA CERON"
+            ]
+          },
+          {
             "date": "2026-04-21",
             "amount": 22500.0,
             "participants": [
@@ -1268,6 +1286,14 @@ window.AKAMPA_DATA = {
         "cap": 30,
         "status": "future",
         "payments": [
+          {
+            "date": "2026-05-02",
+            "amount": 45000.0,
+            "participants": [
+              "ALEJANDRO CANALES MORALES",
+              "Ampelio Canales Zaragoza"
+            ]
+          },
           {
             "date": "2026-04-09",
             "amount": 45000.0,
