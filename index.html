@@ -67,6 +67,14 @@ html.light .brand-logo{filter:none}
 html.light .theme-toggle::after{transform:translateX(16px)}
 .theme-label{font-size:10px;color:var(--muted);letter-spacing:.06em;user-select:none}
 .updated{font-size:10px;color:var(--dim);letter-spacing:.05em;white-space:nowrap}
+.sync-btn{display:flex;align-items:center;gap:5px;padding:4px 10px;font-size:10px;font-family:'Inter',sans-serif;font-weight:500;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--border);background:var(--surface2);color:var(--muted);border-radius:4px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.sync-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
+.sync-btn.syncing{border-color:var(--gold);color:var(--gold);background:var(--gold-dim);pointer-events:none}
+.sync-btn.done{border-color:var(--ok);color:var(--ok);background:var(--ok-dim)}
+.sync-btn.error{border-color:var(--danger);color:var(--danger);background:var(--danger-dim)}
+.sync-icon{display:inline-block}
+.sync-btn.syncing .sync-icon{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 /* ── MAIN ──────────────────────────────────────── */
 main{padding:0 28px 48px;max-width:1400px;margin:0 auto;width:100%}
@@ -451,6 +459,10 @@ document.addEventListener('DOMContentLoaded',function(){
       <div class="theme-toggle"></div>
     </div>
     <span class="updated" id="last-updated">Actualizado 4 may 2026 · 11:11 · Datos al 18 feb 2027</span>
+    <button class="sync-btn" id="sync-btn" onclick="triggerSync()" title="Sincronizar datos desde Cloudbeds">
+      <span class="sync-icon">↻</span>
+      <span id="sync-label">Sync</span>
+    </button>
   </div>
 </header>
 
@@ -1559,6 +1571,70 @@ window.addEventListener('resize', () => {
   clearTimeout(_resizeTimer);
   _resizeTimer = setTimeout(renderWeekly, 120);
 });
+
+// ── SYNC BUTTON ────────────────────────────────────────────────────────────
+const SYNC_CONFIG = {
+  owner:    'danielrfierro',
+  repo:     'akampa-db',
+  workflow: 'daily-update.yml',
+  branch:   'main'
+};
+
+// Token en memoria de sesión — no se guarda en el código ni en disco
+let _syncToken = null;
+
+async function triggerSync() {
+  const btn   = document.getElementById('sync-btn');
+  const label = document.getElementById('sync-label');
+
+  // Pedir token si no está en memoria
+  if (!_syncToken) {
+    const t = prompt('🔑 Pega tu GitHub token para activar el sync:\n(Solo se pide una vez por sesión)');
+    if (!t || !t.trim()) return;
+    _syncToken = t.trim();
+  }
+
+  btn.className = 'sync-btn syncing';
+  label.textContent = 'Sincronizando…';
+
+  try {
+    const url = `https://api.github.com/repos/${SYNC_CONFIG.owner}/${SYNC_CONFIG.repo}/actions/workflows/${SYNC_CONFIG.workflow}/dispatches`;
+    const res = await fetch(url, {
+      method:  'POST',
+      headers: {
+        'Authorization': `Bearer ${_syncToken}`,
+        'Accept':        'application/vnd.github.v3+json',
+        'Content-Type':  'application/json'
+      },
+      body: JSON.stringify({ ref: SYNC_CONFIG.branch })
+    });
+
+    if (res.status === 204) {
+      btn.className = 'sync-btn done';
+      label.textContent = 'En proceso…';
+      let secsLeft = 90;
+      const countdown = setInterval(() => {
+        secsLeft--;
+        label.textContent = `Actualizando (${secsLeft}s)`;
+        if (secsLeft <= 0) {
+          clearInterval(countdown);
+          label.textContent = 'Recargando…';
+          window.location.reload();
+        }
+      }, 1000);
+    } else {
+      // Token inválido — limpiar para que pida uno nuevo
+      if (res.status === 401 || res.status === 403) _syncToken = null;
+      const body = await res.json().catch(() => ({}));
+      throw new Error(`GitHub API ${res.status}: ${body.message || 'error desconocido'}`);
+    }
+  } catch (err) {
+    btn.className = 'sync-btn error';
+    label.textContent = 'Error';
+    setTimeout(() => { btn.className = 'sync-btn'; label.textContent = 'Sync'; }, 4000);
+    alert(`Error al sincronizar:\n${err.message}`);
+  }
+}
 </script>
 </body>
 </html>
