@@ -3,7 +3,7 @@
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-05-09 09:29",
+    "last_updated": "2026-05-09 11:46",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -986,6 +986,36 @@ window.AKAMPA_DATA = {
       }
     ],
     "monthly": {
+      "2025-2026": [
+        {
+          "m": "Ene",
+          "g": 168,
+          "occ": 16.89,
+          "rpg": 8311,
+          "rev": 1396267
+        },
+        {
+          "m": "Feb",
+          "g": 503,
+          "occ": 59.66,
+          "rpg": 7038,
+          "rev": 3540116
+        },
+        {
+          "m": "Mar",
+          "g": 371,
+          "occ": 39.47,
+          "rpg": 7815,
+          "rev": 2899208
+        },
+        {
+          "m": "Abr",
+          "g": 216,
+          "occ": 28.82,
+          "rpg": 8274,
+          "rev": 1787260
+        }
+      ],
       "2026-2027": [
         {
           "m": "Oct",
@@ -1021,36 +1051,6 @@ window.AKAMPA_DATA = {
           "occ": 0.38,
           "rpg": 9692,
           "rev": 38767
-        }
-      ],
-      "2025-2026": [
-        {
-          "m": "Ene",
-          "g": 168,
-          "occ": 16.89,
-          "rpg": 8311,
-          "rev": 1396267
-        },
-        {
-          "m": "Feb",
-          "g": 503,
-          "occ": 59.66,
-          "rpg": 7038,
-          "rev": 3540116
-        },
-        {
-          "m": "Mar",
-          "g": 371,
-          "occ": 39.47,
-          "rpg": 7815,
-          "rev": 2899208
-        },
-        {
-          "m": "Abr",
-          "g": 216,
-          "occ": 28.82,
-          "rpg": 8274,
-          "rev": 1787260
         }
       ]
     },
@@ -1212,6 +1212,21 @@ window.AKAMPA_DATA = {
         "status": "future",
         "payments": [
           {
+            "date": "2026-05-08",
+            "amount": 25500.0,
+            "participants": [
+              "MELBA ASTRID PEREZ SALDAÑA"
+            ]
+          },
+          {
+            "date": "2026-05-06",
+            "amount": 20500.0,
+            "participants": [
+              "María Patricia García Kern",
+              "María Patricia García Kern"
+            ]
+          },
+          {
             "date": "2026-04-28",
             "amount": 22500.0,
             "participants": [
@@ -1244,13 +1259,6 @@ window.AKAMPA_DATA = {
             ]
           },
           {
-            "date": "2026-04-18",
-            "amount": 25500.0,
-            "participants": [
-              "Jonatan Oregon"
-            ]
-          },
-          {
             "date": "2026-04-17",
             "amount": 70500.0,
             "participants": [
@@ -1266,14 +1274,6 @@ window.AKAMPA_DATA = {
               "Carlos Mendoza",
               "Maria Elena Ortal Ortega"
             ]
-          },
-          {
-            "date": "2026-04-13",
-            "amount": 45000.0,
-            "participants": [
-              "Ana paula Isaac",
-              "Gabriela Vazquez"
-            ]
           }
         ]
       },
@@ -1287,11 +1287,36 @@ window.AKAMPA_DATA = {
         "status": "future",
         "payments": [
           {
+            "date": "2026-05-08",
+            "amount": 81000.0,
+            "participants": [
+              "Judith Escobar Torres",
+              "Fernando Ruiz Galindo Drucker",
+              "Leonardo Ruiz Galindo Escobar",
+              "Alexa Ruiz Galindo Escobar"
+            ]
+          },
+          {
+            "date": "2026-05-07",
+            "amount": 22500.0,
+            "participants": [
+              "Alejandra Serpas",
+              "Denisse Olivo"
+            ]
+          },
+          {
             "date": "2026-05-02",
             "amount": 45000.0,
             "participants": [
               "ALEJANDRO CANALES MORALES",
               "Ampelio Canales Zaragoza"
+            ]
+          },
+          {
+            "date": "2026-04-18",
+            "amount": 25500.0,
+            "participants": [
+              "Jonatan Oregon"
             ]
           },
           {
@@ -1329,11 +1354,27 @@ window.AKAMPA_DATA = {
         "status": "future",
         "payments": [
           {
+            "date": "2026-05-08",
+            "amount": 22500.0,
+            "participants": [
+              "Alexis Navarro Flores",
+              "Hans del Valle Manzano"
+            ]
+          },
+          {
             "date": "2026-04-21",
             "amount": 22500.0,
             "participants": [
               "Daniel Alberto Ríos Anaya",
               "Melissa Araiza"
+            ]
+          },
+          {
+            "date": "2026-04-13",
+            "amount": 45000.0,
+            "participants": [
+              "Ana paula Isaac",
+              "Gabriela Vazquez"
             ]
           },
           {
