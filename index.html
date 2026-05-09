@@ -1730,32 +1730,25 @@ async function triggerSync() {
 <div class="wt-overlay" id="wt-overlay" onclick="closeWTModal(event)">
   <div class="wt-modal" onclick="event.stopPropagation()">
     <h2>Subir Reporte WeTravel</h2>
-    <p class="wt-subtitle">Arrastra los XLSX de WeTravel o haz clic para seleccionar. Se subirán al repo y lanzarán el sync automáticamente.</p>
-    <div class="wt-zones">
-      <!-- La Ventana -->
-      <div class="wt-zone" id="zone-lv" ondragover="handleDragOver(event,'lv')" ondragleave="handleDragLeave(event,'lv')" ondrop="handleDrop(event,'lv')">
-        <input type="file" accept=".xlsx,.xls" onchange="handleFileSelect(event,'lv')">
-        <span class="wt-zone-icon">🌊</span>
-        <div class="wt-zone-title">La Ventana</div>
-        <div class="wt-zone-hint">Arrastra tu XLSX aquí</div>
-        <div class="wt-zone-file" id="file-lv-name"></div>
-        <div class="wt-zone-last" id="last-lv"></div>
-      </div>
-      <!-- Yucatán -->
-      <div class="wt-zone" id="zone-yuc" ondragover="handleDragOver(event,'yuc')" ondragleave="handleDragLeave(event,'yuc')" ondrop="handleDrop(event,'yuc')">
-        <input type="file" accept=".xlsx,.xls" onchange="handleFileSelect(event,'yuc')">
-        <span class="wt-zone-icon">🌿</span>
-        <div class="wt-zone-title">Yucatán</div>
-        <div class="wt-zone-hint">Arrastra tu XLSX aquí</div>
-        <div class="wt-zone-file" id="file-yuc-name"></div>
-        <div class="wt-zone-last" id="last-yuc"></div>
+    <p class="wt-subtitle">Arrastra el XLSX combinado de WeTravel (incluye La Ventana y Yucatán). Se sube al repo y lanza el sync automáticamente.</p>
+
+    <!-- Zona única -->
+    <div class="wt-zones" style="grid-template-columns:1fr">
+      <div class="wt-zone" id="zone-wt" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+        <input type="file" accept=".xlsx,.xls" onchange="handleFileSelect(event)">
+        <span class="wt-zone-icon">📊</span>
+        <div class="wt-zone-title">Reporting_Payments_WeTravel.xlsx</div>
+        <div class="wt-zone-hint">Arrastra aquí o haz clic para seleccionar</div>
+        <div class="wt-zone-file" id="wt-file-name"></div>
       </div>
     </div>
+
     <div class="wt-status" id="wt-status"></div>
+
     <div class="wt-actions">
       <div class="wt-log">
         <strong>Historial de uploads</strong>
-        <ul id="wt-log-list"><li style="color:var(--dim)">Sin historial</li></ul>
+        <ul id="wt-log-list"><li style="color:var(--dim)">Cargando…</li></ul>
       </div>
       <button class="wt-btn-cancel" onclick="closeWTModal(null)">Cancelar</button>
       <button class="wt-btn-upload" id="wt-upload-btn" onclick="uploadWeTravel()" disabled>Subir y Sincronizar</button>
@@ -1765,81 +1758,119 @@ async function triggerSync() {
 
 <script>
 // ── WeTravel Upload ────────────────────────────────────────────────
-const WT_FILES   = { lv: null, yuc: null };
-const WT_PATHS   = { lv: 'reportes/wetravel_la_ventana.xlsx', yuc: 'reportes/wetravel_yucatan.xlsx' };
-const WT_LOG_KEY = 'akampa_wt_log';
+const WT_FILE      = { current: null };
+const WT_XLSX_PATH = 'reportes/Reporting_Payments_WeTravel.xlsx';
+const WT_LOG_PATH  = 'reportes/upload_log.json';
+const WT_NAME_KEY  = 'akampa_uploader_name';
 
+// ── Nombre del uploader (guardado en localStorage) ─────────────────
+function getUploaderName() {
+  return localStorage.getItem(WT_NAME_KEY) || null;
+}
+function ensureUploaderName() {
+  let name = getUploaderName();
+  if (!name) {
+    name = prompt('¿Cómo te llamas? (Se guardará para futuros uploads)');
+    if (!name || !name.trim()) return null;
+    name = name.trim();
+    localStorage.setItem(WT_NAME_KEY, name);
+  }
+  return name;
+}
+
+// ── Modal open/close ───────────────────────────────────────────────
 function openWTModal() {
   document.getElementById('wt-overlay').classList.add('open');
-  renderWTLog();
-  renderLastUploads();
+  loadWTLog();
 }
 function closeWTModal(e) {
   if (e === null || e.target === document.getElementById('wt-overlay')) {
     document.getElementById('wt-overlay').classList.remove('open');
-    WT_FILES.lv = null; WT_FILES.yuc = null;
-    ['lv','yuc'].forEach(k => {
-      document.getElementById(`zone-${k}`).classList.remove('has-file');
-      document.getElementById(`file-${k}-name`).textContent = '';
-    });
+    WT_FILE.current = null;
+    document.getElementById('zone-wt').classList.remove('has-file');
+    document.getElementById('wt-file-name').textContent = '';
     document.getElementById('wt-status').textContent = '';
     document.getElementById('wt-upload-btn').disabled = true;
   }
 }
 
-function handleDragOver(e, key) {
+// ── Drag & drop handlers ───────────────────────────────────────────
+function handleDragOver(e) {
   e.preventDefault();
-  document.getElementById(`zone-${key}`).classList.add('drag-over');
+  document.getElementById('zone-wt').classList.add('drag-over');
 }
-function handleDragLeave(e, key) {
-  document.getElementById(`zone-${key}`).classList.remove('drag-over');
+function handleDragLeave(e) {
+  document.getElementById('zone-wt').classList.remove('drag-over');
 }
-function handleDrop(e, key) {
+function handleDrop(e) {
   e.preventDefault();
-  document.getElementById(`zone-${key}`).classList.remove('drag-over');
+  document.getElementById('zone-wt').classList.remove('drag-over');
   const file = e.dataTransfer.files[0];
-  if (file) setWTFile(key, file);
+  if (file) setWTFile(file);
 }
-function handleFileSelect(e, key) {
+function handleFileSelect(e) {
   const file = e.target.files[0];
-  if (file) setWTFile(key, file);
+  if (file) setWTFile(file);
 }
-function setWTFile(key, file) {
-  WT_FILES[key] = file;
-  const zone = document.getElementById(`zone-${key}`);
-  zone.classList.add('has-file');
-  document.getElementById(`file-${key}-name`).textContent = `✓ ${file.name}`;
-  checkUploadReady();
-}
-function checkUploadReady() {
-  const ready = WT_FILES.lv || WT_FILES.yuc;
-  document.getElementById('wt-upload-btn').disabled = !ready;
+function setWTFile(file) {
+  WT_FILE.current = file;
+  document.getElementById('zone-wt').classList.add('has-file');
+  document.getElementById('wt-file-name').textContent = `✓ ${file.name}`;
+  document.getElementById('wt-upload-btn').disabled = false;
 }
 
-function renderWTLog() {
-  const log  = JSON.parse(localStorage.getItem(WT_LOG_KEY) || '[]');
+// ── Log compartido en GitHub repo ─────────────────────────────────
+async function loadWTLog() {
   const list = document.getElementById('wt-log-list');
-  if (!log.length) { list.innerHTML = '<li style="color:var(--dim)">Sin historial</li>'; return; }
-  list.innerHTML = log.slice(0,8).map(e =>
-    `<li>${e.date} · <b>${e.dest}</b> · ${e.file}</li>`
-  ).join('');
+  try {
+    // Leer el log desde GitHub raw (sin auth, es contenido público del repo)
+    const raw = `https://raw.githubusercontent.com/${SYNC_CONFIG.owner}/${SYNC_CONFIG.repo}/${SYNC_CONFIG.branch}/${WT_LOG_PATH}`;
+    const res = await fetch(raw + '?t=' + Date.now()); // cache-bust
+    if (!res.ok) { list.innerHTML = '<li style="color:var(--dim)">Sin historial aún</li>'; return; }
+    const log = await res.json();
+    if (!log.length) { list.innerHTML = '<li style="color:var(--dim)">Sin historial aún</li>'; return; }
+    list.innerHTML = log.slice(0, 8).map(e =>
+      `<li>${e.date} · <b>${e.uploader}</b> · ${e.filename}</li>`
+    ).join('');
+  } catch {
+    list.innerHTML = '<li style="color:var(--dim)">Sin historial aún</li>';
+  }
 }
-function renderLastUploads() {
-  const log = JSON.parse(localStorage.getItem(WT_LOG_KEY) || '[]');
-  ['lv','yuc'].forEach(key => {
-    const label = key === 'lv' ? 'La Ventana' : 'Yucatán';
-    const last  = log.find(e => e.dest === label);
-    const el    = document.getElementById(`last-${key}`);
-    el.textContent = last ? `Último: ${last.date}` : '';
+
+async function appendWTLog(token, filename, uploader) {
+  // Leer log actual
+  let log = [];
+  const sha = await getFileSHA(token, WT_LOG_PATH);
+  if (sha) {
+    try {
+      const raw = `https://raw.githubusercontent.com/${SYNC_CONFIG.owner}/${SYNC_CONFIG.repo}/${SYNC_CONFIG.branch}/${WT_LOG_PATH}?t=${Date.now()}`;
+      const res = await fetch(raw);
+      if (res.ok) log = await res.json();
+    } catch { log = []; }
+  }
+
+  // Añadir nueva entrada
+  log.unshift({
+    date:     new Date().toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' }),
+    uploader: uploader,
+    filename: filename,
+    ts:       new Date().toISOString()
+  });
+  log = log.slice(0, 50); // máx 50 entradas
+
+  // Guardar en repo
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(log, null, 2))));
+  const body    = { message: `📋 Upload log: ${filename} por ${uploader}`, content };
+  if (sha) body.sha = sha;
+
+  await fetch(`https://api.github.com/repos/${SYNC_CONFIG.owner}/${SYNC_CONFIG.repo}/contents/${WT_LOG_PATH}`, {
+    method:  'PUT',
+    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
   });
 }
-function addWTLog(key, filename) {
-  const label = key === 'lv' ? 'La Ventana' : 'Yucatán';
-  const log   = JSON.parse(localStorage.getItem(WT_LOG_KEY) || '[]');
-  log.unshift({ date: new Date().toLocaleString('es-MX', { dateStyle:'short', timeStyle:'short' }), dest: label, file: filename });
-  localStorage.setItem(WT_LOG_KEY, JSON.stringify(log.slice(0,20)));
-}
 
+// ── Helpers GitHub API ─────────────────────────────────────────────
 function fileToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -1852,7 +1883,6 @@ function fileToBase64(file) {
 async function getFileSHA(token, path) {
   const url = `https://api.github.com/repos/${SYNC_CONFIG.owner}/${SYNC_CONFIG.repo}/contents/${path}`;
   const res = await fetch(url, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' } });
-  if (res.status === 404) return null;
   if (!res.ok) return null;
   const data = await res.json();
   return data.sha || null;
@@ -1862,7 +1892,7 @@ async function uploadFileToGH(token, path, file, statusEl) {
   statusEl.textContent = `Subiendo ${file.name}…`;
   const content = await fileToBase64(file);
   const sha     = await getFileSHA(token, path);
-  const body    = { message: `📥 WeTravel upload: ${path.split('/').pop()} (${new Date().toISOString().slice(0,10)})`, content };
+  const body    = { message: `📥 WeTravel: ${file.name} (${new Date().toISOString().slice(0,10)})`, content };
   if (sha) body.sha = sha;
 
   const res = await fetch(`https://api.github.com/repos/${SYNC_CONFIG.owner}/${SYNC_CONFIG.repo}/contents/${path}`, {
@@ -1872,10 +1902,11 @@ async function uploadFileToGH(token, path, file, statusEl) {
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(`Error subiendo ${path}: ${err.message || res.status}`);
+    throw new Error(`Error subiendo archivo: ${err.message || res.status}`);
   }
 }
 
+// ── Upload principal ───────────────────────────────────────────────
 async function uploadWeTravel() {
   let token = _getToken();
   if (!token) {
@@ -1885,22 +1916,24 @@ async function uploadWeTravel() {
     _saveToken(token);
   }
 
+  const uploader = ensureUploaderName();
+  if (!uploader) return;
+
   const btn    = document.getElementById('wt-upload-btn');
   const status = document.getElementById('wt-status');
   btn.disabled = true;
 
   try {
-    // Subir cada archivo seleccionado
-    for (const key of ['lv','yuc']) {
-      if (!WT_FILES[key]) continue;
-      await uploadFileToGH(token, WT_PATHS[key], WT_FILES[key], status);
-      addWTLog(key, WT_FILES[key].name);
-    }
-    renderWTLog();
+    // 1. Subir XLSX al repo
+    await uploadFileToGH(token, WT_XLSX_PATH, WT_FILE.current, status);
 
-    // Lanzar sync
-    status.textContent = 'Archivos subidos — lanzando sync…';
-    await new Promise(r => setTimeout(r, 2000));
+    // 2. Actualizar log compartido
+    status.textContent = 'Actualizando historial…';
+    await appendWTLog(token, WT_FILE.current.name, uploader);
+
+    // 3. Lanzar sync workflow
+    status.textContent = 'Lanzando sync…';
+    await new Promise(r => setTimeout(r, 1500));
 
     const dispatchRes = await fetch(
       `https://api.github.com/repos/${SYNC_CONFIG.owner}/${SYNC_CONFIG.repo}/actions/workflows/${SYNC_CONFIG.workflow}/dispatches`,
@@ -1912,10 +1945,9 @@ async function uploadWeTravel() {
     );
     if (dispatchRes.status !== 204) throw new Error(`Sync dispatch falló: ${dispatchRes.status}`);
 
-    status.textContent = 'Sync lanzado — esperando resultado…';
     document.getElementById('wt-overlay').classList.remove('open');
 
-    // Reusar el polling del botón principal
+    // 4. Polling en el botón principal
     const syncBtn   = document.getElementById('sync-btn');
     const syncLabel = document.getElementById('sync-label');
     syncBtn.className = 'sync-btn done';

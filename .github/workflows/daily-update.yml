@@ -37,13 +37,11 @@ jobs:
             --output   akampa-data-v3.js
             --html     index.html"
 
-          if [ -f "reportes/wetravel_la_ventana.xlsx" ]; then
-            echo "✓ WeTravel La Ventana encontrado"
-            ARGS="$ARGS --wetravel_lv reportes/wetravel_la_ventana.xlsx"
-          fi
-          if [ -f "reportes/wetravel_yucatan.xlsx" ]; then
-            echo "✓ WeTravel Yucatán encontrado"
-            ARGS="$ARGS --wetravel_yuc reportes/wetravel_yucatan.xlsx"
+          # Archivo combinado WeTravel (incluye La Ventana y Yucatán)
+          if [ -f "reportes/Reporting_Payments_WeTravel.xlsx" ]; then
+            echo "✓ WeTravel combinado encontrado"
+            ARGS="$ARGS --wetravel_lv  reportes/Reporting_Payments_WeTravel.xlsx --wetravel_lv_keyword La Ventana"
+            ARGS="$ARGS --wetravel_yuc reportes/Reporting_Payments_WeTravel.xlsx --wetravel_yuc_keyword Yucatan"
           fi
 
           python scripts/akampa_processor_v3.py $ARGS
