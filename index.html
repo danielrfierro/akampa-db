@@ -76,6 +76,36 @@ html.light .theme-toggle::after{transform:translateX(16px)}
 .sync-btn.syncing .sync-icon{animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* ── WETRAVEL UPLOAD MODAL ─────────────────────── */
+.wt-btn{display:flex;align-items:center;gap:5px;padding:4px 10px;font-size:10px;font-family:'Inter',sans-serif;font-weight:500;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--border);background:var(--surface2);color:var(--muted);border-radius:4px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.wt-btn:hover{border-color:#5ba8ff;color:#5ba8ff;background:rgba(91,168,255,.08)}
+.wt-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center}
+.wt-overlay.open{display:flex}
+.wt-modal{background:var(--surface);border:1px solid var(--border);border-radius:10px;width:min(680px,96vw);padding:28px;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.wt-modal h2{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text);margin:0 0 4px}
+.wt-modal .wt-subtitle{font-size:11px;color:var(--dim);margin:0 0 20px}
+.wt-zones{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.wt-zone{border:1.5px dashed var(--border);border-radius:8px;padding:20px 14px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+.wt-zone:hover,.wt-zone.drag-over{border-color:#5ba8ff;background:rgba(91,168,255,.06)}
+.wt-zone.has-file{border-color:var(--ok);border-style:solid;background:rgba(74,222,128,.06)}
+.wt-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.wt-zone-title{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text);margin-bottom:6px}
+.wt-zone-icon{font-size:22px;margin-bottom:8px;display:block}
+.wt-zone-hint{font-size:10px;color:var(--dim)}
+.wt-zone-file{font-size:10px;color:var(--ok);font-weight:500;margin-top:6px;word-break:break-all}
+.wt-zone-last{font-size:9px;color:var(--dim);margin-top:4px}
+.wt-actions{display:flex;align-items:center;justify-content:space-between;margin-top:20px;gap:10px}
+.wt-log{font-size:9px;color:var(--dim);flex:1}
+.wt-log strong{color:var(--muted);display:block;margin-bottom:3px;letter-spacing:.05em;text-transform:uppercase}
+.wt-log ul{list-style:none;padding:0;margin:0}
+.wt-log li{padding:1px 0}
+.wt-btn-cancel{padding:5px 14px;font-size:10px;font-family:'Inter',sans-serif;letter-spacing:.07em;text-transform:uppercase;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:4px;cursor:pointer}
+.wt-btn-cancel:hover{border-color:var(--danger);color:var(--danger)}
+.wt-btn-upload{padding:5px 16px;font-size:10px;font-family:'Inter',sans-serif;font-weight:600;letter-spacing:.07em;text-transform:uppercase;background:#5ba8ff;border:none;color:#fff;border-radius:4px;cursor:pointer;transition:all .2s}
+.wt-btn-upload:hover{background:#3d8fe0}
+.wt-btn-upload:disabled{opacity:.45;cursor:not-allowed}
+.wt-status{font-size:10px;color:var(--gold);margin-top:10px;min-height:16px;text-align:center}
+
 /* ── MAIN ──────────────────────────────────────── */
 main{padding:0 28px 48px;max-width:1400px;margin:0 auto;width:100%}
 
@@ -458,7 +488,8 @@ document.addEventListener('DOMContentLoaded',function(){
       <span class="theme-label" id="theme-label">Dark</span>
       <div class="theme-toggle"></div>
     </div>
-    <span class="updated" id="last-updated">Actualizado 9 may 2026 · 09:30</span>
+    <span class="updated" id="last-updated">Actualizado 4 may 2026 · 11:11 · Datos al 18 feb 2027</span>
+    <button class="wt-btn" onclick="openWTModal()" title="Subir reportes WeTravel">⬆ WeTravel</button>
     <button class="sync-btn" id="sync-btn" onclick="triggerSync()" title="Sincronizar datos desde Cloudbeds">
       <span class="sync-icon">↻</span>
       <span id="sync-label">Sync</span>
@@ -553,7 +584,7 @@ document.addEventListener('DOMContentLoaded',function(){
 // DATA  (auto-generado por akampa_processor_v3.py — no editar manualmente)
 // ════════════════════════════════════════════════════════════════
 // AKAMPA:DATA_START
-const META = { kpi: 30000000, today: '2026-05-09' };
+const META = { kpi: 30000000, today: '2026-05-04' };
 
 // Bahía Mag trips
 const BM_TRIPS = [
@@ -691,7 +722,7 @@ const YUC_TRIPS = [
   },
 ];
 
-// Bahía Mag — ventas por semana de BOOKING DATE (Cloudbeds · 2026-05-09)
+// Bahía Mag — ventas por semana de BOOKING DATE (Cloudbeds · 2026-05-04)
 const BM_WEEKLY = {"2026-W01": 28060, "2026-W02": 164556, "2026-W03": 401481, "2026-W04": 484088, "2026-W05": 933844, "2026-W06": 615225, "2026-W07": 798555, "2026-W08": 161110, "2026-W09": 757266, "2026-W10": 421535, "2026-W11": 149065, "2026-W12": 192045, "2026-W13": 307720, "2026-W15": 114920, "2026-W16": 65650, "2026-W17": 87225, "2026-W18": 356120};
 
 // Bahía Mag — balance due pendiente por semana de booking
@@ -1691,6 +1722,210 @@ async function triggerSync() {
     label.textContent = 'Error';
     setTimeout(() => { btn.className = 'sync-btn'; label.textContent = 'Sync'; }, 4000);
     alert(`Error al sincronizar:\n${err.message}`);
+  }
+}
+</script>
+
+<!-- ── WETRAVEL UPLOAD MODAL ──────────────────────────────────────── -->
+<div class="wt-overlay" id="wt-overlay" onclick="closeWTModal(event)">
+  <div class="wt-modal" onclick="event.stopPropagation()">
+    <h2>Subir Reporte WeTravel</h2>
+    <p class="wt-subtitle">Arrastra los XLSX de WeTravel o haz clic para seleccionar. Se subirán al repo y lanzarán el sync automáticamente.</p>
+    <div class="wt-zones">
+      <!-- La Ventana -->
+      <div class="wt-zone" id="zone-lv" ondragover="handleDragOver(event,'lv')" ondragleave="handleDragLeave(event,'lv')" ondrop="handleDrop(event,'lv')">
+        <input type="file" accept=".xlsx,.xls" onchange="handleFileSelect(event,'lv')">
+        <span class="wt-zone-icon">🌊</span>
+        <div class="wt-zone-title">La Ventana</div>
+        <div class="wt-zone-hint">Arrastra tu XLSX aquí</div>
+        <div class="wt-zone-file" id="file-lv-name"></div>
+        <div class="wt-zone-last" id="last-lv"></div>
+      </div>
+      <!-- Yucatán -->
+      <div class="wt-zone" id="zone-yuc" ondragover="handleDragOver(event,'yuc')" ondragleave="handleDragLeave(event,'yuc')" ondrop="handleDrop(event,'yuc')">
+        <input type="file" accept=".xlsx,.xls" onchange="handleFileSelect(event,'yuc')">
+        <span class="wt-zone-icon">🌿</span>
+        <div class="wt-zone-title">Yucatán</div>
+        <div class="wt-zone-hint">Arrastra tu XLSX aquí</div>
+        <div class="wt-zone-file" id="file-yuc-name"></div>
+        <div class="wt-zone-last" id="last-yuc"></div>
+      </div>
+    </div>
+    <div class="wt-status" id="wt-status"></div>
+    <div class="wt-actions">
+      <div class="wt-log">
+        <strong>Historial de uploads</strong>
+        <ul id="wt-log-list"><li style="color:var(--dim)">Sin historial</li></ul>
+      </div>
+      <button class="wt-btn-cancel" onclick="closeWTModal(null)">Cancelar</button>
+      <button class="wt-btn-upload" id="wt-upload-btn" onclick="uploadWeTravel()" disabled>Subir y Sincronizar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── WeTravel Upload ────────────────────────────────────────────────
+const WT_FILES   = { lv: null, yuc: null };
+const WT_PATHS   = { lv: 'reportes/wetravel_la_ventana.xlsx', yuc: 'reportes/wetravel_yucatan.xlsx' };
+const WT_LOG_KEY = 'akampa_wt_log';
+
+function openWTModal() {
+  document.getElementById('wt-overlay').classList.add('open');
+  renderWTLog();
+  renderLastUploads();
+}
+function closeWTModal(e) {
+  if (e === null || e.target === document.getElementById('wt-overlay')) {
+    document.getElementById('wt-overlay').classList.remove('open');
+    WT_FILES.lv = null; WT_FILES.yuc = null;
+    ['lv','yuc'].forEach(k => {
+      document.getElementById(`zone-${k}`).classList.remove('has-file');
+      document.getElementById(`file-${k}-name`).textContent = '';
+    });
+    document.getElementById('wt-status').textContent = '';
+    document.getElementById('wt-upload-btn').disabled = true;
+  }
+}
+
+function handleDragOver(e, key) {
+  e.preventDefault();
+  document.getElementById(`zone-${key}`).classList.add('drag-over');
+}
+function handleDragLeave(e, key) {
+  document.getElementById(`zone-${key}`).classList.remove('drag-over');
+}
+function handleDrop(e, key) {
+  e.preventDefault();
+  document.getElementById(`zone-${key}`).classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) setWTFile(key, file);
+}
+function handleFileSelect(e, key) {
+  const file = e.target.files[0];
+  if (file) setWTFile(key, file);
+}
+function setWTFile(key, file) {
+  WT_FILES[key] = file;
+  const zone = document.getElementById(`zone-${key}`);
+  zone.classList.add('has-file');
+  document.getElementById(`file-${key}-name`).textContent = `✓ ${file.name}`;
+  checkUploadReady();
+}
+function checkUploadReady() {
+  const ready = WT_FILES.lv || WT_FILES.yuc;
+  document.getElementById('wt-upload-btn').disabled = !ready;
+}
+
+function renderWTLog() {
+  const log  = JSON.parse(localStorage.getItem(WT_LOG_KEY) || '[]');
+  const list = document.getElementById('wt-log-list');
+  if (!log.length) { list.innerHTML = '<li style="color:var(--dim)">Sin historial</li>'; return; }
+  list.innerHTML = log.slice(0,8).map(e =>
+    `<li>${e.date} · <b>${e.dest}</b> · ${e.file}</li>`
+  ).join('');
+}
+function renderLastUploads() {
+  const log = JSON.parse(localStorage.getItem(WT_LOG_KEY) || '[]');
+  ['lv','yuc'].forEach(key => {
+    const label = key === 'lv' ? 'La Ventana' : 'Yucatán';
+    const last  = log.find(e => e.dest === label);
+    const el    = document.getElementById(`last-${key}`);
+    el.textContent = last ? `Último: ${last.date}` : '';
+  });
+}
+function addWTLog(key, filename) {
+  const label = key === 'lv' ? 'La Ventana' : 'Yucatán';
+  const log   = JSON.parse(localStorage.getItem(WT_LOG_KEY) || '[]');
+  log.unshift({ date: new Date().toLocaleString('es-MX', { dateStyle:'short', timeStyle:'short' }), dest: label, file: filename });
+  localStorage.setItem(WT_LOG_KEY, JSON.stringify(log.slice(0,20)));
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload  = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function getFileSHA(token, path) {
+  const url = `https://api.github.com/repos/${SYNC_CONFIG.owner}/${SYNC_CONFIG.repo}/contents/${path}`;
+  const res = await fetch(url, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' } });
+  if (res.status === 404) return null;
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data.sha || null;
+}
+
+async function uploadFileToGH(token, path, file, statusEl) {
+  statusEl.textContent = `Subiendo ${file.name}…`;
+  const content = await fileToBase64(file);
+  const sha     = await getFileSHA(token, path);
+  const body    = { message: `📥 WeTravel upload: ${path.split('/').pop()} (${new Date().toISOString().slice(0,10)})`, content };
+  if (sha) body.sha = sha;
+
+  const res = await fetch(`https://api.github.com/repos/${SYNC_CONFIG.owner}/${SYNC_CONFIG.repo}/contents/${path}`, {
+    method:  'PUT',
+    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(`Error subiendo ${path}: ${err.message || res.status}`);
+  }
+}
+
+async function uploadWeTravel() {
+  let token = _getToken();
+  if (!token) {
+    const t = prompt('🔑 Pega tu GitHub token:');
+    if (!t || !t.trim()) return;
+    token = t.trim();
+    _saveToken(token);
+  }
+
+  const btn    = document.getElementById('wt-upload-btn');
+  const status = document.getElementById('wt-status');
+  btn.disabled = true;
+
+  try {
+    // Subir cada archivo seleccionado
+    for (const key of ['lv','yuc']) {
+      if (!WT_FILES[key]) continue;
+      await uploadFileToGH(token, WT_PATHS[key], WT_FILES[key], status);
+      addWTLog(key, WT_FILES[key].name);
+    }
+    renderWTLog();
+
+    // Lanzar sync
+    status.textContent = 'Archivos subidos — lanzando sync…';
+    await new Promise(r => setTimeout(r, 2000));
+
+    const dispatchRes = await fetch(
+      `https://api.github.com/repos/${SYNC_CONFIG.owner}/${SYNC_CONFIG.repo}/actions/workflows/${SYNC_CONFIG.workflow}/dispatches`,
+      {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ref: SYNC_CONFIG.branch })
+      }
+    );
+    if (dispatchRes.status !== 204) throw new Error(`Sync dispatch falló: ${dispatchRes.status}`);
+
+    status.textContent = 'Sync lanzado — esperando resultado…';
+    document.getElementById('wt-overlay').classList.remove('open');
+
+    // Reusar el polling del botón principal
+    const syncBtn   = document.getElementById('sync-btn');
+    const syncLabel = document.getElementById('sync-label');
+    syncBtn.className = 'sync-btn done';
+    syncLabel.textContent = 'En cola…';
+    await new Promise(r => setTimeout(r, 8000));
+    await pollWorkflow(token, syncBtn, syncLabel);
+
+  } catch (err) {
+    status.textContent = `❌ ${err.message}`;
+    btn.disabled = false;
   }
 }
 </script>
