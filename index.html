@@ -1580,18 +1580,30 @@ const SYNC_CONFIG = {
   branch:   'main'
 };
 
-// Token en memoria de sesión — no se guarda en el código ni en disco
-let _syncToken = null;
+// Token guardado en localStorage para no pedirlo en cada sesión
+const STORAGE_KEY = 'akampa_gh_token';
+
+function _getToken() {
+  return localStorage.getItem(STORAGE_KEY) || null;
+}
+function _saveToken(t) {
+  localStorage.setItem(STORAGE_KEY, t);
+}
+function _clearToken() {
+  localStorage.removeItem(STORAGE_KEY);
+}
 
 async function triggerSync() {
   const btn   = document.getElementById('sync-btn');
   const label = document.getElementById('sync-label');
 
-  // Pedir token si no está en memoria
-  if (!_syncToken) {
-    const t = prompt('🔑 Pega tu GitHub token para activar el sync:\n(Solo se pide una vez por sesión)');
+  // Recuperar token guardado o pedirlo
+  let token = _getToken();
+  if (!token) {
+    const t = prompt('🔑 Pega tu GitHub token para activar el sync:\n(Se guardará en este navegador — no se volverá a pedir)');
     if (!t || !t.trim()) return;
-    _syncToken = t.trim();
+    token = t.trim();
+    _saveToken(token);
   }
 
   btn.className = 'sync-btn syncing';
@@ -1602,7 +1614,7 @@ async function triggerSync() {
     const res = await fetch(url, {
       method:  'POST',
       headers: {
-        'Authorization': `Bearer ${_syncToken}`,
+        'Authorization': `Bearer ${token}`,
         'Accept':        'application/vnd.github.v3+json',
         'Content-Type':  'application/json'
       },
@@ -1624,7 +1636,7 @@ async function triggerSync() {
       }, 1000);
     } else {
       // Token inválido — limpiar para que pida uno nuevo
-      if (res.status === 401 || res.status === 403) _syncToken = null;
+      if (res.status === 401 || res.status === 403) _clearToken();
       const body = await res.json().catch(() => ({}));
       throw new Error(`GitHub API ${res.status}: ${body.message || 'error desconocido'}`);
     }
