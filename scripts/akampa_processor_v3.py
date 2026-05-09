@@ -848,17 +848,31 @@ def deploy_to_netlify(js_path, site_id, token):
 # ── Main ─────────────────────────────────────────────────────────
 def main():
     p = argparse.ArgumentParser(description='Akampa v3 weekly processor')
-    p.add_argument('--reporte',              required=True, help='XLSX combinado de Cloudbeds')
+    # ── Fuente Cloudbeds: XLSX o API (mutuamente excluyentes) ─────
+    src = p.add_mutually_exclusive_group()
+    src.add_argument('--reporte',            default=None,  help='XLSX combinado de Cloudbeds')
+    src.add_argument('--use_api',            action='store_true', help='Usar Cloudbeds API en lugar de XLSX')
+    # Args solo para modo API
+    p.add_argument('--api_key',              default=None,  help='Bearer token Cloudbeds (cbat_...)')
+    p.add_argument('--desde',               default='2026-01-01')
+    p.add_argument('--hasta',               default='2027-12-31')
+    p.add_argument('--desde_booking',       default='2025-01-01')
+    # ── WeTravel ─────────────────────────────────────────────────
     p.add_argument('--wetravel_lv',          default=None,  help='XLSX WeTravel La Ventana (o combinado)')
     p.add_argument('--wetravel_lv_keyword',  default='La Ventana')
     p.add_argument('--wetravel_yuc',         default=None,  help='XLSX WeTravel Yucatán (puede ser el mismo combinado)')
     p.add_argument('--wetravel_yuc_keyword', default='Yucatan')
+    # ── Salida ────────────────────────────────────────────────────
     p.add_argument('--existing',             default=None,  help='akampa-data-v3.js anterior')
     p.add_argument('--output',               default='akampa-data-v3.js')
     p.add_argument('--html',                 default=None,  help='Ruta a index.html (para actualizar datos embebidos)')
     p.add_argument('--netlify_site',         default=None)
     p.add_argument('--netlify_token',        default=None)
     args = p.parse_args()
+
+    # Validar que hay al menos una fuente Cloudbeds
+    if not args.use_api and not args.reporte:
+        p.error('Se requiere --reporte (XLSX) o --use_api (API)')
 
     _now_mx   = now_mx()
     today_str = _now_mx.strftime('%Y-%m-%d')
@@ -882,10 +896,33 @@ def main():
             except Exception as e:
                 print(f"⚠ No se pudo leer histórico: {e} — comenzando desde cero")
 
-    # ── Parse Cloudbeds report ────────────────────────────────────
-    print(f"📂 Procesando reporte Cloudbeds: {args.reporte}")
-    bal, ci_data, monthly_new, new_booking_wk, new_booking_pend, new_booking_daily = \
-        parse_cloudbeds(args.reporte)
+    # ── Parse Cloudbeds: API o XLSX ───────────────────────────────
+    if args.use_api:
+        import importlib.util, os
+        _script_dir = Path(__file__).parent
+        _api_path   = _script_dir / 'cloudbeds_api.py'
+        spec = importlib.util.spec_from_file_location('cloudbeds_api', _api_path)
+        cb_mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cb_mod)
+
+        api_key = args.api_key or os.environ.get('CLOUDBEDS_API_KEY', '')
+        if not api_key:
+            print('❌ Se necesita --api_key o la variable CLOUDBEDS_API_KEY')
+            sys.exit(1)
+
+        print(f"🌐 Fetching datos desde Cloudbeds API ({args.desde} → {args.hasta})...")
+        bal, ci_data, monthly_new, new_booking_wk, new_booking_pend, new_booking_daily = \
+            cb_mod.fetch_cloudbeds_api(
+                api_key       = api_key,
+                desde         = args.desde,
+                hasta         = args.hasta,
+                desde_booking = args.desde_booking,
+            )
+    else:
+        print(f"📂 Procesando reporte Cloudbeds: {args.reporte}")
+        bal, ci_data, monthly_new, new_booking_wk, new_booking_pend, new_booking_daily = \
+            parse_cloudbeds(args.reporte)
+
     print(f"   Balance Due: {len(bal)} fechas · Check-in: {len(ci_data)} fechas "
           f"· Monthly: {sum(len(v) for v in monthly_new.values())} meses")
 
