@@ -421,6 +421,53 @@ html.light .date-input::-webkit-calendar-picker-indicator{filter:none}
 .pw-error{color:var(--danger);font-size:10px;letter-spacing:.06em;opacity:0;transition:opacity .2s;min-height:14px}
 .pw-error.visible{opacity:1}
 @keyframes pw-shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+
+/* ── AI BOT WIDGET ──────────────────────────────────────── */
+.ai-fab{position:fixed;bottom:24px;right:24px;width:54px;height:54px;border-radius:50%;background:var(--gold);color:var(--bg);border:none;cursor:pointer;font-size:22px;font-weight:600;font-family:'Inter',sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:1000;display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s}
+.ai-fab:hover{transform:scale(1.06);box-shadow:0 8px 28px rgba(0,0,0,.35)}
+.ai-fab.open{transform:scale(.85);opacity:.6}
+.ai-panel{position:fixed;bottom:90px;right:24px;width:420px;max-width:calc(100vw - 32px);height:600px;max-height:calc(100vh - 120px);background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 12px 40px rgba(0,0,0,.35);display:none;flex-direction:column;z-index:999;overflow:hidden}
+.ai-panel.open{display:flex}
+.ai-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface2)}
+.ai-title{font-size:12px;font-weight:500;color:var(--gold);letter-spacing:.12em;text-transform:uppercase}
+.ai-close{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:0;line-height:1;transition:color .15s}
+.ai-close:hover{color:var(--text)}
+.ai-messages{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.ai-msg{max-width:88%;padding:9px 12px;border-radius:10px;font-size:13px;line-height:1.45;word-wrap:break-word}
+.ai-msg.user{align-self:flex-end;background:var(--gold-dim);color:var(--text);border:1px solid var(--gold-dim)}
+.ai-msg.bot{align-self:flex-start;background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+.ai-msg.bot.error{border-color:var(--danger);color:var(--danger)}
+.ai-msg code{background:var(--surface3);padding:1px 5px;border-radius:3px;font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.ai-msg pre{background:var(--surface3);padding:8px 10px;border-radius:4px;overflow-x:auto;margin:6px 0;font-size:12px}
+.ai-msg pre code{background:none;padding:0}
+.ai-msg strong{font-weight:600;color:var(--gold)}
+.ai-msg ul,.ai-msg ol{padding-left:20px;margin:4px 0}
+.ai-msg table{border-collapse:collapse;font-size:12px;margin:6px 0}
+.ai-msg th,.ai-msg td{border:1px solid var(--border);padding:4px 8px;text-align:left}
+.ai-msg th{background:var(--surface3);color:var(--gold);font-weight:500}
+.ai-empty{align-self:center;text-align:center;color:var(--muted);font-size:12px;padding:24px 12px;line-height:1.6}
+.ai-empty .ai-suggest{display:block;margin:6px 0;color:var(--gold);cursor:pointer;padding:6px 10px;border:1px solid var(--border);border-radius:4px;transition:background .15s}
+.ai-empty .ai-suggest:hover{background:var(--gold-dim)}
+.ai-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+.ai-jump,.ai-copy{font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:999px;background:var(--surface2);color:var(--text2);cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.ai-jump:hover,.ai-copy:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
+.ai-jump.lv:hover{border-color:var(--lv);color:var(--lv);background:var(--lv-dim)}
+.ai-jump.yuc:hover{border-color:var(--yuc);color:var(--yuc);background:var(--yuc-dim)}
+.ai-copy.copied{border-color:var(--ok);color:var(--ok);background:var(--ok-dim)}
+.ai-typing{align-self:flex-start;color:var(--muted);font-size:12px;padding:6px 12px}
+.ai-typing span{display:inline-block;width:4px;height:4px;background:currentColor;border-radius:50%;margin:0 1px;animation:ai-bounce 1.2s infinite}
+.ai-typing span:nth-child(2){animation-delay:.2s}
+.ai-typing span:nth-child(3){animation-delay:.4s}
+@keyframes ai-bounce{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+.ai-form{border-top:1px solid var(--border);padding:10px 12px;display:flex;gap:8px;background:var(--surface2)}
+.ai-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;outline:none;transition:border .15s}
+.ai-input:focus{border-color:var(--gold)}
+.ai-send{background:var(--gold);color:var(--bg);border:none;border-radius:6px;padding:0 14px;cursor:pointer;font-weight:500;font-size:12px;letter-spacing:.06em;transition:opacity .15s}
+.ai-send:disabled{opacity:.4;cursor:not-allowed}
+@media(max-width:600px){
+  .ai-panel{bottom:78px;right:12px;left:12px;width:auto;height:calc(100vh - 100px)}
+  .ai-fab{bottom:16px;right:16px}
+}
 </style>
 <script>
   // Aplica el tema del sistema antes del primer paint (evita flash)
@@ -912,21 +959,11 @@ function getBMTrips() {
 }
 
 function getMagicBand(g) {
-  if (!g)    return {cls:'none',  label:'Sin datos'};
-  if (g<=5)  return {cls:'danger',label:'No viable'};
-  if (g<=7)  return {cls:'warn',  label:'Límite'};
-  if (g<=10) return {cls:'ok',    label:'Viable'};
-  if (g<=13) return {cls:'danger',label:'No rentable'};
-  if (g<=15) return {cls:'warn',  label:'Límite'};
-  if (g<=19) return {cls:'ok',    label:'Viable'};
-  if (g<=21) return {cls:'warn',  label:'Límite'};
-  if (g<=23) return {cls:'danger',label:'No rentable'};
-  if (g<=25) return {cls:'warn',  label:'Límite'};
-  if (g<=27) return {cls:'ok',    label:'Viable'};
-  if (g===28)return {cls:'gold',  label:'Sold out ★'};
-  if (g<=31) return {cls:'danger',label:'No rentable'};
-  if (g===32)return {cls:'ok',    label:'Máx. ext.'};
-  return      {cls:'danger',label:'Fuera de cap.'};
+  if (!g)         return {cls:'none',  label:'Sin datos'};
+  if (g === 28)   return {cls:'gold',  label:'Sold out ★'};
+  if (g % 7 === 0)return {cls:'warn',  label:'Límite'};
+  if (g % 8 === 0 || g % 9 === 0) return {cls:'ok', label:'Viable'};
+  return           {cls:'danger',label:'No rentable'};
 }
 
 const occColor = o => o >= 75 ? 'var(--ok)' : o >= 45 ? 'var(--warn)' : 'var(--danger)';
@@ -2013,6 +2050,253 @@ async function uploadWeTravel() {
     status.textContent = `❌ ${err.message}`;
     btn.disabled = false;
   }
+}
+</script>
+
+<!-- ── AI BOT WIDGET ──────────────────────────────────────── -->
+<button class="ai-fab" id="ai-fab" onclick="toggleAIPanel()" title="Preguntar al Capitán Nacho">✦</button>
+<div class="ai-panel" id="ai-panel">
+  <div class="ai-head">
+    <span class="ai-title">Capitán Nacho</span>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="ai-close" onclick="resetAIChat()" title="Nueva conversación" style="font-size:14px">↻</button>
+      <button class="ai-close" onclick="toggleAIPanel()" title="Cerrar">×</button>
+    </div>
+  </div>
+  <div class="ai-messages" id="ai-messages"></div>
+  <form class="ai-form" id="ai-form" onsubmit="aiSubmit(event)">
+    <input class="ai-input" id="ai-input" type="text" placeholder="¿Cuánto vendimos la semana pasada?" autocomplete="off">
+    <button class="ai-send" id="ai-send" type="submit">Enviar</button>
+  </form>
+</div>
+
+<script>
+// Pega aquí la URL del Cloudflare Worker después de hacer `wrangler deploy`
+const AI_WORKER_URL = 'https://akampa-ai-bot-sales.akampamx.workers.dev';
+
+const AI_STORAGE_KEY = 'akampa_ai_history';
+const AI_SUGGESTIONS = [
+  '¿Cuánto vendimos la semana pasada?',
+  '¿Qué viaje de BM tiene la mejor ocupación?',
+  'Compara cobrado vs pendiente por destino',
+  '¿Cuáles viajes futuros están por debajo del magic number?',
+];
+
+let aiHistory = loadAIHistory();
+let aiSending = false;
+
+function loadAIHistory() {
+  try { return JSON.parse(sessionStorage.getItem(AI_STORAGE_KEY) || '[]'); }
+  catch { return []; }
+}
+function saveAIHistory() {
+  sessionStorage.setItem(AI_STORAGE_KEY, JSON.stringify(aiHistory));
+}
+
+function resetAIChat() {
+  if (aiHistory.length === 0) return;
+  if (!confirm('¿Empezar una conversación nueva? Se borrará el historial actual.')) return;
+  aiHistory = [];
+  saveAIHistory();
+  renderAIMessages();
+  document.getElementById('ai-input').focus();
+}
+
+function toggleAIPanel() {
+  const panel = document.getElementById('ai-panel');
+  const fab   = document.getElementById('ai-fab');
+  const open  = panel.classList.toggle('open');
+  fab.classList.toggle('open', open);
+  if (open) {
+    renderAIMessages();
+    setTimeout(() => document.getElementById('ai-input').focus(), 100);
+  }
+}
+
+function renderAIMessages() {
+  const box = document.getElementById('ai-messages');
+  box.innerHTML = '';
+  if (aiHistory.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'ai-empty';
+    empty.innerHTML = `<div>Pregúntame sobre las ventas, viajes, ocupación o pipeline.</div>` +
+      AI_SUGGESTIONS.map(s => `<span class="ai-suggest" onclick="aiAskSuggestion(this.textContent)">${s}</span>`).join('');
+    box.appendChild(empty);
+    return;
+  }
+  aiHistory.forEach(m => {
+    const div = document.createElement('div');
+    div.className = `ai-msg ${m.role === 'user' ? 'user' : 'bot'}` + (m.error ? ' error' : '');
+    div.innerHTML = m.role === 'user' ? escapeHtml(m.content) : renderMarkdown(m.content);
+    if (m.role === 'assistant' && !m.error) {
+      const wrap = document.createElement('div');
+      wrap.className = 'ai-actions';
+
+      const copyBtn = document.createElement('button');
+      copyBtn.className = 'ai-copy';
+      copyBtn.textContent = '⧉ Copiar';
+      copyBtn.onclick = () => copyAIMessage(m.content, copyBtn);
+      wrap.appendChild(copyBtn);
+
+      const jumps = detectDestinations(m.content);
+      const labels = { bm: 'Ver Bahía Mag →', lv: 'Ver La Ventana →', yuc: 'Ver Yucatán →' };
+      jumps.forEach(d => {
+        const b = document.createElement('button');
+        b.className = `ai-jump ${d}`;
+        b.textContent = labels[d];
+        b.onclick = () => { setDest(d); toggleAIPanel(); };
+        wrap.appendChild(b);
+      });
+
+      div.appendChild(wrap);
+    }
+    box.appendChild(div);
+  });
+  box.scrollTop = box.scrollHeight;
+}
+
+function aiAskSuggestion(text) {
+  document.getElementById('ai-input').value = text;
+  aiSubmit(new Event('submit'));
+}
+
+async function aiSubmit(ev) {
+  ev.preventDefault();
+  if (aiSending) return;
+  const input = document.getElementById('ai-input');
+  const text  = input.value.trim();
+  if (!text) return;
+
+  if (!AI_WORKER_URL) {
+    aiHistory.push({ role: 'user', content: text });
+    aiHistory.push({ role: 'assistant', content: '⚠️ El bot aún no está configurado. Falta poner `AI_WORKER_URL` en index.html después de hacer deploy del Cloudflare Worker. Revisa `worker/README.md`.', error: true });
+    saveAIHistory();
+    renderAIMessages();
+    input.value = '';
+    return;
+  }
+
+  aiHistory.push({ role: 'user', content: text });
+  saveAIHistory();
+  input.value = '';
+  aiSending = true;
+  document.getElementById('ai-send').disabled = true;
+  renderAIMessages();
+
+  // Indicador de typing
+  const box = document.getElementById('ai-messages');
+  const typing = document.createElement('div');
+  typing.className = 'ai-typing';
+  typing.innerHTML = '<span></span><span></span><span></span>';
+  box.appendChild(typing);
+  box.scrollTop = box.scrollHeight;
+
+  try {
+    const res = await fetch(AI_WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: aiHistory.map(m => ({ role: m.role, content: m.content })),
+        data: snapshotData()
+      })
+    });
+    typing.remove();
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `HTTP ${res.status}`);
+    }
+    const { text: reply } = await res.json();
+    aiHistory.push({ role: 'assistant', content: reply });
+  } catch (err) {
+    typing.remove();
+    aiHistory.push({ role: 'assistant', content: `Error: ${err.message}`, error: true });
+  } finally {
+    saveAIHistory();
+    aiSending = false;
+    document.getElementById('ai-send').disabled = false;
+    renderAIMessages();
+  }
+}
+
+async function copyAIMessage(text, btn) {
+  try {
+    await navigator.clipboard.writeText(text);
+    const original = btn.textContent;
+    btn.textContent = '✓ Copiado';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.classList.remove('copied');
+    }, 1500);
+  } catch (err) {
+    btn.textContent = '⚠ Error';
+    setTimeout(() => { btn.textContent = '⧉ Copiar'; }, 1500);
+  }
+}
+
+function detectDestinations(text) {
+  const t = text.toLowerCase();
+  const found = [];
+  if (/bah[ií]a magdalena|ocean camp|ballena (gris|jorobada)|marlin|ocean safari|\bbm\b/.test(t)) found.push('bm');
+  if (/la ventana|\blv\b/.test(t)) found.push('lv');
+  if (/yucat[áa]n|\byuc\b/.test(t)) found.push('yuc');
+  return found;
+}
+
+function snapshotData() {
+  return {
+    meta: META,
+    bm: {
+      trips: BM_TRIPS,
+      weekly: BM_WEEKLY,
+      weeklyPend: BM_WEEKLY_PEND,
+      daily: BM_DAILY,
+      monthly: BM_MONTHLY,
+    },
+    lv:  { trips: LV_TRIPS },
+    yuc: { trips: YUC_TRIPS },
+  };
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderMarkdown(s) {
+  // Markdown mínimo: code, bold, italic, listas, tablas, line breaks
+  let html = escapeHtml(s);
+  // Code blocks ```
+  html = html.replace(/```([\s\S]*?)```/g, (_, c) => `<pre><code>${c.trim()}</code></pre>`);
+  // Inline code `
+  html = html.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+  // Bold **x**
+  html = html.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
+  // Italic *x*
+  html = html.replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+  // Tablas markdown simples (|x|y|\n|---|---|\n|a|b|)
+  html = html.replace(/(?:^\|.+\|\n\|[\s\-:|]+\|\n(?:\|.+\|\n?)+)/gm, block => {
+    const rows = block.trim().split('\n').filter(r => r.startsWith('|'));
+    if (rows.length < 2) return block;
+    const headers = rows[0].slice(1, -1).split('|').map(c => `<th>${c.trim()}</th>`).join('');
+    const bodyRows = rows.slice(2).map(r => {
+      const cells = r.slice(1, -1).split('|').map(c => `<td>${c.trim()}</td>`).join('');
+      return `<tr>${cells}</tr>`;
+    }).join('');
+    return `<table><thead><tr>${headers}</tr></thead><tbody>${bodyRows}</tbody></table>`;
+  });
+  // Listas no ordenadas
+  html = html.replace(/(?:^[-*] .+\n?)+/gm, block => {
+    const items = block.trim().split('\n').map(l => `<li>${l.replace(/^[-*] /, '')}</li>`).join('');
+    return `<ul>${items}</ul>`;
+  });
+  // Listas ordenadas
+  html = html.replace(/(?:^\d+\. .+\n?)+/gm, block => {
+    const items = block.trim().split('\n').map(l => `<li>${l.replace(/^\d+\. /, '')}</li>`).join('');
+    return `<ol>${items}</ol>`;
+  });
+  // Line breaks
+  html = html.replace(/\n/g, '<br>');
+  return html;
 }
 </script>
 </body>

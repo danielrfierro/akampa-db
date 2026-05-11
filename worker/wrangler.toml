@@ -1,0 +1,10 @@
+name = "akampa-ai-bot-sales"
+main = "worker.js"
+compatibility_date = "2026-05-11"
+
+# El secret GEMINI_API_KEY se configura con:
+#   wrangler secret put GEMINI_API_KEY
+#
+# (Opcional) restringir origin del dashboard:
+# [vars]
+# ALLOWED_ORIGIN = "https://sales.akampa.mx"
