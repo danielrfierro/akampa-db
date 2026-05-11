@@ -9,6 +9,7 @@
 <style>
 /* ── THEMES ──────────────────────────────────────── */
 :root {
+  color-scheme: dark;
   --bg:#0b1512; --surface:#111e1a; --surface2:#182923; --surface3:#1f342d;
   --border:#223028; --border2:#1a2822;
   --gold:#c8a05a; --gold2:#e0c48a; --gold-dim:rgba(200,160,90,.14); --gold-glow:rgba(200,160,90,.05);
@@ -22,6 +23,7 @@
   --yuc:#8a6ab0; --yuc-dim:rgba(138,106,176,.14);
 }
 html.light {
+  color-scheme: light;
   --bg:#f5f2ec; --surface:#fff; --surface2:#f0ede6; --surface3:#e8e4da;
   --border:#d8d0c0; --border2:#e4ddd0;
   --gold:#9a6e28; --gold2:#7a5218; --gold-dim:rgba(154,110,40,.10); --gold-glow:rgba(154,110,40,.04);
@@ -420,6 +422,12 @@ html.light .date-input::-webkit-calendar-picker-indicator{filter:none}
 .pw-error.visible{opacity:1}
 @keyframes pw-shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 </style>
+<script>
+  // Aplica el tema del sistema antes del primer paint (evita flash)
+  if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+    document.documentElement.classList.add('light');
+  }
+</script>
 </head>
 <body>
 
@@ -817,7 +825,8 @@ let yearFilter = '2026';
 let bandFilter = '';
 let dateFrom   = '';
 let dateTo     = '';
-let isLight    = false;
+let isLight    = document.documentElement.classList.contains('light');
+let themeManuallyOverridden = false;
 let mainChart          = null;
 let revenuePipelineChart = null;
 
@@ -1576,13 +1585,24 @@ function setYear(y) {
   renderAll();
 }
 
-function toggleTheme() {
-  isLight = !isLight;
+function applyTheme(light) {
+  isLight = light;
   document.documentElement.classList.toggle('light', isLight);
   document.getElementById('theme-label').textContent = isLight ? 'Light' : 'Dark';
   renderBMChart();
   renderRevenuePipelineChart();
 }
+
+function toggleTheme() {
+  themeManuallyOverridden = true;
+  applyTheme(!isLight);
+}
+
+// Sigue el tema del sistema mientras el usuario no haya tocado el toggle
+window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {
+  if (themeManuallyOverridden) return;
+  applyTheme(e.matches);
+});
 
 // ════════════════════════════════════════════════════════════════
 // MAIN
@@ -1599,6 +1619,7 @@ function renderAll() {
 }
 
 // Init
+document.getElementById('theme-label').textContent = isLight ? 'Light' : 'Dark';
 setDest('gen');
 
 // Re-render weekly on resize so K/full format stays correcto
