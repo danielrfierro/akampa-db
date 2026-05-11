@@ -853,6 +853,13 @@ function isoWeek(dateStr) {
   return `${yr}-W${String(wn).padStart(2,'0')}`;
 }
 
+function isoWeeksInYear(year) {
+  // ISO 8601: 53 weeks si Jan 1 es jueves, o Dec 31 es jueves (años bisiestos que empiezan miércoles)
+  const jan1 = new Date(Date.UTC(year, 0, 1)).getUTCDay();
+  const dec31 = new Date(Date.UTC(year, 11, 31)).getUTCDay();
+  return (jan1 === 4 || dec31 === 4) ? 53 : 52;
+}
+
 // Current and previous ISO week for today
 const TODAY_WK = isoWeek(META.today);
 const [TWY, TWN] = TODAY_WK.split('-W');
@@ -1294,8 +1301,17 @@ function renderRevenuePipelineChart() {
   if (!canvas) return;
   if (revenuePipelineChart) { revenuePipelineChart.destroy(); revenuePipelineChart = null; }
 
-  // Weeks from BM_WEEKLY, sorted
-  const allWks = Object.keys(BM_WEEKLY).sort();
+  // Todas las semanas ISO del año activo (o ambos años si filtro = 'all'),
+  // truncadas a la última semana completada (PREV_WK)
+  const years = yearFilter === 'all' ? ['2026', '2027'] : [yearFilter];
+  const allWks = [];
+  years.forEach(y => {
+    const n = isoWeeksInYear(+y);
+    for (let w = 1; w <= n; w++) {
+      const wk = `${y}-W${String(w).padStart(2, '0')}`;
+      if (wk <= PREV_WK) allWks.push(wk);
+    }
+  });
 
   const cc = isLight
     ? {tick:'#7a6e58',grid:'#e4ddd0',tooltip:{bg:'#fff',border:'#d8d0c0',title:'#9a6e28',body:'#1e2820'}}
@@ -1305,7 +1321,11 @@ function renderRevenuePipelineChart() {
   const bmPend = allWks.map(wk => (BM_WEEKLY_PEND[wk]  || 0) / 1e3);
   const lvCob  = allWks.map(wk => lvWeekly(wk)               / 1e3);
   const yucCob = allWks.map(wk => yucWeekly(wk)              / 1e3);
-  const labels = allWks.map(wk => 'S' + wk.split('-W')[1].replace(/^0/,''));
+  const labels = allWks.map(wk => {
+    const [y, wn] = wk.split('-W');
+    const s = 'S' + wn.replace(/^0/, '');
+    return yearFilter === 'all' ? `${s}·${y.slice(2)}` : s;
+  });
 
   revenuePipelineChart = new Chart(canvas, {
     type: 'bar',
@@ -1349,14 +1369,22 @@ function renderRevenuePipelineChart() {
           labels: { color: cc.tick, font: { family:'Inter', size:9 }, boxWidth:10, padding:12 }
         },
         tooltip: {
+          mode: 'index', intersect: false,
           backgroundColor: cc.tooltip.bg, borderColor: cc.tooltip.border, borderWidth: 1,
-          titleColor: cc.tooltip.title, bodyColor: cc.tooltip.body,
+          titleColor: cc.tooltip.title, bodyColor: cc.tooltip.body, footerColor: cc.tooltip.title,
           titleFont: { family:'Inter', size:11 }, bodyFont: { family:'Inter', size:10 },
+          footerFont: { family:'Inter', size:11, weight:'600' },
+          footerMarginTop: 6,
           callbacks: {
             title: items => `Semana ${items[0].label}`,
             label: c => {
               const v = c.raw;
               return v > 0 ? ` ${c.dataset.label}: $${v >= 1000 ? (v/1000).toFixed(2)+'M' : v.toFixed(0)+'k'} MXN` : null;
+            },
+            footer: items => {
+              const total = items.reduce((s, it) => s + (it.raw || 0), 0);
+              if (!total) return '';
+              return `Total: $${total >= 1000 ? (total/1000).toFixed(2)+'M' : total.toFixed(0)+'k'} MXN`;
             }
           }
         }
