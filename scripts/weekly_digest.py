@@ -409,6 +409,9 @@ def send_email(subject, html, dry_run=False):
         headers={
             "Authorization": f"Bearer {api_key}",
             "Content-Type":  "application/json",
+            # Cloudflare (delante de Resend) bloquea User-Agent "Python-urllib"
+            "User-Agent":    "akampa-weekly-digest/1.0",
+            "Accept":        "application/json",
         },
     )
     try:
