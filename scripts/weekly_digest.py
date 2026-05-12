@@ -121,11 +121,11 @@ def pipeline_pendiente(data):
 
 
 def meta_progress(data):
-    """% completado vs meta total."""
+    """% completado vs meta total. Usa cobrado + pendiente (matchea total del dashboard)."""
     target = data.get("meta", {}).get("kpi_anual") or data.get("meta", {}).get("kpi") or 30_000_000
     revenue = 0
     for t in data["bahia_mag"].get("trips", []):
-        revenue += t.get("cobrado", 0) or 0
+        revenue += (t.get("cobrado", 0) or 0) + (t.get("pend", 0) or 0)
     for t in data.get("la_ventana", {}).get("trips", []):
         for p in t.get("payments", []):
             revenue += p.get("amount", 0) or 0
@@ -184,21 +184,35 @@ def trips_at_risk(data, days_ahead=60):
 
 
 def fetch_new_bookings_this_week(monday, friday):
-    """Llama Cloudbeds API para listar reservas creadas esta semana.
-    Devuelve None si no hay API key o falla."""
+    """Lista reservas creadas en el rango [monday, friday] de la semana actual.
+    Cloudbeds API ignora bookingDateFrom/To en algunos casos, así que filtramos
+    client-side por r['dateCreated']."""
     api_key = os.environ.get("CLOUDBEDS_API_KEY")
     if not api_key:
         return None
     try:
         sys.path.insert(0, str(Path(__file__).parent))
         from cloudbeds_api import _get_all_pages
+        # Fetch amplio y filtramos en Python
         params = {
             "bookingDateFrom": monday.isoformat(),
             "bookingDateTo":   friday.isoformat(),
             "status":          "checked_in,checked_out,not_confirmed,confirmed",
             "includeGuestsDetails": "true",
         }
-        return _get_all_pages("getReservations", params, api_key)
+        all_res = _get_all_pages("getReservations", params, api_key)
+        filtered = []
+        for r in all_res:
+            dc = r.get("dateCreated") or r.get("bookingDate")
+            if not dc:
+                continue
+            try:
+                d = datetime.strptime(str(dc)[:10], "%Y-%m-%d").date()
+            except ValueError:
+                continue
+            if monday <= d <= friday:
+                filtered.append(r)
+        return filtered
     except Exception as e:
         print(f"   ⚠ no se pudo fetchear nuevos bookings: {e}", file=sys.stderr)
         return None
@@ -302,10 +316,12 @@ def build_report(data, prev_data, today=None):
     prev_monday = monday - timedelta(days=7)
     prev_friday = friday - timedelta(days=7)
 
-    # Ventas actuales y previas
+    # Ventas actuales y previas — ambas calculadas desde el data file ACTUAL
+    # (el snapshot de hace 7 días tiene data incompleta del periodo anterior).
+    # El snapshot prev_data solo se usa para detectar refunds.
     bm, lv, yuc = sales_in_range(data, monday, friday)
     sales_now = bm + lv + yuc
-    p_bm, p_lv, p_yuc = sales_in_range(prev_data, prev_monday, prev_friday) if prev_data else (0,0,0)
+    p_bm, p_lv, p_yuc = sales_in_range(data, prev_monday, prev_friday)
     sales_prev = p_bm + p_lv + p_yuc
 
     delta_pct = ((sales_now - sales_prev) / sales_prev * 100) if sales_prev > 0 else 0
@@ -319,16 +335,27 @@ def build_report(data, prev_data, today=None):
     risky    = trips_at_risk(data, days_ahead=60)
     new_bks  = fetch_new_bookings_this_week(monday, friday)
 
-    # Proyección lineal: ritmo actual extrapolado
-    season_start = date(today.year if today.month >= 10 else today.year - 1, 10, 1)
-    season_end   = date(today.year + 1 if today.month >= 10 else today.year, 4, 30)
-    weeks_elapsed = max(1, (today - season_start).days // 7)
-    weeks_total   = (season_end - season_start).days // 7
-    weeks_left    = max(0, weeks_total - weeks_elapsed)
-    pace          = revenue / weeks_elapsed if weeks_elapsed else 0
-    projection    = revenue + pace * weeks_left
-    proj_pct      = (projection / target * 100) if target else 0
-    proj_gap      = max(0, target - projection)
+    # Proyección lineal: solo si estamos en temporada activa (Oct–Abr).
+    # Entre temporadas (May–Sep) mostramos progreso acumulado sin extrapolar.
+    in_active_season = today.month >= 10 or today.month <= 4
+    if in_active_season:
+        season_start  = date(today.year if today.month >= 10 else today.year - 1, 10, 1)
+        season_end    = date(today.year + 1 if today.month >= 10 else today.year, 4, 30)
+        weeks_elapsed = max(1, (today - season_start).days // 7)
+        weeks_total   = (season_end - season_start).days // 7
+        weeks_left    = max(0, weeks_total - weeks_elapsed)
+        pace          = revenue / weeks_elapsed if weeks_elapsed else 0
+        projection    = revenue + pace * weeks_left
+        proj_pct      = (projection / target * 100) if target else 0
+        proj_gap      = max(0, target - projection)
+        proj_label    = f"A este ritmo: <strong style=\"color:#c8a05a\">${fmt_money(projection)}</strong> al cierre de temporada"
+        proj_sub      = f"{proj_pct:.1f}% de la meta · faltan ${fmt_money(proj_gap)} en {weeks_left} semanas"
+    else:
+        # Entre temporadas — mostrar pipeline acumulado para próxima temporada
+        next_season_start = date(today.year, 10, 1)
+        days_to_next = (next_season_start - today).days
+        proj_label   = f"<strong style=\"color:#c8a05a\">${fmt_money(revenue)}</strong> ya contratado para la próxima temporada"
+        proj_sub     = f"Próxima temporada inicia el 1 de octubre · faltan {days_to_next} días"
 
     return {
         "WEEK_NUM": iso_week_num(today),
@@ -350,10 +377,8 @@ def build_report(data, prev_data, today=None):
         "BM_SALES": fmt_money(bm),
         "LV_SALES": fmt_money(lv),
         "YUC_SALES": fmt_money(yuc),
-        "PROJECTION": fmt_money(projection),
-        "PROJECTION_PCT": f"{proj_pct:.1f}",
-        "PROJECTION_GAP": fmt_money(proj_gap),
-        "WEEKS_REMAINING": weeks_left,
+        "PROJECTION_LABEL": proj_label,
+        "PROJECTION_SUB":   proj_sub,
         "NEW_BOOKINGS_SECTION": render_section_new_bookings(new_bks or []),
         "REFUNDS_SECTION": render_section_refunds(refunds),
         "RISK_SECTION": render_section_risk(risky),
