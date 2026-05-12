@@ -130,6 +130,43 @@ def _fetch_reservations(api_key: str, desde: str, hasta: str) -> list:
     return reservations
 
 
+def _fetch_reservation_full(api_key: str, reservation_id: str) -> dict:
+    """
+    Llama getReservation (singular) para obtener detalles completos.
+    A diferencia de getReservations (plural), incluye `total` (grandTotal).
+    Combinado con `balance`, podemos calcular `paid` con precisión.
+    """
+    try:
+        resp = _get("getReservation", {"reservationID": reservation_id}, api_key)
+        return resp.get("data", {}) if resp.get("success") else {}
+    except Exception:
+        return {}
+
+
+def _enrich_with_financials(api_key: str, by_id: dict) -> None:
+    """
+    Enriquece cada reservación con `paid` y `grandTotal` (modifica dicts in-place).
+    Hace una llamada singular por reservación — ~0.25s c/u, ~100s para ~400 reservas.
+    """
+    total_n = len(by_id)
+    print(f"💰 Enriqueciendo {total_n} reservas con paid/grandTotal...")
+    enriched = 0
+    for i, (rid, r) in enumerate(by_id.items(), 1):
+        if i % 50 == 0:
+            print(f"   → {i}/{total_n}")
+        full = _fetch_reservation_full(api_key, rid)
+        if not full:
+            continue
+        total = full.get("total")
+        balance = full.get("balance")
+        if total is not None:
+            r["grandTotal"] = total
+            r["paid"] = round(float(total) - float(balance or 0), 2)
+            enriched += 1
+        time.sleep(RATE_LIMIT)
+    print(f"   ✓ {enriched}/{total_n} reservas con paid/grandTotal")
+
+
 def _fetch_reservations_by_booking(api_key: str, desde: str, hasta: str) -> list:
     """
     Trae reservaciones por fecha de BOOKING (no check-in).
@@ -320,19 +357,32 @@ def fetch_cloudbeds_api(
         hasta:          Fecha fin para check-in (YYYY-MM-DD)
         desde_booking:  Fecha inicio para booking date (más atrás, captura historial de ventas)
     """
-    # 1. Reservaciones por check-in (para bal + ci_data + monthly)
+    # 1. Reservaciones por check-in y booking (dos queries con rangos distintos)
     res_checkin = _fetch_reservations(api_key, desde, hasta)
+    res_booking = _fetch_reservations_by_booking(api_key, desde_booking, hasta)
+
+    # 2. Dedupe por reservationID y enriquecer con paid/grandTotal (singular endpoint)
+    #    getReservations plural NO devuelve `paid` ni `grandTotal` — solo singular sí.
+    by_id = {}
+    for r in res_checkin + res_booking:
+        rid = r.get("reservationID")
+        if rid and rid not in by_id:
+            by_id[rid] = r
+    _enrich_with_financials(api_key, by_id)
+
+    # Las listas usan dicts compartidos via by_id; si una reservación aparece
+    # en ambas listas, la versión NO-enriquecida en la otra lista sigue stale.
+    # Re-mapeamos para asegurar que ambas listas usen los dicts enriquecidos.
+    res_checkin = [by_id.get(r.get("reservationID"), r) for r in res_checkin]
+    res_booking = [by_id.get(r.get("reservationID"), r) for r in res_booking]
+
+    # 3. Construir dicts con data enriquecida
     bal, ci_data = _build_bal_and_ci(res_checkin)
     monthly_new  = _build_monthly(res_checkin)
-
     print(f"   Balance Due: {len(bal)} fechas · Check-in: {len(ci_data)} fechas "
           f"· Monthly: {sum(len(v) for v in monthly_new.values())} meses")
 
-    # 2. Reservaciones por booking date (para weekly/daily historial de ventas)
-    # Usamos un rango más amplio para capturar todo el historial de bookings
-    res_booking = _fetch_reservations_by_booking(api_key, desde_booking, hasta)
     bk_wk, bk_pend, bk_daily = _build_booking_weekly(res_booking)
-
     print(f"   Booking weekly: {len(bk_wk)} semanas · "
           f"Pend: {len(bk_pend)} · Daily: {len(bk_daily)} días")
 

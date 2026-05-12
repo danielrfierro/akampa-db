@@ -385,27 +385,20 @@ def build_trips(bal, ci_data, existing_trips):
                 # Past trip whose ci_data dropped from the report — preserve previous
                 rooms  = prev_for_past.get('rooms', 0)
                 guests = prev_for_past.get('guests', 0)
-            # Para viajes pasados con histórico: el dato histórico (XLSX migration)
-            # es más confiable que el API (getReservations no devuelve `paid`/`grandTotal`
-            # y los rooms suelen estar limpiados después del checkout).
-            # Sólo usamos guests del API como max (puede haber late check-ins legítimos).
+            # Para viajes pasados: rooms del API es poco confiable (se limpian post-checkout).
+            # Preservamos rooms/cap/occ del histórico, pero usamos cobrado/pend del API
+            # enriquecido (que ya incluye paid via getReservation singular).
             if status == 'past' and prev_for_past:
-                rooms   = prev_for_past.get('rooms', rooms)
-                guests  = max(guests, prev_for_past.get('guests', 0))
-                cap     = prev_for_past.get('cap', 17 if rooms > 15 else 15)
-                occ     = prev_for_past.get('occ', round((rooms/cap)*100, 1) if rooms else 0)
-                cobrado = prev_for_past.get('cobrado', 0)
-                pend    = prev_for_past.get('pend', 0)
+                rooms  = prev_for_past.get('rooms', rooms)
+                guests = max(guests, prev_for_past.get('guests', 0))
+                cap    = prev_for_past.get('cap', 17 if rooms > 15 else 15)
+                occ    = prev_for_past.get('occ', round((rooms/cap)*100, 1) if rooms else 0)
             else:
-                cap     = 17 if rooms > 15 else 15
-                occ     = round((rooms / cap) * 100, 1) if rooms else 0
-                cobrado = round(max(0, fin['cobrado']))
-                pend    = round(max(0, fin['pend']))
-                # getReservations no devuelve `paid`, así que fin['cobrado'] viene en 0.
-                # Si el viaje ya tenía cobrado histórico, preservarlo como piso.
-                existing_for_trip = existing_map.get(start_s, {})
-                if existing_for_trip.get('cobrado'):
-                    cobrado = max(cobrado, existing_for_trip['cobrado'])
+                cap = 17 if rooms > 15 else 15
+                occ = round((rooms / cap) * 100, 1) if rooms else 0
+
+            cobrado = round(max(0, fin['cobrado']))
+            pend    = round(max(0, fin['pend']))
             # Total: suma directa de componentes (Grand Total puede ser distorsionado
             # por filas de corrección negativas en Cloudbeds)
             total   = cobrado + pend
