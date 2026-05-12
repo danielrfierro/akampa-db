@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Akampa · Reporte Semanal</title>
+</head>
+<body style="margin:0;padding:0;background:#f5f2ec;font-family:Arial,Helvetica,sans-serif;color:#1e2820;-webkit-text-size-adjust:100%">
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f5f2ec">
+  <tr>
+    <td align="center" style="padding:24px 12px">
+
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px;background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.05)">
+
+        <!-- Header -->
+        <tr>
+          <td style="background:#225349;padding:28px 32px">
+            <div style="font-size:11px;color:#c8a05a;letter-spacing:.18em;text-transform:uppercase;font-weight:500">Akampa · Sales Intelligence</div>
+            <div style="font-size:22px;color:#ffffff;font-weight:600;margin-top:6px;letter-spacing:-.01em">Reporte semanal</div>
+            <div style="font-size:13px;color:#a8b0a8;margin-top:2px">Semana {WEEK_NUM} · {WEEK_RANGE} (lun–vie)</div>
+          </td>
+        </tr>
+
+        <!-- KPIs -->
+        <tr>
+          <td style="padding:24px 32px 8px">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td width="32%" valign="top" style="background:#f5f2ec;border-radius:6px;padding:14px">
+                  <div style="font-size:9px;color:#7a6e58;letter-spacing:.12em;text-transform:uppercase">Ventas netas</div>
+                  <div style="font-size:22px;color:#9a6e28;font-weight:700;margin-top:6px">${SALES_NET}</div>
+                  <div style="font-size:11px;color:{DELTA_COLOR};margin-top:2px;font-weight:600">{DELTA_ARROW} {DELTA_PCT} vs S{PREV_WEEK_NUM}</div>
+                </td>
+                <td width="2%"></td>
+                <td width="32%" valign="top" style="background:#f5f2ec;border-radius:6px;padding:14px">
+                  <div style="font-size:9px;color:#7a6e58;letter-spacing:.12em;text-transform:uppercase">Pendiente</div>
+                  <div style="font-size:22px;color:#9a6e28;font-weight:700;margin-top:6px">${PIPELINE_PEND}</div>
+                  <div style="font-size:11px;color:#7a6e58;margin-top:2px">{PIPELINE_COUNT} reservas</div>
+                </td>
+                <td width="2%"></td>
+                <td width="32%" valign="top" style="background:#f5f2ec;border-radius:6px;padding:14px">
+                  <div style="font-size:9px;color:#7a6e58;letter-spacing:.12em;text-transform:uppercase">Meta temporada</div>
+                  <div style="font-size:22px;color:#9a6e28;font-weight:700;margin-top:6px">{META_PCT}%</div>
+                  <div style="font-size:11px;color:#7a6e58;margin-top:2px">${META_REVENUE} / ${META_TARGET}</div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Breakdown por destino -->
+        <tr>
+          <td style="padding:24px 32px 8px">
+            <h2 style="font-size:11px;color:#9a6e28;letter-spacing:.14em;text-transform:uppercase;margin:0 0 12px;font-weight:600">Ventas por destino · Esta semana</h2>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+              <tr>
+                <td style="padding:10px 0;border-bottom:1px solid #e4ddd0;font-size:13px;color:#1e2820">🐋 Bahía Magdalena</td>
+                <td style="padding:10px 0;border-bottom:1px solid #e4ddd0;font-size:13px;text-align:right;color:#1e2820;font-weight:600">${BM_SALES}</td>
+              </tr>
+              <tr>
+                <td style="padding:10px 0;border-bottom:1px solid #e4ddd0;font-size:13px;color:#1e2820">🪁 La Ventana</td>
+                <td style="padding:10px 0;border-bottom:1px solid #e4ddd0;font-size:13px;text-align:right;color:#1e2820;font-weight:600">${LV_SALES}</td>
+              </tr>
+              <tr>
+                <td style="padding:10px 0;font-size:13px;color:#1e2820">🌊 Yucatán</td>
+                <td style="padding:10px 0;font-size:13px;text-align:right;color:#1e2820;font-weight:600">${YUC_SALES}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Nuevos bookings -->
+        {NEW_BOOKINGS_SECTION}
+
+        <!-- Refunds -->
+        {REFUNDS_SECTION}
+
+        <!-- Trips en riesgo -->
+        {RISK_SECTION}
+
+        <!-- Proyección -->
+        <tr>
+          <td style="padding:24px 32px 8px">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#225349;border-radius:6px">
+              <tr>
+                <td style="padding:16px 20px">
+                  <div style="font-size:10px;color:#c8a05a;letter-spacing:.12em;text-transform:uppercase">Proyección de cierre</div>
+                  <div style="font-size:16px;color:#ffffff;margin-top:4px">A este ritmo: <strong style="color:#c8a05a">${PROJECTION}</strong> al cierre de temporada</div>
+                  <div style="font-size:11px;color:#a8b0a8;margin-top:4px">{PROJECTION_PCT}% de la meta · faltan ${PROJECTION_GAP} en {WEEKS_REMAINING} semanas</div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td style="background:#225349;padding:20px 32px;text-align:center">
+            <a href="https://sales.akampa.mx" style="display:inline-block;color:#c8a05a;text-decoration:none;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;padding:10px 18px;border:1px solid #c8a05a;border-radius:4px">Ver dashboard completo →</a>
+            <div style="font-size:10px;color:#8a9088;margin-top:16px;letter-spacing:.05em">
+              Generado por Capitán Nacho · Akampa Sales Intelligence
+            </div>
+          </td>
+        </tr>
+
+      </table>
+
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

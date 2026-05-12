@@ -1,0 +1,29 @@
+name: Weekly Digest
+
+on:
+  schedule:
+    # Viernes 11:00am hora México (UTC-6) = 17:00 UTC
+    - cron: '0 17 * * 5'
+  workflow_dispatch:   # permite disparar manualmente desde GitHub UI
+
+jobs:
+  send-digest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # necesitamos historial para detectar refunds vs hace 7 días
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Enviar reporte semanal
+        env:
+          RESEND_API_KEY:    ${{ secrets.RESEND_API_KEY }}
+          DIGEST_FROM:       ${{ vars.DIGEST_FROM }}
+          DIGEST_TO:         ${{ vars.DIGEST_TO }}
+          CLOUDBEDS_API_KEY: ${{ secrets.CLOUDBEDS_API_KEY }}
+        run: python scripts/weekly_digest.py
