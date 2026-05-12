@@ -192,7 +192,8 @@ def fetch_new_bookings_this_week(monday, friday):
         return None
     try:
         sys.path.insert(0, str(Path(__file__).parent))
-        from cloudbeds_api import _get_all_pages
+        from cloudbeds_api import _get_all_pages, _fetch_reservation_full
+        import time as _time
         # Fetch amplio y filtramos en Python
         params = {
             "bookingDateFrom": monday.isoformat(),
@@ -212,6 +213,16 @@ def fetch_new_bookings_this_week(monday, friday):
                 continue
             if monday <= d <= friday:
                 filtered.append(r)
+        # Enriquecer cada uno con `total` (grandTotal) via singular endpoint
+        # para mostrar el monto FULL de la reserva, no solo balance.
+        for r in filtered:
+            rid = r.get("reservationID")
+            if not rid:
+                continue
+            full = _fetch_reservation_full(api_key, rid)
+            if full and full.get("total") is not None:
+                r["grandTotal"] = full["total"]
+            _time.sleep(0.25)
         return filtered
     except Exception as e:
         print(f"   ⚠ no se pudo fetchear nuevos bookings: {e}", file=sys.stderr)
@@ -222,10 +233,10 @@ def fetch_new_bookings_this_week(monday, friday):
 def render_section_new_bookings(reservations):
     if not reservations:
         return ""
-    # Ordenar por balance + paid (total payment commitment) descendente
+    # Ordenar por grandTotal (monto completo de la reserva) descendente
     def total(r):
         try:
-            return float(r.get("balance") or 0)
+            return float(r.get("grandTotal") or r.get("balance") or 0)
         except (TypeError, ValueError):
             return 0
     top = sorted(reservations, key=total, reverse=True)[:3]
@@ -335,27 +346,15 @@ def build_report(data, prev_data, today=None):
     risky    = trips_at_risk(data, days_ahead=60)
     new_bks  = fetch_new_bookings_this_week(monday, friday)
 
-    # Proyección lineal: solo si estamos en temporada activa (Oct–Abr).
-    # Entre temporadas (May–Sep) mostramos progreso acumulado sin extrapolar.
-    in_active_season = today.month >= 10 or today.month <= 4
-    if in_active_season:
-        season_start  = date(today.year if today.month >= 10 else today.year - 1, 10, 1)
-        season_end    = date(today.year + 1 if today.month >= 10 else today.year, 4, 30)
-        weeks_elapsed = max(1, (today - season_start).days // 7)
-        weeks_total   = (season_end - season_start).days // 7
-        weeks_left    = max(0, weeks_total - weeks_elapsed)
-        pace          = revenue / weeks_elapsed if weeks_elapsed else 0
-        projection    = revenue + pace * weeks_left
-        proj_pct      = (projection / target * 100) if target else 0
-        proj_gap      = max(0, target - projection)
-        proj_label    = f"A este ritmo: <strong style=\"color:#c8a05a\">${fmt_money(projection)}</strong> al cierre de temporada"
-        proj_sub      = f"{proj_pct:.1f}% de la meta · faltan ${fmt_money(proj_gap)} en {weeks_left} semanas"
-    else:
-        # Entre temporadas — mostrar pipeline acumulado para próxima temporada
-        next_season_start = date(today.year, 10, 1)
-        days_to_next = (next_season_start - today).days
-        proj_label   = f"<strong style=\"color:#c8a05a\">${fmt_money(revenue)}</strong> ya contratado para la próxima temporada"
-        proj_sub     = f"Próxima temporada inicia el 1 de octubre · faltan {days_to_next} días"
+    # Proyección anual: % de meta anual alcanzado con lo ya contratado
+    # (cobrado + pendiente). Sin extrapolación lineal porque la estacionalidad
+    # de Akampa la haría engañosa.
+    year_end = date(today.year, 12, 31)
+    days_remaining_year = (year_end - today).days
+    proj_pct = (revenue / target * 100) if target else 0
+    proj_gap = max(0, target - revenue)
+    proj_label = f"<strong style=\"color:#c8a05a\">${fmt_money(revenue)}</strong> contratado · {proj_pct:.1f}% de meta anual"
+    proj_sub   = f"Faltan ${fmt_money(proj_gap)} para cerrar ${fmt_money(target)} · {days_remaining_year} días restantes del año"
 
     return {
         "WEEK_NUM": iso_week_num(today),
