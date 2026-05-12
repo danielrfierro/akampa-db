@@ -161,34 +161,38 @@ def _build_bal_and_ci(reservations: list) -> tuple[dict, dict]:
         if "cancel" in status:
             continue
 
-        ci = _parse_date(r.get("checkIn"))
+        # Cloudbeds getReservations devuelve startDate/endDate (no checkIn/checkOut)
+        ci = _parse_date(r.get("startDate") or r.get("checkIn"))
         if not ci:
             continue
 
-        # Financiero
+        # Financiero — getReservations solo trae balance (no paid ni grandTotal).
+        # Esos campos requieren llamada singular a getReservation/{id}.
         try:
-            grand  = float(r.get("grandTotal", 0) or 0)
-            paid   = float(r.get("paid", 0) or 0)
-            balance= float(r.get("balance", r.get("balanceDue", 0)) or 0)
+            grand   = float(r.get("grandTotal") or 0)
+            paid    = float(r.get("paid") or 0)
+            balance = float(r.get("balance") or r.get("balanceDue") or 0)
         except (TypeError, ValueError):
             continue
 
-        bal[ci]["total"]   += grand
+        bal[ci]["total"]   += (grand or balance)  # si no hay grandTotal, balance es el total facturado pendiente
         bal[ci]["cobrado"] += paid
         bal[ci]["pend"]    += balance
 
-        # Huéspedes y habitaciones
-        # Cloudbeds puede devolver adults/children a nivel reserva o por room
-        adults   = int(r.get("adults",   0) or 0)
-        children = int(r.get("children", 0) or 0)
+        # Huéspedes (vienen como string en algunos casos)
+        adults   = int(r.get("adults") or 0)
+        children = int(r.get("children") or 0)
         guests   = adults + children
-        if guests == 0:
-            # Intentar sumar desde rooms_details si está disponible
-            for room in r.get("rooms", []):
-                guests += int(room.get("adults", 0) or 0)
-                guests += int(room.get("children", 0) or 0)
 
-        rooms_count = len(r.get("rooms", [])) or int(r.get("roomsBooked", 1) or 1)
+        # Habitaciones — rooms a nivel reserva suele venir vacío para nuevas reservas;
+        # buscamos en guestList[*].unassignedRooms o rooms
+        rooms_count = len(r.get("rooms") or [])
+        if not rooms_count:
+            for g in (r.get("guestList") or {}).values():
+                rooms_count += len(g.get("unassignedRooms") or [])
+                rooms_count += len(g.get("rooms") or [])
+        if not rooms_count:
+            rooms_count = 1  # fallback: asumir mínimo 1 habitación
 
         ci_data[ci]["guests"] += guests
         ci_data[ci]["rooms"]  += rooms_count
@@ -262,17 +266,17 @@ def _build_monthly(reservations: list) -> dict:
         status = str(r.get("status", "")).strip().lower()
         if "cancel" in status:
             continue
-        ci = _parse_date(r.get("checkIn"))
+        ci = _parse_date(r.get("startDate") or r.get("checkIn"))
         if not ci:
             continue
         ym = f"{ci.year}-{str(ci.month).zfill(2)}"
         try:
-            paid = float(r.get("paid", 0) or 0)
+            paid = float(r.get("paid") or 0)
         except (TypeError, ValueError):
             paid = 0.0
 
-        adults   = int(r.get("adults", 0) or 0)
-        children = int(r.get("children", 0) or 0)
+        adults   = int(r.get("adults") or 0)
+        children = int(r.get("children") or 0)
         guests   = adults + children or 1
 
         by_month[ym]["guests"]       += guests
