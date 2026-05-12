@@ -97,7 +97,11 @@ export default {
         body: JSON.stringify({
           systemInstruction,
           contents,
-          generationConfig: { temperature: 0.2, maxOutputTokens: 1024 }
+          generationConfig: {
+            temperature: 0.2,
+            maxOutputTokens: 2048,
+            thinkingConfig: { thinkingBudget: 0 }
+          }
         })
       });
     } catch (err) {
