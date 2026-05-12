@@ -417,7 +417,10 @@ def send_email(subject, html, dry_run=False):
             print(f"✅ Email enviado · id: {result.get('id')}")
     except urllib.error.HTTPError as e:
         body = e.read().decode(errors="replace")
-        raise SystemExit(f"❌ Resend {e.code}: {body[:500]}")
+        print(f"❌ Resend HTTP {e.code}")
+        print(f"   Response headers: {dict(e.headers)}")
+        print(f"   Response body (raw): {body!r}")
+        raise SystemExit(1)
 
 
 def main():
