@@ -346,15 +346,45 @@ def build_report(data, prev_data, today=None):
     risky    = trips_at_risk(data, days_ahead=60)
     new_bks  = fetch_new_bookings_this_week(monday, friday)
 
-    # Proyección anual: % de meta anual alcanzado con lo ya contratado
-    # (cobrado + pendiente). Sin extrapolación lineal porque la estacionalidad
-    # de Akampa la haría engañosa.
-    year_end = date(today.year, 12, 31)
+    # Forecast anual: revenue actual contratado + extrapolación del ritmo
+    # de nuevas ventas YTD. Es directional (la estacionalidad lo afecta).
+    year_start = date(today.year, 1, 1)
+    year_end   = date(today.year, 12, 31)
+    days_elapsed = max(1, (today - year_start).days + 1)
     days_remaining_year = (year_end - today).days
-    proj_pct = (revenue / target * 100) if target else 0
-    proj_gap = max(0, target - revenue)
-    proj_label = f"<strong style=\"color:#c8a05a\">${fmt_money(revenue)}</strong> contratado · {proj_pct:.1f}% de meta anual"
-    proj_sub   = f"Faltan ${fmt_money(proj_gap)} para cerrar ${fmt_money(target)} · {days_remaining_year} días restantes del año"
+
+    # Pace YTD: sumar todo lo que cayó como pago en este año calendario
+    ytd_paid = 0
+    for k, v in data["bahia_mag"].get("daily", {}).items():
+        try:
+            d = parse_date(k)
+            if d.year == today.year and d <= today:
+                ytd_paid += v
+        except (KeyError, ValueError):
+            continue
+    for t in data.get("la_ventana", {}).get("trips", []):
+        for p in t.get("payments", []):
+            try:
+                d = parse_date(p.get("date", ""))
+                if d.year == today.year and d <= today:
+                    ytd_paid += p.get("amount", 0) or 0
+            except (KeyError, ValueError):
+                continue
+    for t in data.get("yucatan", {}).get("trips", []):
+        for p in t.get("payments", []):
+            try:
+                d = parse_date(p.get("date", ""))
+                if d.year == today.year and d <= today:
+                    ytd_paid += p.get("amount", 0) or 0
+            except (KeyError, ValueError):
+                continue
+
+    pace_per_day = ytd_paid / days_elapsed
+    forecast = revenue + pace_per_day * days_remaining_year
+    proj_pct = (forecast / target * 100) if target else 0
+    proj_gap = max(0, target - forecast)
+    proj_label = f"A este ritmo: <strong style=\"color:#c8a05a\">${fmt_money(forecast)}</strong> estimado al cierre del año"
+    proj_sub   = f"{proj_pct:.1f}% de meta anual · ${fmt_money(revenue)} ya contratado · faltan ${fmt_money(proj_gap)} para ${fmt_money(target)}"
 
     return {
         "WEEK_NUM": iso_week_num(today),
