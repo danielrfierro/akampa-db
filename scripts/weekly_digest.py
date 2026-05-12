@@ -377,6 +377,10 @@ def send_email(subject, html, dry_run=False):
     sender  = os.environ.get("DIGEST_FROM", "onboarding@resend.dev")
     to_raw  = os.environ.get("DIGEST_TO", "daniel@akampa.mx")
     recipients = [e.strip() for e in to_raw.split(",") if e.strip()]
+    # Debug: confirma qué valores leyó el workflow
+    print(f"   📨 from: {sender}")
+    print(f"   📨 to:   {recipients}")
+    print(f"   🔑 api_key: {'set ('+api_key[:6]+'...)' if api_key else 'MISSING'}")
 
     if dry_run:
         print(f"--- DRY RUN ---")
