@@ -3,7 +3,7 @@
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-05-14 10:28",
+    "last_updated": "2026-05-14 11:45",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -986,36 +986,6 @@ window.AKAMPA_DATA = {
       }
     ],
     "monthly": {
-      "2025-2026": [
-        {
-          "m": "Ene",
-          "g": 59,
-          "occ": 0,
-          "rpg": 25890,
-          "rev": 1527487
-        },
-        {
-          "m": "Feb",
-          "g": 157,
-          "occ": 0,
-          "rpg": 21039,
-          "rev": 3303138
-        },
-        {
-          "m": "Mar",
-          "g": 130,
-          "occ": 0,
-          "rpg": 23130,
-          "rev": 3006847
-        },
-        {
-          "m": "Abr",
-          "g": 72,
-          "occ": 0,
-          "rpg": 24483,
-          "rev": 1762780
-        }
-      ],
       "2026-2027": [
         {
           "m": "Oct",
@@ -1051,6 +1021,36 @@ window.AKAMPA_DATA = {
           "occ": 0.38,
           "rpg": 9692,
           "rev": 38767
+        }
+      ],
+      "2025-2026": [
+        {
+          "m": "Ene",
+          "g": 59,
+          "occ": 0,
+          "rpg": 25890,
+          "rev": 1527487
+        },
+        {
+          "m": "Feb",
+          "g": 157,
+          "occ": 0,
+          "rpg": 21039,
+          "rev": 3303138
+        },
+        {
+          "m": "Mar",
+          "g": 130,
+          "occ": 0,
+          "rpg": 23130,
+          "rev": 3006847
+        },
+        {
+          "m": "Abr",
+          "g": 72,
+          "occ": 0,
+          "rpg": 24483,
+          "rev": 1762780
         }
       ]
     },
@@ -1373,18 +1373,37 @@ window.AKAMPA_DATA = {
         "status": "future",
         "payments": [
           {
+            "date": "2026-05-13",
+            "amount": 12750.0,
+            "participants": [
+              "Rodrigo Enecoiz"
+            ]
+          },
+          {
+            "date": "2026-05-12",
+            "amount": 45000.0,
+            "participants": [
+              "RAFAEL BELTRAN LOPEZ",
+              "Margarita Sanchez Rios"
+            ]
+          },
+          {
+            "date": "2026-05-11",
+            "amount": 20500.0,
+            "participants": [
+              "Maria Patricia Garcia",
+              "Maria Patricia Garcia",
+              "María Patricia García Kern (Canceled)",
+              "María Patricia García Kern (Canceled)",
+              "María Patricia García Kern (Canceled)",
+              "María Patricia García Kern (Canceled)"
+            ]
+          },
+          {
             "date": "2026-05-08",
             "amount": 25500.0,
             "participants": [
               "MELBA ASTRID PEREZ SALDAÑA"
-            ]
-          },
-          {
-            "date": "2026-05-06",
-            "amount": 20500.0,
-            "participants": [
-              "María Patricia García Kern",
-              "María Patricia García Kern"
             ]
           },
           {
@@ -1447,6 +1466,13 @@ window.AKAMPA_DATA = {
         "cap": 30,
         "status": "future",
         "payments": [
+          {
+            "date": "2026-05-13",
+            "amount": 12750.0,
+            "participants": [
+              "Tanya Garza"
+            ]
+          },
           {
             "date": "2026-05-08",
             "amount": 81000.0,
@@ -1514,6 +1540,30 @@ window.AKAMPA_DATA = {
         "cap": 30,
         "status": "future",
         "payments": [
+          {
+            "date": "2026-05-12",
+            "amount": 22500.0,
+            "participants": [
+              "Alexis Navarro Flores",
+              "Hans del Valle Manzano"
+            ]
+          },
+          {
+            "date": "2026-05-12",
+            "amount": 22500.0,
+            "participants": [
+              "Daniel Alberto Ríos Anaya",
+              "Melissa Araiza"
+            ]
+          },
+          {
+            "date": "2026-05-11",
+            "amount": 22500.0,
+            "participants": [
+              "Macarena Olavarri",
+              "Isabel Fernández"
+            ]
+          },
           {
             "date": "2026-05-08",
             "amount": 22500.0,
