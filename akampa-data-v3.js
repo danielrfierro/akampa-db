@@ -3,7 +3,7 @@
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-05-15 11:40",
+    "last_updated": "2026-05-15 11:47",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
