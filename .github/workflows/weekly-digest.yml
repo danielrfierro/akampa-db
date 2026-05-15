@@ -2,8 +2,10 @@ name: Weekly Digest
 
 on:
   schedule:
-    # Viernes 11:00am hora México (UTC-6) = 17:00 UTC
-    - cron: '0 17 * * 5'
+    # Viernes 11:17am hora México (UTC-6) = 17:17 UTC
+    # Minuto :17 en lugar de :00 para evitar la cola masiva de jobs que GitHub
+    # encola en horas en punto — sube la confiabilidad del schedule.
+    - cron: '17 17 * * 5'
   workflow_dispatch:   # permite disparar manualmente desde GitHub UI
 
 jobs:
