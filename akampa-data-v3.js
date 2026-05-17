@@ -1,9 +1,9 @@
-// akampa-data-v3.js — generado 2026-05-16
+// akampa-data-v3.js — generado 2026-05-17
 // Solo expone window.AKAMPA_DATA (sin conflictos de scope)
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-05-16 09:34",
+    "last_updated": "2026-05-17 09:36",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -986,6 +986,36 @@ window.AKAMPA_DATA = {
       }
     ],
     "monthly": {
+      "2025-2026": [
+        {
+          "m": "Ene",
+          "g": 59,
+          "occ": 0,
+          "rpg": 25890,
+          "rev": 1527487
+        },
+        {
+          "m": "Feb",
+          "g": 157,
+          "occ": 0,
+          "rpg": 21039,
+          "rev": 3303138
+        },
+        {
+          "m": "Mar",
+          "g": 130,
+          "occ": 0,
+          "rpg": 23130,
+          "rev": 3006847
+        },
+        {
+          "m": "Abr",
+          "g": 72,
+          "occ": 0,
+          "rpg": 24483,
+          "rev": 1762780
+        }
+      ],
       "2026-2027": [
         {
           "m": "Oct",
@@ -1021,36 +1051,6 @@ window.AKAMPA_DATA = {
           "occ": 0.38,
           "rpg": 9692,
           "rev": 38767
-        }
-      ],
-      "2025-2026": [
-        {
-          "m": "Ene",
-          "g": 59,
-          "occ": 0,
-          "rpg": 25890,
-          "rev": 1527487
-        },
-        {
-          "m": "Feb",
-          "g": 157,
-          "occ": 0,
-          "rpg": 21039,
-          "rev": 3303138
-        },
-        {
-          "m": "Mar",
-          "g": 130,
-          "occ": 0,
-          "rpg": 23130,
-          "rev": 3006847
-        },
-        {
-          "m": "Abr",
-          "g": 72,
-          "occ": 0,
-          "rpg": 24483,
-          "rev": 1762780
         }
       ]
     },
