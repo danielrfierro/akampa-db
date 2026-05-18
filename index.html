@@ -107,6 +107,19 @@ html.light .theme-toggle::after{transform:translateX(16px)}
 .wt-btn-upload:hover{background:#3d8fe0}
 .wt-btn-upload:disabled{opacity:.45;cursor:not-allowed}
 .wt-status{font-size:10px;color:var(--gold);margin-top:10px;min-height:16px;text-align:center}
+.wt-preview{margin-top:14px;padding:12px 14px;border:1px solid var(--border);border-radius:6px;background:var(--surface2);font-size:11px;color:var(--text);max-height:240px;overflow-y:auto}
+.wt-preview-head{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.wt-preview-empty{font-size:11px;color:var(--ok);text-align:center;padding:6px 0}
+.wt-preview-warn{font-size:10px;color:var(--danger);text-align:center;padding:6px 0}
+.wt-diff-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-top:1px dashed var(--border);gap:10px}
+.wt-diff-row:first-of-type{border-top:none}
+.wt-diff-name{font-size:11px;color:var(--text);flex:1;min-width:0}
+.wt-diff-dates{font-size:9px;color:var(--dim);margin-left:6px}
+.wt-diff-stats{font-size:10px;color:var(--muted);white-space:nowrap;font-family:'JetBrains Mono',ui-monospace,monospace}
+.wt-diff-delta{font-weight:600}
+.wt-diff-delta.up{color:var(--ok)}
+.wt-diff-delta.down{color:var(--danger)}
+.wt-diff-new-tag{display:inline-block;font-size:8px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:1px 6px;border-radius:3px;background:var(--gold-dim);color:var(--gold);margin-right:6px}
 
 /* ── MAIN ──────────────────────────────────────── */
 main{padding:0 28px 48px;max-width:1400px;margin:0 auto;width:100%}
@@ -476,6 +489,7 @@ html.light .date-input::-webkit-calendar-picker-indicator{filter:none}
     document.documentElement.classList.add('light');
   }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -900,6 +914,22 @@ const isMobile = () => window.innerWidth < 768;
 const MNS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 const fmtD = d => { const [y,m,day] = d.split('-'); return `${+day} ${MNS[+m-1]}`; };
 
+// Cuenta participantes WeTravel: por nombre toma el máximo de veces que aparece
+// en algún payment; suma esos máximos. Maneja el caso "Mauricio, Mauricio"
+// (mismo booking, 2 cupos, comprador no llenó el nombre del acompañante) sin
+// romper "Daniel + Melissa" pagando en cuotas (mismo grupo, no contar doble).
+function countPax(payments) {
+  const maxPerName = new Map();
+  for (const p of payments || []) {
+    const c = new Map();
+    for (const n of p.participants || []) c.set(n, (c.get(n)||0)+1);
+    for (const [n,k] of c) maxPerName.set(n, Math.max(maxPerName.get(n)||0, k));
+  }
+  let total = 0;
+  for (const v of maxPerName.values()) total += v;
+  return total;
+}
+
 function isoWeek(dateStr) {
   // Returns 'YYYY-Www' for a date string
   const d = new Date(dateStr + 'T12:00:00');
@@ -1027,7 +1057,7 @@ function renderKPIs() {
   if (dest === 'gen' || dest === 'lv') {
     LV_TRIPS.forEach(t => {
       const amt = t.payments.reduce((s,p)=>s+p.amount,0);
-      const pax = new Set(t.payments.flatMap(p=>p.participants)).size;
+      const pax = countPax(t.payments);
       rev     += amt; cobrado += amt;
       guests  += pax; trips++;
     });
@@ -1035,7 +1065,7 @@ function renderKPIs() {
   if (dest === 'gen' || dest === 'yuc') {
     YUC_TRIPS.forEach(t => {
       const amt = t.payments.reduce((s,p)=>s+p.amount,0);
-      const pax = new Set(t.payments.flatMap(p=>p.participants)).size;
+      const pax = countPax(t.payments);
       rev     += amt; cobrado += amt;
       guests  += pax; trips++;
     });
@@ -1171,8 +1201,8 @@ function renderGeneral() {
   const yucPct = allTot > 0 ? Math.round(yucTot / allTot * 100) : 0;
 
   const bmGuests = BM_TRIPS.reduce((s,t)=>s+t.guests,0);
-  const lvPax    = new Set(LV_TRIPS.flatMap(t=>t.payments.flatMap(p=>p.participants))).size;
-  const yucPax   = new Set(YUC_TRIPS.flatMap(t=>t.payments.flatMap(p=>p.participants))).size;
+  const lvPax    = countPax(LV_TRIPS.flatMap(t=>t.payments));
+  const yucPax   = countPax(YUC_TRIPS.flatMap(t=>t.payments));
 
   document.getElementById('content-gen').innerHTML = `
     <div class="gen-dest-grid">
@@ -1473,15 +1503,15 @@ function renderBMMonthly() {
 // ════════════════════════════════════════════════════════════════
 function renderLV() {
   const totalRev = LV_TRIPS.reduce((s,t)=>s+t.payments.reduce((ss,p)=>ss+p.amount,0),0);
-  const totalPax = new Set(LV_TRIPS.flatMap(t=>t.payments.flatMap(p=>p.participants))).size;
+  const totalPax = countPax(LV_TRIPS.flatMap(t=>t.payments));
 
   const cards = LV_TRIPS.map(t => {
     const rev  = t.payments.reduce((s,p)=>s+p.amount,0);
     const grossSum  = t.payments.reduce((s,p)=>s+(p.gross  || p.amount),0);
     const refundSum = t.payments.reduce((s,p)=>s+(p.refund || 0),0);
     const refundCount = t.payments.filter(p => p.refund).length;
-    const pax  = new Set(t.payments.flatMap(p=>p.participants));
-    const fill = Math.round(pax.size / t.cap * 100);
+    const pax  = countPax(t.payments);
+    const fill = Math.round(pax / t.cap * 100);
     const badge = t.status==='past' ? 'past' : t.status==='next' ? 'next' : 'future';
     const badgeTxt = t.status==='past' ? 'Concluido' : t.status==='next' ? 'Próximo' : 'Próximamente';
     const refundNote = refundSum > 0
@@ -1504,11 +1534,11 @@ function renderLV() {
       </div>
       <div class="wt-metrics">
         <div><div class="wt-metric-label">Cobrado</div><div class="wt-metric-val rev">$${nM(rev)}</div>${refundNote}</div>
-        <div><div class="wt-metric-label">Participantes</div><div class="wt-metric-val">${pax.size}<span style="font-size:10px;color:var(--muted)">/${t.cap}</span></div></div>
+        <div><div class="wt-metric-label">Participantes</div><div class="wt-metric-val">${pax}<span style="font-size:10px;color:var(--muted)">/${t.cap}</span></div></div>
         <div><div class="wt-metric-label">Llenado</div><div class="wt-metric-val">${fill}%</div></div>
       </div>
       <div class="wt-fill-bar"><div class="wt-fill-fill" style="width:${fill}%"></div></div>
-      <div class="wt-fill-label">${pax.size} de ${t.cap} lugares · ${t.cap - pax.size} disponibles</div>
+      <div class="wt-fill-label">${pax} de ${t.cap} lugares · ${t.cap - pax} disponibles</div>
       <div class="wt-payments"><div class="wk-label" style="margin-bottom:6px;font-size:9px">Pagos recibidos</div>${pymtRows}</div>
     </div>`;
   }).join('');
@@ -1538,15 +1568,15 @@ function renderYuc() {
   }
 
   const totalRev = YUC_TRIPS.reduce((s,t)=>s+t.payments.reduce((ss,p)=>ss+p.amount,0),0);
-  const totalPax = new Set(YUC_TRIPS.flatMap(t=>t.payments.flatMap(p=>p.participants))).size;
+  const totalPax = countPax(YUC_TRIPS.flatMap(t=>t.payments));
 
   const cards = YUC_TRIPS.map(t => {
     const rev  = t.payments.reduce((s,p)=>s+p.amount,0);
     const grossSum  = t.payments.reduce((s,p)=>s+(p.gross  || p.amount),0);
     const refundSum = t.payments.reduce((s,p)=>s+(p.refund || 0),0);
     const refundCount = t.payments.filter(p => p.refund).length;
-    const pax  = new Set(t.payments.flatMap(p=>p.participants));
-    const fill = Math.round(pax.size / t.cap * 100);
+    const pax  = countPax(t.payments);
+    const fill = Math.round(pax / t.cap * 100);
     const badge = t.status==='past' ? 'past' : t.status==='next' ? 'next' : 'future';
     const badgeTxt = t.status==='past' ? 'Concluido' : t.status==='next' ? 'Próximo' : 'Próximamente';
     const refundNote = refundSum > 0
@@ -1569,11 +1599,11 @@ function renderYuc() {
       </div>
       <div class="wt-metrics">
         <div><div class="wt-metric-label">Cobrado</div><div class="wt-metric-val rev">$${nM(rev)}</div>${refundNote}</div>
-        <div><div class="wt-metric-label">Participantes</div><div class="wt-metric-val">${pax.size}<span style="font-size:10px;color:var(--muted)">/${t.cap}</span></div></div>
+        <div><div class="wt-metric-label">Participantes</div><div class="wt-metric-val">${pax}<span style="font-size:10px;color:var(--muted)">/${t.cap}</span></div></div>
         <div><div class="wt-metric-label">Llenado</div><div class="wt-metric-val">${fill}%</div></div>
       </div>
       <div class="wt-fill-bar"><div class="wt-fill-fill" style="width:${fill}%"></div></div>
-      <div class="wt-fill-label">${pax.size} de ${t.cap} lugares · ${t.cap - pax.size} disponibles</div>
+      <div class="wt-fill-label">${pax} de ${t.cap} lugares · ${t.cap - pax} disponibles</div>
       <div class="wt-payments"><div class="wk-label" style="margin-bottom:6px;font-size:9px">Pagos recibidos</div>${pymtRows}</div>
     </div>`;
   }).join('');
@@ -1846,6 +1876,7 @@ async function triggerSync() {
       </div>
     </div>
 
+    <div class="wt-preview" id="wt-preview" style="display:none"></div>
     <div class="wt-status" id="wt-status"></div>
 
     <div class="wt-actions">
@@ -1854,7 +1885,7 @@ async function triggerSync() {
         <ul id="wt-log-list"><li style="color:var(--dim)">Cargando…</li></ul>
       </div>
       <button class="wt-btn-cancel" onclick="closeWTModal(null)">Cancelar</button>
-      <button class="wt-btn-upload" id="wt-upload-btn" onclick="uploadWeTravel()" disabled>Subir y Sincronizar</button>
+      <button class="wt-btn-upload" id="wt-upload-btn" onclick="uploadWeTravel()" disabled>Confirmar y subir</button>
     </div>
   </div>
 </div>
@@ -1893,6 +1924,9 @@ function closeWTModal(e) {
     document.getElementById('zone-wt').classList.remove('has-file');
     document.getElementById('wt-file-name').textContent = '';
     document.getElementById('wt-status').textContent = '';
+    const preview = document.getElementById('wt-preview');
+    preview.style.display = 'none';
+    preview.innerHTML = '';
     document.getElementById('wt-upload-btn').disabled = true;
   }
 }
@@ -1915,11 +1949,163 @@ function handleFileSelect(e) {
   const file = e.target.files[0];
   if (file) setWTFile(file);
 }
-function setWTFile(file) {
+async function setWTFile(file) {
   WT_FILE.current = file;
   document.getElementById('zone-wt').classList.add('has-file');
   document.getElementById('wt-file-name').textContent = `✓ ${file.name}`;
-  document.getElementById('wt-upload-btn').disabled = false;
+
+  const preview = document.getElementById('wt-preview');
+  const btn     = document.getElementById('wt-upload-btn');
+  preview.style.display = 'block';
+  preview.innerHTML = '<div class="wt-preview-empty" style="color:var(--muted)">Analizando archivo…</div>';
+  btn.disabled = true;
+
+  try {
+    const parsed = await parseWeTravelXlsx(file);
+    const diff   = computeWTDiff(parsed);
+    preview.innerHTML = renderWTPreview(parsed, diff);
+    btn.disabled = false;
+  } catch (err) {
+    preview.innerHTML = `<div class="wt-preview-warn">❌ ${err.message}</div>`;
+    btn.disabled = true;
+  }
+}
+
+// ── XLSX parser (replica scripts/akampa_processor_v3.py parse_wetravel) ─
+const WT_MES = {enero:'01',febrero:'02',marzo:'03',abril:'04',mayo:'05',junio:'06',julio:'07',agosto:'08',septiembre:'09',octubre:'10',noviembre:'11',diciembre:'12'};
+
+function _extractTripDates(name) {
+  // Patrón B: "D1 MES1 - D2 MES2 YYYY"
+  let m = name.match(/\((\d+)\s+(\w+)\s*[-–]\s*(\d+)\s+(\w+)\s+(\d{4})/i);
+  if (m) {
+    const mo1 = WT_MES[m[2].toLowerCase()], mo2 = WT_MES[m[4].toLowerCase()];
+    if (mo1 && mo2) return [`${m[5]}-${mo1}-${String(m[1]).padStart(2,'0')}`, `${m[5]}-${mo2}-${String(m[3]).padStart(2,'0')}`];
+  }
+  // Patrón A: "D1-D2 MES YYYY"
+  m = name.match(/\((\d+)[- ]+(\d+)\s+(\w+)\s+(\d{4})/i);
+  if (m) {
+    const mo = WT_MES[m[3].toLowerCase()];
+    if (mo) return [`${m[4]}-${mo}-${String(m[1]).padStart(2,'0')}`, `${m[4]}-${mo}-${String(m[2]).padStart(2,'0')}`];
+  }
+  // Patrón C: "D MES YYYY"
+  m = name.match(/\((\d+)\s+(\w+)\s+(\d{4})/i);
+  if (m) {
+    const mo = WT_MES[m[2].toLowerCase()];
+    if (mo) return [`${m[3]}-${mo}-${String(m[1]).padStart(2,'0')}`, `${m[3]}-${mo}-${String(m[1]).padStart(2,'0')}`];
+  }
+  return [null, null];
+}
+
+function _cleanTripName(name) {
+  return name
+    .replace(/\s*\(.*?\)\s*$/, '')   // quita fecha al final
+    .replace(/^[^:]+:\s*/, '')       // quita "Destino: "
+    .replace(/\s*\|.*$/, '')         // quita " | Camp name"
+    .trim();
+}
+
+function _formatDateShort(s) {
+  if (!s) return '?';
+  const [y,m,d] = s.split('-');
+  return `${+d} ${MNS[+m-1].toLowerCase()}`;
+}
+
+async function parseWeTravelXlsx(file) {
+  if (typeof XLSX === 'undefined') throw new Error('SheetJS no cargado');
+  const buf = await file.arrayBuffer();
+  const wb  = XLSX.read(buf, {type:'array'});
+  const ws  = wb.Sheets[wb.SheetNames[0]];
+  const rows = XLSX.utils.sheet_to_json(ws, {header:1, raw:true});
+  const hi   = rows.findIndex(r => r && r[0] === 'Date created (UTC)');
+  if (hi < 0) throw new Error('Header "Date created (UTC)" no encontrado — ¿es un export de WeTravel Payments?');
+
+  const trips = new Map();   // tripNameRaw → {payments, start, end, dest}
+  let totalPayments = 0;
+
+  for (let i = hi+1; i < rows.length; i++) {
+    const r = rows[i];
+    if (!r || !r[0]) continue;
+    if (r[4] !== 'Successful' && r[4] !== 'Refunded') continue;
+    const gross  = Number(r[3]) || 0;
+    const refund = Number(r[9]) || 0;
+    const amount = gross - refund;
+    if (amount <= 0) continue;
+
+    const tripName = String(r[21] || 'Sin nombre');
+    const dateRaw  = String(r[0]).slice(0,10).replace(/\//g,'-');
+    const participants = r[20]
+      ? String(r[20]).split(',').map(s => s.trim()).filter(Boolean)
+      : [];
+
+    if (!trips.has(tripName)) {
+      const [s,e] = _extractTripDates(tripName);
+      const dest  = /la\s+ventana/i.test(tripName) ? 'La Ventana' : 'Yucatán';
+      trips.set(tripName, {payments: [], start: s, end: e, dest, raw: tripName});
+    }
+    const t = trips.get(tripName);
+    const pmt = {date: dateRaw, amount, participants};
+    if (refund > 0) { pmt.gross = gross; pmt.refund = refund; }
+    t.payments.push(pmt);
+    totalPayments++;
+  }
+
+  return {trips, totalPayments};
+}
+
+function computeWTDiff({trips}) {
+  const currentTrips = [...(typeof LV_TRIPS !== 'undefined' ? LV_TRIPS : []),
+                       ...(typeof YUC_TRIPS !== 'undefined' ? YUC_TRIPS : [])];
+  const out = [];
+  for (const [, data] of trips) {
+    const cleanName = _cleanTripName(data.raw);
+    const match = currentTrips.find(t => t.start === data.start && t.name === cleanName)
+               || currentTrips.find(t => t.start === data.start);
+    const newPax   = countPax(data.payments);
+    const newCount = data.payments.length;
+    if (match) {
+      const oldPax   = countPax(match.payments);
+      const oldCount = match.payments.length;
+      out.push({
+        name: cleanName, dest: data.dest, start: data.start, end: data.end,
+        oldCount, newCount, deltaCount: newCount - oldCount,
+        oldPax,   newPax,   deltaPax:   newPax   - oldPax,
+        isNew: false
+      });
+    } else {
+      out.push({
+        name: cleanName, dest: data.dest, start: data.start, end: data.end,
+        oldCount: 0, newCount, deltaCount: newCount,
+        oldPax:   0, newPax,   deltaPax:   newPax,
+        isNew: true
+      });
+    }
+  }
+  out.sort((a,b) => (a.start || '').localeCompare(b.start || ''));
+  return out;
+}
+
+function renderWTPreview(parsed, diff) {
+  const changed = diff.filter(d => d.deltaCount !== 0 || d.deltaPax !== 0 || d.isNew);
+  const head = `<div class="wt-preview-head">
+    <span>${parsed.totalPayments} pagos · ${parsed.trips.size} viajes en el archivo</span>
+    <span>${changed.length} cambio${changed.length===1?'':'s'}</span>
+  </div>`;
+  if (!changed.length) {
+    return head + '<div class="wt-preview-empty">✓ Sin cambios — el archivo ya está sincronizado</div>';
+  }
+  const rows = changed.map(d => {
+    const dates = d.start && d.end ? `${_formatDateShort(d.start)}–${_formatDateShort(d.end)} ${d.start.slice(0,4)}` : '';
+    const tag   = d.isNew ? '<span class="wt-diff-new-tag">nuevo</span>' : '';
+    const dCnt  = d.deltaCount > 0 ? `<span class="wt-diff-delta up">+${d.deltaCount}</span>` :
+                  d.deltaCount < 0 ? `<span class="wt-diff-delta down">${d.deltaCount}</span>` : '0';
+    const dPax  = d.deltaPax > 0 ? `<span class="wt-diff-delta up">+${d.deltaPax}</span>` :
+                  d.deltaPax < 0 ? `<span class="wt-diff-delta down">${d.deltaPax}</span>` : '0';
+    return `<div class="wt-diff-row">
+      <div class="wt-diff-name">${tag}${d.dest}: ${d.name}<span class="wt-diff-dates">${dates}</span></div>
+      <div class="wt-diff-stats">pagos ${d.oldCount}→${d.newCount} (${dCnt}) · pax ${d.oldPax}→${d.newPax} (${dPax})</div>
+    </div>`;
+  }).join('');
+  return head + rows;
 }
 
 // ── Log compartido en GitHub repo ─────────────────────────────────
