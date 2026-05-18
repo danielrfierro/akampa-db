@@ -3,7 +3,7 @@
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-05-17 09:36",
+    "last_updated": "2026-05-17 22:20",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -986,36 +986,6 @@ window.AKAMPA_DATA = {
       }
     ],
     "monthly": {
-      "2025-2026": [
-        {
-          "m": "Ene",
-          "g": 59,
-          "occ": 0,
-          "rpg": 25890,
-          "rev": 1527487
-        },
-        {
-          "m": "Feb",
-          "g": 157,
-          "occ": 0,
-          "rpg": 21039,
-          "rev": 3303138
-        },
-        {
-          "m": "Mar",
-          "g": 130,
-          "occ": 0,
-          "rpg": 23130,
-          "rev": 3006847
-        },
-        {
-          "m": "Abr",
-          "g": 72,
-          "occ": 0,
-          "rpg": 24483,
-          "rev": 1762780
-        }
-      ],
       "2026-2027": [
         {
           "m": "Oct",
@@ -1051,6 +1021,36 @@ window.AKAMPA_DATA = {
           "occ": 0.38,
           "rpg": 9692,
           "rev": 38767
+        }
+      ],
+      "2025-2026": [
+        {
+          "m": "Ene",
+          "g": 59,
+          "occ": 0,
+          "rpg": 25890,
+          "rev": 1527487
+        },
+        {
+          "m": "Feb",
+          "g": 157,
+          "occ": 0,
+          "rpg": 21039,
+          "rev": 3303138
+        },
+        {
+          "m": "Mar",
+          "g": 130,
+          "occ": 0,
+          "rpg": 23130,
+          "rev": 3006847
+        },
+        {
+          "m": "Abr",
+          "g": 72,
+          "occ": 0,
+          "rpg": 24483,
+          "rev": 1762780
         }
       ]
     },
@@ -1467,6 +1467,30 @@ window.AKAMPA_DATA = {
         "status": "future",
         "payments": [
           {
+            "date": "2026-05-17",
+            "amount": 45000.0,
+            "participants": [
+              "SIMON NATHAN GITTLER SALOMON",
+              "Halina Unikel"
+            ]
+          },
+          {
+            "date": "2026-05-17",
+            "amount": 45000.0,
+            "participants": [
+              "Mauricio Esteban Schiavon Magaña",
+              "Mauricio Esteban Schiavon Magaña"
+            ]
+          },
+          {
+            "date": "2026-05-16",
+            "amount": 45000.0,
+            "participants": [
+              "Miguel Ángel Garcia",
+              "María Elena Sánche"
+            ]
+          },
+          {
             "date": "2026-05-15",
             "amount": 22500.0,
             "participants": [
@@ -1556,6 +1580,14 @@ window.AKAMPA_DATA = {
         "cap": 30,
         "status": "future",
         "payments": [
+          {
+            "date": "2026-05-18",
+            "amount": 22500.0,
+            "participants": [
+              "Sasha Glatt Porteny",
+              "Edouard Triet"
+            ]
+          },
           {
             "date": "2026-05-12",
             "amount": 22500.0,
