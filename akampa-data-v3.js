@@ -3,7 +3,7 @@
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-05-21 11:13",
+    "last_updated": "2026-05-21 12:13",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -1375,6 +1375,40 @@ window.AKAMPA_DATA = {
         "status": "future",
         "payments": [
           {
+            "date": "2026-05-20",
+            "amount": 25500.0,
+            "participants": [
+              "Rodrigo Aviles"
+            ]
+          },
+          {
+            "date": "2026-05-18",
+            "amount": 12750.0,
+            "participants": [
+              "Rodrigo Enecoiz"
+            ]
+          },
+          {
+            "date": "2026-05-18",
+            "amount": 22500.0,
+            "participants": [
+              "VALERIA PORTILLA",
+              "Natalia Portilla"
+            ]
+          },
+          {
+            "date": "2026-05-18",
+            "amount": 20500.0,
+            "participants": [
+              "Maria Patricia Garcia",
+              "Maria Patricia Garcia",
+              "María Patricia García Kern (Canceled)",
+              "María Patricia García Kern (Canceled)",
+              "María Patricia García Kern (Canceled)",
+              "María Patricia García Kern (Canceled)"
+            ]
+          },
+          {
             "date": "2026-05-13",
             "amount": 12750.0,
             "participants": [
@@ -1468,6 +1502,29 @@ window.AKAMPA_DATA = {
         "cap": 30,
         "status": "future",
         "payments": [
+          {
+            "date": "2026-05-20",
+            "amount": 12750.0,
+            "participants": [
+              "Tanya Garza"
+            ]
+          },
+          {
+            "date": "2026-05-18",
+            "amount": 22500.0,
+            "participants": [
+              "Marihel Arias",
+              "Alondra Arias"
+            ]
+          },
+          {
+            "date": "2026-05-18",
+            "amount": 18000.0,
+            "participants": [
+              "Alejandra Serpas",
+              "Denisse Olivo"
+            ]
+          },
           {
             "date": "2026-05-17",
             "amount": 45000.0,
@@ -1669,6 +1726,20 @@ window.AKAMPA_DATA = {
         "cap": 30,
         "status": "future",
         "payments": [
+          {
+            "date": "2026-05-21",
+            "amount": 9833.0,
+            "participants": [
+              "Leah Pages"
+            ]
+          },
+          {
+            "date": "2026-05-20",
+            "amount": 9833.0,
+            "participants": [
+              "Liliana Osuna Domínguez"
+            ]
+          },
           {
             "date": "2026-04-22",
             "amount": 9833.0,
