@@ -184,17 +184,16 @@ def trips_at_risk(data, days_ahead=60):
 
 
 def fetch_new_bookings_this_week(monday, friday):
-    """Lista reservas creadas en el rango [monday, friday] de la semana actual.
+    """Lista reservas BM creadas en el rango [monday, friday] de la semana actual.
     Cloudbeds API ignora bookingDateFrom/To en algunos casos, así que filtramos
-    client-side por r['dateCreated']."""
+    client-side por r['dateCreated']. Devuelve items normalizados."""
     api_key = os.environ.get("CLOUDBEDS_API_KEY")
     if not api_key:
-        return None
+        return []
     try:
         sys.path.insert(0, str(Path(__file__).parent))
         from cloudbeds_api import _get_all_pages, _fetch_reservation_full
         import time as _time
-        # Fetch amplio y filtramos en Python
         params = {
             "bookingDateFrom": monday.isoformat(),
             "bookingDateTo":   friday.isoformat(),
@@ -213,8 +212,6 @@ def fetch_new_bookings_this_week(monday, friday):
                 continue
             if monday <= d <= friday:
                 filtered.append(r)
-        # Enriquecer cada uno con `total` (grandTotal) via singular endpoint
-        # para mostrar el monto FULL de la reserva, no solo balance.
         for r in filtered:
             rid = r.get("reservationID")
             if not rid:
@@ -223,44 +220,104 @@ def fetch_new_bookings_this_week(monday, friday):
             if full and full.get("total") is not None:
                 r["grandTotal"] = full["total"]
             _time.sleep(0.25)
-        return filtered
+        items = []
+        for r in filtered:
+            try:
+                amount = float(r.get("grandTotal") or r.get("balance") or 0)
+            except (TypeError, ValueError):
+                amount = 0
+            items.append({
+                "source": "BM",
+                "date":   r.get("startDate") or "",
+                "name":   r.get("guestName") or "—",
+                "amount": amount,
+                "trip":   "",
+            })
+        return items
     except Exception as e:
         print(f"   ⚠ no se pudo fetchear nuevos bookings: {e}", file=sys.stderr)
-        return None
+        return []
+
+
+def collect_wetravel_payments(data, monday, friday):
+    """Pagos individuales de LV y YUC del rango [monday, friday]."""
+    items = []
+    for src_key, src_label in (("la_ventana", "LV"), ("yucatan", "YUC")):
+        for t in data.get(src_key, {}).get("trips", []):
+            trip_name = t.get("name", "") or ""
+            short = re.split(r"[|(]", trip_name)[0].strip()[:40]
+            for p in t.get("payments", []) or []:
+                try:
+                    d = parse_date(p.get("date", ""))
+                except (KeyError, ValueError):
+                    continue
+                if not (monday <= d <= friday):
+                    continue
+                parts = p.get("participants") or []
+                name = parts[0] if parts else "(sin nombre)"
+                items.append({
+                    "source": src_label,
+                    "date":   p.get("date", ""),
+                    "name":   name,
+                    "amount": float(p.get("amount", 0) or 0),
+                    "trip":   short,
+                })
+    return items
 
 
 # ── Render HTML ───────────────────────────────────────────────────────
-def render_section_new_bookings(reservations):
-    if not reservations:
+SOURCE_COLOR = {"BM": "#9a6e28", "LV": "#2a6e8a", "YUC": "#2a7a48"}
+
+def render_section_new_bookings(items):
+    if not items:
         return ""
-    # Ordenar por grandTotal (monto completo de la reserva) descendente
-    def total(r):
-        try:
-            return float(r.get("grandTotal") or r.get("balance") or 0)
-        except (TypeError, ValueError):
-            return 0
-    top = sorted(reservations, key=total, reverse=True)[:3]
-    grand = sum(total(r) for r in reservations)
+    top = sorted(items, key=lambda x: x.get("amount", 0), reverse=True)[:10]
+    grand = sum(x.get("amount", 0) for x in items)
     rows = ""
-    for r in top:
-        name = r.get("guestName") or "—"
-        start = r.get("startDate") or ""
-        amount = total(r)
+    for x in top:
+        src   = x.get("source", "")
+        color = SOURCE_COLOR.get(src, "#7a6e58")
+        name  = x.get("name", "—")
+        date  = x.get("date", "")
+        trip  = x.get("trip", "")
+        amount = x.get("amount", 0)
+        trip_html = f" · <span style=\"color:#7a6e58\">{trip}</span>" if trip else ""
+        pill = (f'<span style="display:inline-block;background:{color};color:#fff;'
+                f'font-size:10px;font-weight:600;padding:2px 6px;border-radius:3px;'
+                f'margin-right:8px;letter-spacing:.04em">{src}</span>')
         rows += f'''
               <tr>
-                <td style="padding:8px 0;font-size:12px;color:#5a5040">{name} · {start}</td>
+                <td style="padding:8px 0;font-size:12px;color:#5a5040">{pill}{name} · {date}{trip_html}</td>
                 <td style="padding:8px 0;font-size:12px;color:#1e2820;text-align:right;font-weight:600">${fmt_money(amount)}</td>
               </tr>'''
     extra = ""
-    if len(reservations) > 3:
+    if len(items) > 10:
         extra = f'''
               <tr>
-                <td style="padding:8px 0;font-size:12px;color:#888;font-style:italic" colspan="2">+ {len(reservations) - 3} más</td>
+                <td style="padding:8px 0;font-size:12px;color:#888;font-style:italic" colspan="2">+ {len(items) - 10} más</td>
               </tr>'''
+    # Resumen por origen (chips en el header)
+    by_src = {}
+    for x in items:
+        s = x.get("source", "?")
+        by_src.setdefault(s, {"n": 0, "amt": 0})
+        by_src[s]["n"]   += 1
+        by_src[s]["amt"] += x.get("amount", 0)
+    chips = []
+    for s in ("BM", "LV", "YUC"):
+        if s in by_src:
+            color = SOURCE_COLOR.get(s, "#7a6e58")
+            chips.append(
+                f'<span style="color:{color};font-weight:700">{s}</span>'
+                f' {by_src[s]["n"]}·${fmt_money(by_src[s]["amt"])}'
+            )
+    by_src_html = '<div style="font-size:11px;color:#7a6e58;margin:2px 0 10px">' \
+                  + ' &nbsp; '.join(chips) + '</div>' if chips else ''
     return f'''
         <tr>
           <td style="padding:24px 32px 8px">
-            <h2 style="font-size:11px;color:#9a6e28;letter-spacing:.14em;text-transform:uppercase;margin:0 0 12px;font-weight:600">Nuevos bookings · {len(reservations)} reservas / ${fmt_money(grand)}</h2>
+            <h2 style="font-size:11px;color:#9a6e28;letter-spacing:.14em;text-transform:uppercase;margin:0 0 4px;font-weight:600">Nuevos bookings · {len(items)} movimientos / ${fmt_money(grand)}</h2>
+            {by_src_html}
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">{rows}{extra}
             </table>
           </td>
@@ -294,7 +351,7 @@ def render_section_risk(risky):
     if not risky:
         return ""
     rows = ""
-    for r in risky[:5]:  # máximo 5 para no saturar
+    for r in risky[:10]:  # máximo 5 para no saturar
         rows += f'''
               <tr>
                 <td style="padding:10px 12px;font-size:12px;color:#1e2820;border-bottom:1px solid #f0ede6">{r["name"]} {r["start"][5:]}–{r["end"][5:]}</td>
@@ -344,7 +401,8 @@ def build_report(data, prev_data, today=None):
 
     refunds  = detect_refunds(data, prev_data)
     risky    = trips_at_risk(data, days_ahead=60)
-    new_bks  = fetch_new_bookings_this_week(monday, friday)
+    new_bks  = (fetch_new_bookings_this_week(monday, friday) or []) \
+               + collect_wetravel_payments(data, monday, friday)
 
     # Forecast anual: revenue actual contratado + extrapolación del ritmo
     # de nuevas ventas YTD. Es directional (la estacionalidad lo afecta).
@@ -408,7 +466,7 @@ def build_report(data, prev_data, today=None):
         "YUC_SALES": fmt_money(yuc),
         "PROJECTION_LABEL": proj_label,
         "PROJECTION_SUB":   proj_sub,
-        "NEW_BOOKINGS_SECTION": render_section_new_bookings(new_bks or []),
+        "NEW_BOOKINGS_SECTION": render_section_new_bookings(new_bks),
         "REFUNDS_SECTION": render_section_refunds(refunds),
         "RISK_SECTION": render_section_risk(risky),
         "_subject": f"📊 Reporte semanal Akampa · Semana {iso_week_num(today)} ({monday.day}-{friday.day} {monday.strftime('%b').lower()})",
