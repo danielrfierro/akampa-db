@@ -1,9 +1,9 @@
-// akampa-data-v3.js — generado 2026-05-22
+// akampa-data-v3.js — generado 2026-05-23
 // Solo expone window.AKAMPA_DATA (sin conflictos de scope)
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-05-22 10:43",
+    "last_updated": "2026-05-23 09:41",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -465,14 +465,14 @@ window.AKAMPA_DATA = {
         "s": "2026-2027",
         "start": "2026-10-15",
         "end": "2026-10-18",
-        "rooms": 4,
+        "rooms": 6,
         "cap": 15,
-        "occ": 26.7,
-        "guests": 6,
+        "occ": 40.0,
+        "guests": 8,
         "status": "future",
-        "cobrado": 33600,
-        "pend": 167400,
-        "total": 201000
+        "cobrado": 51744,
+        "pend": 209736,
+        "total": 261480
       },
       {
         "id": 32,
@@ -989,10 +989,10 @@ window.AKAMPA_DATA = {
       "2026-2027": [
         {
           "m": "Oct",
-          "g": 53,
+          "g": 55,
           "occ": 0,
-          "rpg": 9335,
-          "rev": 494750
+          "rpg": 9325,
+          "rev": 512894
         },
         {
           "m": "Nov",
@@ -1110,7 +1110,7 @@ window.AKAMPA_DATA = {
       "2025-W08": 7074,
       "2025-W07": 7747,
       "2025-W06": 2443,
-      "2026-W21": 56799
+      "2026-W21": 74943
     },
     "weekly_pend": {
       "2026-W04": 168680,
@@ -1140,7 +1140,8 @@ window.AKAMPA_DATA = {
       "2025-W09": 8,
       "2025-W08": 420,
       "2025-W06": 14031,
-      "2025-W05": 898
+      "2025-W05": 898,
+      "2026-W21": 42336
     },
     "daily": {
       "2026-01-01": 28060,
@@ -1302,7 +1303,8 @@ window.AKAMPA_DATA = {
       "2025-02-20": 7074,
       "2025-02-12": 7747,
       "2025-02-06": 2443,
-      "2026-05-18": 56799
+      "2026-05-18": 56799,
+      "2026-05-22": 18144
     }
   },
   "la_ventana": {
