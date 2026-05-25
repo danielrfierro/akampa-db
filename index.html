@@ -2459,6 +2459,14 @@ function detectDestinations(text) {
 }
 
 function snapshotData() {
+  // Enriquece LV/YUC trips con pax y revenue pre-computados.
+  // El bot tiende a equivocarse calculando countPax (max-por-nombre vs sumar cuotas);
+  // mandarlo ya resuelto elimina esa clase de error.
+  const enrichLV = t => ({
+    ...t,
+    paxCount: countPax(t.payments),
+    revenue: t.payments.reduce((s, p) => s + p.amount, 0),
+  });
   return {
     meta: META,
     bm: {
@@ -2468,8 +2476,8 @@ function snapshotData() {
       daily: BM_DAILY,
       monthly: BM_MONTHLY,
     },
-    lv:  { trips: LV_TRIPS },
-    yuc: { trips: YUC_TRIPS },
+    lv:  { trips: LV_TRIPS.map(enrichLV) },
+    yuc: { trips: YUC_TRIPS.map(enrichLV) },
   };
 }
 
