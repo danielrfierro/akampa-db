@@ -443,6 +443,15 @@ WETRAVEL_DATE_OVERRIDES = {
 # Cambiar este valor cuando se quiera correr la ventana de visibilidad.
 WETRAVEL_MIN_END_DATE = '2026-01-01'
 
+# ── Receipts forzados (WeTravel) ──────────────────────────────────
+# Pagos que WeTravel marca como Failed pero confirmamos llegaron por otro canal
+# (típicamente SPEI que se cobra fuera del sistema pero queda Failed en el portal).
+# Estos receipts se incluyen como si fueran Successful, respetando el monto del XLSX.
+# Clave: Receipt Number (string, columna C del XLSX). Valor: nota auditable.
+WETRAVEL_FORCE_INCLUDE = {
+    '822750492657833766912': 'SPEI confirmado externamente — Valeria Gonzalez (11 jun 2026)',
+}
+
 # ── Stub trips: viajes confirmados que aún no tienen pagos en WeTravel ──
 # Se agregan al dashboard con $0 cobrado para visibilidad de pipeline.
 # Cuando lleguen pagos en futuras semanas, el processor los integra automáticamente
@@ -479,21 +488,32 @@ def parse_wetravel(path, dest_label, existing_trips, keyword=None):
     by_trip = defaultdict(list)
     for r in rows[hi+1:]:
         if not r[0]: continue
+        receipt = str(r[2]) if r[2] is not None else ''
+        forced_note = WETRAVEL_FORCE_INCLUDE.get(receipt)
         # Aceptar Successful y Refunded. Para Refunded computamos el neto
         # (Amount - Refunded) que sigue cobrado. Si el refund es total → omitir.
-        if r[4] not in ('Successful', 'Refunded'):
+        # Excepción: receipts en WETRAVEL_FORCE_INCLUDE entran aunque sean Failed.
+        if r[4] not in ('Successful', 'Refunded') and not forced_note:
             continue
         gross  = float(r[3] or 0)
         refund = float(r[9] or 0)
         amount = gross - refund
-        if amount <= 0:
+        if amount <= 0 and not forced_note:
             continue
         trip_name = str(r[21]) if r[21] else 'Sin nombre'
         # Filtrar por keyword si se especificó (ej. 'La Ventana' o 'Yucatan')
         if keyword and keyword.lower() not in trip_name.lower():
             continue
         pdate = parse_date(str(r[0])[:10].replace('/','-'))
-        participants = [p.strip() for p in str(r[20]).split(',') if p.strip()] if r[20] else []
+        # WeTravel a veces deja participantes "(Canceled)" en el campo aunque el
+        # pago siga vigente — esos infla el conteo del dashboard. Se omiten.
+        participants = [
+            p.strip() for p in str(r[20]).split(',')
+            if p.strip() and '(Canceled)' not in p
+        ] if r[20] else []
+        # Pagos forzados (FORCE_INCLUDE) entran con su monto bruto del XLSX.
+        if forced_note and amount <= 0:
+            amount = gross
         payment = {
             'date': str(pdate), 'amount': amount,
             'participants': participants
@@ -502,6 +522,8 @@ def parse_wetravel(path, dest_label, existing_trips, keyword=None):
         if refund > 0:
             payment['gross']  = gross
             payment['refund'] = refund
+        if forced_note:
+            payment['note'] = forced_note
         by_trip[trip_name].append(payment)
 
     def extract_dates(name):
@@ -675,6 +697,8 @@ def _fmt_lv_trips(trips, var_name='LV_TRIPS'):
             if 'refund' in p:
                 fields.insert(2, f'gross:{p["gross"]}')
                 fields.insert(3, f'refund:{p["refund"]}')
+            if p.get('note'):
+                fields.append(f'note:{json.dumps(p["note"], ensure_ascii=False)}')
             pmts.append('      {' + ','.join(fields) + '}')
         pmts_str = ',\n'.join(pmts)
         parts.append(
