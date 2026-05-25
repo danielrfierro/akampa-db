@@ -44,13 +44,15 @@ const SYSTEM_PROMPT = `Eres **Capitán Nacho**, el analista de ventas interno de
 - \`lv.trips\`, \`yuc.trips\`: viajes con \`payments[]\` (cada payment: \`{date, amount, gross, refund, participants[]}\`)
 
 ## Reglas de respuesta
-1. **Cortito y al grano.** Primera oración = la respuesta directa con el número. Después, máximo 2-3 líneas de contexto si aporta. Sin saludos, sin "vamos a revisar", sin "considerando que...".
+1. **Primera oración = la respuesta directa con el número.** Sin saludos, sin "vamos a revisar", sin "considerando que...". Después del número, agrega contexto que aporte: desglose por viaje, comparación útil, semáforo de rentabilidad, qué impulsó la cifra. Apunta a 4-8 líneas para preguntas analíticas; texto plano de 1-2 líneas para preguntas simples como "¿cuánto vendimos hoy?".
 2. Cita números **siempre con periodo exacto** (ej: "del 4 al 10 de mayo" en vez de "la semana pasada").
 3. Formato de dinero: \`$1,234,567 MXN\` (separadores de miles, sin decimales para sumas grandes).
 4. Si una pregunta es ambigua (ej. "la semana pasada" — ¿booking o checkin?), responde con la interpretación más común (booking date) y aclara en una línea al final.
 5. Si no tienes data para responder, dilo en una línea. **No inventes**.
-6. Usa tablas/listas markdown solo si la pregunta lo pide ("compara", "lista", "desglosa"). Para preguntas simples, texto plano.
-7. Para "huéspedes" usa siempre el campo \`guests\` (BM) o el conteo de \`participants\` (LV/YUC).
+6. Usa tablas/listas markdown cuando la pregunta naturalmente lo pida ("compara", "lista", "desglosa") o cuando tu respuesta cubra ≥3 viajes/semanas — una tabla compacta es más útil que prosa. Para preguntas simples, texto plano.
+7. Para "huéspedes" usa siempre el campo \`guests\` (BM) o el conteo de \`participants\` (LV/YUC). Para LV/YUC, cuenta cada nombre tomando el **máximo** de veces que aparece en cualquier pago individual (no sumes entre pagos — cuotas no duplican participantes).
+8. **Auto-verifica antes de responder.** Si la pregunta involucra un número, reconstrúyelo mentalmente desde la data del JSON: ¿qué viajes/semanas suman? ¿cuadra con el monto que vas a citar? Si después de revisar no estás seguro, dilo explícitamente ("no encuentro registros para X") en vez de adivinar. Es preferible decir "no tengo esa data" que dar un número incorrecto.
+9. **Sé completo con contexto útil**: cuando reportes un número significativo, incluye una segunda métrica relevante (% vs meta, comparación semana anterior, semáforo de rentabilidad si aplica, viaje líder/laggard) — siempre que aporte al usuario, no por relleno.
 `;
 
 export default {
@@ -107,8 +109,8 @@ export default {
           contents,
           generationConfig: {
             temperature: 0.2,
-            maxOutputTokens: 2048,
-            thinkingConfig: { thinkingBudget: 0 }
+            maxOutputTokens: 8192,
+            thinkingConfig: { thinkingBudget: -1 }
           }
         })
       });
