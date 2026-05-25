@@ -558,7 +558,7 @@ document.addEventListener('DOMContentLoaded',function(){
       <span class="theme-label" id="theme-label">Dark</span>
       <div class="theme-toggle"></div>
     </div>
-    <span class="updated" id="last-updated">Actualizado 24 may 2026 · 09:47 · Datos al 18 feb 2027</span>
+    <span class="updated" id="last-updated">Actualizado 25 may 2026 · 10:04 · Datos al 18 feb 2027</span>
     <button class="wt-btn" onclick="openWTModal()" title="Subir reportes WeTravel">⬆ WeTravel</button>
     <button class="sync-btn" id="sync-btn" onclick="triggerSync()" title="Sincronizar datos desde Cloudbeds">
       <span class="sync-icon">↻</span>
@@ -654,7 +654,7 @@ document.addEventListener('DOMContentLoaded',function(){
 // DATA  (auto-generado por akampa_processor_v3.py — no editar manualmente)
 // ════════════════════════════════════════════════════════════════
 // AKAMPA:DATA_START
-const META = { kpi: 30000000, today: '2026-05-24' };
+const META = { kpi: 30000000, today: '2026-05-25' };
 
 // Bahía Mag trips
 const BM_TRIPS = [
@@ -762,6 +762,7 @@ const LV_TRIPS = [
     id:3, name:"La Ventana Expedition Camp", dest:"La Ventana",
     start:"2026-06-04", end:"2026-06-07", cap:30, status:"future",
     payments:[
+      {date:"2026-05-22",amount:25500.0,participants:["Francisco Javier Vera", "Carlos Vera", "Gabriela Vera"]},
       {date:"2026-05-20",amount:12750.0,participants:["Tanya Garza"]},
       {date:"2026-05-18",amount:22500.0,participants:["Marihel Arias", "Alondra Arias"]},
       {date:"2026-05-18",amount:18000.0,participants:["Alejandra Serpas", "Denisse Olivo"]},
@@ -775,7 +776,7 @@ const LV_TRIPS = [
       {date:"2026-05-07",amount:22500.0,participants:["Alejandra Serpas", "Denisse Olivo"]},
       {date:"2026-05-02",amount:45000.0,participants:["ALEJANDRO CANALES MORALES", "Ampelio Canales Zaragoza"]},
       {date:"2026-04-18",amount:25500.0,participants:["Jonatan Oregon"]},
-      {date:"2026-04-09",amount:45000.0,participants:["Francisco Javier Vera", "Maria Fernanda Osorio Chavez"]},
+      {date:"2026-04-09",amount:45000.0,participants:["Francisco Javier Vera", "Carlos Vera", "Gabriela Vera"]},
       {date:"2026-04-07",amount:31500.0,participants:["Eduardo Zago", "Michelle Ralph"]},
       {date:"2026-04-07",amount:25500.0,participants:["Ana Maria Mateo Reyes"]}
     ]
@@ -784,6 +785,9 @@ const LV_TRIPS = [
     id:4, name:"La Ventana Expedition Camp", dest:"La Ventana",
     start:"2026-06-11", end:"2026-06-14", cap:30, status:"future",
     payments:[
+      {date:"2026-05-23",amount:12750.0,participants:["Nayvy Juarez Pérez"]},
+      {date:"2026-05-23",amount:22500.0,participants:["Macarena Olavarri", "Isabel Fernández"]},
+      {date:"2026-05-22",amount:35250.0,participants:["Arturs Aleksandrovics", "Maksimilians Aleksandrovics", "Markus Aleksandrovics"]},
       {date:"2026-05-18",amount:22500.0,participants:["Sasha Glatt Porteny", "Edouard Triet"]},
       {date:"2026-05-12",amount:22500.0,participants:["Alexis Navarro Flores", "Hans del Valle Manzano"]},
       {date:"2026-05-12",amount:22500.0,participants:["Daniel Alberto Ríos Anaya", "Melissa Araiza"]},
@@ -818,7 +822,7 @@ const YUC_TRIPS = [
   },
 ];
 
-// Bahía Mag — ventas por semana de BOOKING DATE (Cloudbeds · 2026-05-24)
+// Bahía Mag — ventas por semana de BOOKING DATE (Cloudbeds · 2026-05-25)
 const BM_WEEKLY = {"2026-W01": 78750, "2026-W02": 164556, "2026-W03": 401481, "2026-W04": 484088, "2026-W05": 855546, "2026-W06": 570225, "2026-W07": 773805, "2026-W08": 161110, "2026-W09": 757266, "2026-W10": 421535, "2026-W11": 149065, "2026-W12": 192045, "2026-W13": 307720, "2026-W15": 114920, "2026-W16": 65650, "2026-W17": 87225, "2026-W18": 356120, "2026-W20": 17040, "2025-W52": 271715, "2025-W51": 94770, "2025-W50": 625510, "2025-W49": 754454, "2025-W48": 311730, "2025-W47": 606959, "2025-W46": 610747, "2025-W45": 465142, "2025-W44": 190011, "2025-W43": 82002, "2025-W42": 442370, "2025-W41": 102999, "2025-W40": 533184, "2025-W39": 218283, "2025-W38": 258984, "2025-W37": 53301, "2025-W36": 724980, "2025-W35": 507130, "2025-W34": 610049, "2025-W33": 169202, "2025-W32": 45800, "2025-W31": 53301, "2025-W30": 149295, "2025-W29": 293805, "2025-W28": 211102, "2025-W27": 119604, "2025-W25": 329622, "2025-W23": 92400, "2025-W21": 54581, "2025-W19": 24822, "2025-W16": 21900, "2025-W14": 264080, "2025-W13": 341560, "2025-W11": 116601, "2025-W08": 7074, "2025-W07": 7747, "2025-W06": 2443, "2026-W21": 74943};
 
 // Bahía Mag — balance due pendiente por semana de booking

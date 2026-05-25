@@ -1,9 +1,9 @@
-// akampa-data-v3.js — generado 2026-05-24
+// akampa-data-v3.js — generado 2026-05-25
 // Solo expone window.AKAMPA_DATA (sin conflictos de scope)
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-05-24 09:43",
+    "last_updated": "2026-05-25 10:00",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -1505,6 +1505,15 @@ window.AKAMPA_DATA = {
         "status": "future",
         "payments": [
           {
+            "date": "2026-05-22",
+            "amount": 25500.0,
+            "participants": [
+              "Francisco Javier Vera",
+              "Carlos Vera",
+              "Gabriela Vera"
+            ]
+          },
+          {
             "date": "2026-05-20",
             "amount": 12750.0,
             "participants": [
@@ -1612,7 +1621,8 @@ window.AKAMPA_DATA = {
             "amount": 45000.0,
             "participants": [
               "Francisco Javier Vera",
-              "Maria Fernanda Osorio Chavez"
+              "Carlos Vera",
+              "Gabriela Vera"
             ]
           },
           {
@@ -1641,6 +1651,30 @@ window.AKAMPA_DATA = {
         "cap": 30,
         "status": "future",
         "payments": [
+          {
+            "date": "2026-05-23",
+            "amount": 12750.0,
+            "participants": [
+              "Nayvy Juarez Pérez"
+            ]
+          },
+          {
+            "date": "2026-05-23",
+            "amount": 22500.0,
+            "participants": [
+              "Macarena Olavarri",
+              "Isabel Fernández"
+            ]
+          },
+          {
+            "date": "2026-05-22",
+            "amount": 35250.0,
+            "participants": [
+              "Arturs Aleksandrovics",
+              "Maksimilians Aleksandrovics",
+              "Markus Aleksandrovics"
+            ]
+          },
           {
             "date": "2026-05-18",
             "amount": 22500.0,
