@@ -3,7 +3,7 @@
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-05-27 11:41",
+    "last_updated": "2026-05-27 18:00",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -480,14 +480,14 @@ window.AKAMPA_DATA = {
         "s": "2026-2027",
         "start": "2026-10-18",
         "end": "2026-10-21",
-        "rooms": 0,
+        "rooms": 2,
         "cap": 15,
-        "occ": 0,
-        "guests": 0,
+        "occ": 13.3,
+        "guests": 2,
         "status": "future",
-        "cobrado": 0,
-        "pend": 0,
-        "total": 0
+        "cobrado": 22025,
+        "pend": 51391,
+        "total": 73416
       },
       {
         "id": 33,
@@ -986,43 +986,13 @@ window.AKAMPA_DATA = {
       }
     ],
     "monthly": {
-      "2025-2026": [
-        {
-          "m": "Ene",
-          "g": 59,
-          "occ": 0,
-          "rpg": 25890,
-          "rev": 1527487
-        },
-        {
-          "m": "Feb",
-          "g": 157,
-          "occ": 0,
-          "rpg": 21039,
-          "rev": 3303138
-        },
-        {
-          "m": "Mar",
-          "g": 130,
-          "occ": 0,
-          "rpg": 23130,
-          "rev": 3006847
-        },
-        {
-          "m": "Abr",
-          "g": 72,
-          "occ": 0,
-          "rpg": 24483,
-          "rev": 1762780
-        }
-      ],
       "2026-2027": [
         {
           "m": "Oct",
-          "g": 55,
+          "g": 57,
           "occ": 0,
-          "rpg": 9325,
-          "rev": 512894
+          "rpg": 9385,
+          "rev": 534919
         },
         {
           "m": "Nov",
@@ -1051,6 +1021,36 @@ window.AKAMPA_DATA = {
           "occ": 0.38,
           "rpg": 9692,
           "rev": 38767
+        }
+      ],
+      "2025-2026": [
+        {
+          "m": "Ene",
+          "g": 59,
+          "occ": 0,
+          "rpg": 25890,
+          "rev": 1527487
+        },
+        {
+          "m": "Feb",
+          "g": 157,
+          "occ": 0,
+          "rpg": 21039,
+          "rev": 3303138
+        },
+        {
+          "m": "Mar",
+          "g": 130,
+          "occ": 0,
+          "rpg": 23130,
+          "rev": 3006847
+        },
+        {
+          "m": "Abr",
+          "g": 72,
+          "occ": 0,
+          "rpg": 24483,
+          "rev": 1762780
         }
       ]
     },
@@ -1110,7 +1110,8 @@ window.AKAMPA_DATA = {
       "2025-W08": 7074,
       "2025-W07": 7747,
       "2025-W06": 2443,
-      "2026-W21": 74943
+      "2026-W21": 74943,
+      "2026-W22": 22025
     },
     "weekly_pend": {
       "2026-W04": 168680,
@@ -1141,7 +1142,8 @@ window.AKAMPA_DATA = {
       "2025-W08": 420,
       "2025-W06": 14031,
       "2025-W05": 898,
-      "2026-W21": 42336
+      "2026-W21": 42336,
+      "2026-W22": 51391
     },
     "daily": {
       "2026-01-01": 28060,
@@ -1304,7 +1306,8 @@ window.AKAMPA_DATA = {
       "2025-02-12": 7747,
       "2025-02-06": 2443,
       "2026-05-18": 56799,
-      "2026-05-22": 18144
+      "2026-05-22": 18144,
+      "2026-05-27": 22025
     }
   },
   "la_ventana": {
@@ -1374,13 +1377,38 @@ window.AKAMPA_DATA = {
         "start": "2026-05-28",
         "end": "2026-05-31",
         "cap": 30,
-        "status": "future",
+        "status": "next",
         "payments": [
+          {
+            "date": "2026-05-27",
+            "amount": 2000.0,
+            "participants": [
+              "RICARDO CAMACHO BOFILL",
+              "Daniela Pages Salgado"
+            ]
+          },
+          {
+            "date": "2026-05-26",
+            "amount": 19500.0,
+            "participants": [
+              "Rodrigo Aviles",
+              "Charles Deboo"
+            ]
+          },
+          {
+            "date": "2026-05-25",
+            "amount": 20500.0,
+            "participants": [
+              "RICARDO CAMACHO BOFILL",
+              "Daniela Pages Salgado"
+            ]
+          },
           {
             "date": "2026-05-20",
             "amount": 25500.0,
             "participants": [
-              "Rodrigo Aviles"
+              "Rodrigo Aviles",
+              "Charles Deboo"
             ]
           },
           {
@@ -1644,6 +1672,13 @@ window.AKAMPA_DATA = {
         "status": "future",
         "payments": [
           {
+            "date": "2026-05-26",
+            "amount": 12750.0,
+            "participants": [
+              "Marlene Gras Marin"
+            ]
+          },
+          {
             "date": "2026-05-23",
             "amount": 12750.0,
             "participants": [
@@ -1670,9 +1705,7 @@ window.AKAMPA_DATA = {
           {
             "date": "2026-05-22",
             "amount": 12750.0,
-            "participants": [
-              "Valeria Gonzalez"
-            ],
+            "participants": [],
             "note": "SPEI confirmado externamente — Valeria Gonzalez (11 jun 2026)"
           },
           {
