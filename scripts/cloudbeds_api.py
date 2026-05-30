@@ -130,31 +130,66 @@ def _fetch_reservations(api_key: str, desde: str, hasta: str) -> list:
     return reservations
 
 
-def _fetch_reservation_full(api_key: str, reservation_id: str) -> dict:
+def _fetch_reservation_full(api_key: str, reservation_id: str,
+                            max_attempts: int = 3,
+                            raise_on_error: bool = False) -> dict:
     """
     Llama getReservation (singular) para obtener detalles completos.
-    A diferencia de getReservations (plural), incluye `total` (grandTotal).
-    Combinado con `balance`, podemos calcular `paid` con precisión.
+    Incluye `total` (grandTotal); combinado con `balance` se calcula `paid`.
+
+    Reintenta hasta `max_attempts` con backoff exponencial ante errores
+    transitorios (1s, 2s, 4s). Si la API responde success=False (id desconocido),
+    devuelve {} sin reintentar.
+
+    Si tras los reintentos sigue fallando:
+    - raise_on_error=False (default): devuelve {} — comportamiento legacy para
+      callers donde una falla individual no contamina data crítica (digest,
+      vambe sync). Mantiene compatibilidad.
+    - raise_on_error=True: levanta RuntimeError. Lo usa el sync de daily-update
+      porque una sola reserva con paid=0 (por falla silenciada) sesga el
+      `cobrado` del trip y produce falsos "refunds" en el digest semanal.
     """
-    try:
-        resp = _get("getReservation", {"reservationID": reservation_id}, api_key)
-        return resp.get("data", {}) if resp.get("success") else {}
-    except Exception:
-        return {}
+    last_err = None
+    for attempt in range(1, max_attempts + 1):
+        try:
+            resp = _get("getReservation", {"reservationID": reservation_id}, api_key)
+            if resp.get("success"):
+                return resp.get("data", {})
+            # Respuesta válida pero negativa → no reintentar
+            return {}
+        except Exception as e:
+            last_err = e
+            if attempt < max_attempts:
+                time.sleep(2 ** (attempt - 1))  # 1s, 2s, 4s
+    if raise_on_error:
+        raise RuntimeError(
+            f"getReservation({reservation_id}) falló tras {max_attempts} intentos: {last_err}"
+        )
+    return {}
 
 
 def _enrich_with_financials(api_key: str, by_id: dict) -> None:
     """
     Enriquece cada reservación con `paid` y `grandTotal` (modifica dicts in-place).
     Hace una llamada singular por reservación — ~0.25s c/u, ~100s para ~400 reservas.
+
+    Si alguna reservación falla tras los reintentos, aborta el sync (SystemExit).
+    Commit-no-sync > commit-de-data-parcial: una sola reserva con paid=0 sesga
+    el `cobrado` del trip, lo que produce falsos "refunds" en el digest semanal.
     """
     total_n = len(by_id)
     print(f"💰 Enriqueciendo {total_n} reservas con paid/grandTotal...")
     enriched = 0
+    failed = []
     for i, (rid, r) in enumerate(by_id.items(), 1):
         if i % 50 == 0:
             print(f"   → {i}/{total_n}")
-        full = _fetch_reservation_full(api_key, rid)
+        try:
+            full = _fetch_reservation_full(api_key, rid, raise_on_error=True)
+        except RuntimeError as e:
+            failed.append((rid, str(e)))
+            time.sleep(RATE_LIMIT)
+            continue
         if not full:
             continue
         total = full.get("total")
@@ -165,6 +200,13 @@ def _enrich_with_financials(api_key: str, by_id: dict) -> None:
             enriched += 1
         time.sleep(RATE_LIMIT)
     print(f"   ✓ {enriched}/{total_n} reservas con paid/grandTotal")
+    if failed:
+        print(f"❌ {len(failed)} reservas no enriquecidas — abortando para evitar data parcial:")
+        for rid, msg in failed[:10]:
+            print(f"   · {rid}: {msg}")
+        if len(failed) > 10:
+            print(f"   · ... y {len(failed) - 10} más")
+        raise SystemExit(1)
 
 
 def _fetch_reservations_by_booking(api_key: str, desde: str, hasta: str) -> list:
