@@ -1,9 +1,9 @@
-// akampa-data-v3.js — generado 2026-06-03
+// akampa-data-v3.js — generado 2026-06-04
 // Solo expone window.AKAMPA_DATA (sin conflictos de scope)
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-06-03 12:35",
+    "last_updated": "2026-06-04 11:28",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -555,14 +555,14 @@ window.AKAMPA_DATA = {
         "s": "2026-2027",
         "start": "2026-11-05",
         "end": "2026-11-08",
-        "rooms": 8,
+        "rooms": 15,
         "cap": 15,
-        "occ": 53.3,
-        "guests": 10,
+        "occ": 100.0,
+        "guests": 19,
         "status": "future",
-        "cobrado": 128557,
-        "pend": 167435,
-        "total": 295992
+        "cobrado": 208235,
+        "pend": 353350,
+        "total": 561585
       },
       {
         "id": 38,
@@ -986,36 +986,6 @@ window.AKAMPA_DATA = {
       }
     ],
     "monthly": {
-      "2025-2026": [
-        {
-          "m": "Ene",
-          "g": 59,
-          "occ": 0,
-          "rpg": 25890,
-          "rev": 1527487
-        },
-        {
-          "m": "Feb",
-          "g": 157,
-          "occ": 0,
-          "rpg": 21039,
-          "rev": 3303138
-        },
-        {
-          "m": "Mar",
-          "g": 130,
-          "occ": 0,
-          "rpg": 23130,
-          "rev": 3006847
-        },
-        {
-          "m": "Abr",
-          "g": 72,
-          "occ": 0,
-          "rpg": 24483,
-          "rev": 1762780
-        }
-      ],
       "2026-2027": [
         {
           "m": "Oct",
@@ -1026,10 +996,10 @@ window.AKAMPA_DATA = {
         },
         {
           "m": "Nov",
-          "g": 44,
+          "g": 53,
           "occ": 0,
-          "rpg": 11372,
-          "rev": 500379
+          "rpg": 10944,
+          "rev": 580057
         },
         {
           "m": "Dic",
@@ -1058,6 +1028,36 @@ window.AKAMPA_DATA = {
           "occ": 0,
           "rpg": 6625,
           "rev": 79496
+        }
+      ],
+      "2025-2026": [
+        {
+          "m": "Ene",
+          "g": 59,
+          "occ": 0,
+          "rpg": 25890,
+          "rev": 1527487
+        },
+        {
+          "m": "Feb",
+          "g": 157,
+          "occ": 0,
+          "rpg": 21039,
+          "rev": 3303138
+        },
+        {
+          "m": "Mar",
+          "g": 130,
+          "occ": 0,
+          "rpg": 23130,
+          "rev": 3006847
+        },
+        {
+          "m": "Abr",
+          "g": 72,
+          "occ": 0,
+          "rpg": 24483,
+          "rev": 1762780
         }
       ]
     },
@@ -1119,7 +1119,7 @@ window.AKAMPA_DATA = {
       "2025-W06": 2443,
       "2026-W21": 74943,
       "2026-W22": 53650,
-      "2026-W23": 134214
+      "2026-W23": 213892
     },
     "weekly_pend": {
       "2026-W04": 168680,
@@ -1152,7 +1152,7 @@ window.AKAMPA_DATA = {
       "2025-W05": 898,
       "2026-W21": 42336,
       "2026-W22": 51391,
-      "2026-W23": 366180
+      "2026-W23": 552095
     },
     "daily": {
       "2026-01-01": 28060,
@@ -1320,7 +1320,7 @@ window.AKAMPA_DATA = {
       "2026-05-28": 31626,
       "2026-06-01": 79496,
       "2026-06-02": 45598,
-      "2026-06-03": 9120
+      "2026-06-03": 88798
     }
   },
   "la_ventana": {
@@ -1535,7 +1535,7 @@ window.AKAMPA_DATA = {
         "start": "2026-06-04",
         "end": "2026-06-07",
         "cap": 30,
-        "status": "future",
+        "status": "next",
         "payments": [
           {
             "date": "2026-05-22",
