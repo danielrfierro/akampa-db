@@ -1,9 +1,9 @@
-// akampa-data-v3.js — generado 2026-06-05
+// akampa-data-v3.js — generado 2026-06-06
 // Solo expone window.AKAMPA_DATA (sin conflictos de scope)
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-06-05 10:59",
+    "last_updated": "2026-06-06 09:50",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -750,14 +750,14 @@ window.AKAMPA_DATA = {
         "s": "2026-2027",
         "start": "2026-12-30",
         "end": "2027-01-02",
-        "rooms": 3,
+        "rooms": 4,
         "cap": 15,
-        "occ": 20.0,
-        "guests": 4,
+        "occ": 26.7,
+        "guests": 6,
         "status": "future",
-        "cobrado": 58150,
-        "pend": 58150,
-        "total": 116300
+        "cobrado": 75520,
+        "pend": 98680,
+        "total": 174200
       },
       {
         "id": 51,
@@ -1033,10 +1033,10 @@ window.AKAMPA_DATA = {
         },
         {
           "m": "Dic",
-          "g": 30,
+          "g": 32,
           "occ": 0,
-          "rpg": 13688,
-          "rev": 410625
+          "rpg": 13375,
+          "rev": 427995
         },
         {
           "m": "Feb",
@@ -1054,10 +1054,10 @@ window.AKAMPA_DATA = {
         },
         {
           "m": "Mar",
-          "g": 12,
+          "g": 13,
           "occ": 0,
           "rpg": 6625,
-          "rev": 79496
+          "rev": 86121
         }
       ]
     },
@@ -1119,7 +1119,7 @@ window.AKAMPA_DATA = {
       "2025-W06": 2443,
       "2026-W21": 74943,
       "2026-W22": 53650,
-      "2026-W23": 213892
+      "2026-W23": 237887
     },
     "weekly_pend": {
       "2026-W04": 168680,
@@ -1152,7 +1152,7 @@ window.AKAMPA_DATA = {
       "2025-W05": 898,
       "2026-W21": 42336,
       "2026-W22": 51391,
-      "2026-W23": 552095
+      "2026-W23": 624283
     },
     "daily": {
       "2026-01-01": 28060,
@@ -1318,9 +1318,10 @@ window.AKAMPA_DATA = {
       "2026-05-22": 18144,
       "2026-05-27": 22025,
       "2026-05-28": 31626,
-      "2026-06-01": 79496,
+      "2026-06-01": 86121,
       "2026-06-02": 45598,
-      "2026-06-03": 88798
+      "2026-06-03": 88798,
+      "2026-06-05": 17370
     }
   },
   "la_ventana": {
