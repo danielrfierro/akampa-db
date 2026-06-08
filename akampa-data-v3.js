@@ -1,9 +1,9 @@
-// akampa-data-v3.js — generado 2026-06-07
+// akampa-data-v3.js — generado 2026-06-08
 // Solo expone window.AKAMPA_DATA (sin conflictos de scope)
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-06-07 09:50",
+    "last_updated": "2026-06-08 09:21",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -986,36 +986,6 @@ window.AKAMPA_DATA = {
       }
     ],
     "monthly": {
-      "2025-2026": [
-        {
-          "m": "Ene",
-          "g": 59,
-          "occ": 0,
-          "rpg": 25890,
-          "rev": 1527487
-        },
-        {
-          "m": "Feb",
-          "g": 157,
-          "occ": 0,
-          "rpg": 21039,
-          "rev": 3303138
-        },
-        {
-          "m": "Mar",
-          "g": 130,
-          "occ": 0,
-          "rpg": 23130,
-          "rev": 3006847
-        },
-        {
-          "m": "Abr",
-          "g": 72,
-          "occ": 0,
-          "rpg": 24483,
-          "rev": 1762780
-        }
-      ],
       "2026-2027": [
         {
           "m": "Oct",
@@ -1058,6 +1028,36 @@ window.AKAMPA_DATA = {
           "occ": 0,
           "rpg": 6625,
           "rev": 86121
+        }
+      ],
+      "2025-2026": [
+        {
+          "m": "Ene",
+          "g": 59,
+          "occ": 0,
+          "rpg": 25890,
+          "rev": 1527487
+        },
+        {
+          "m": "Feb",
+          "g": 157,
+          "occ": 0,
+          "rpg": 21039,
+          "rev": 3303138
+        },
+        {
+          "m": "Mar",
+          "g": 130,
+          "occ": 0,
+          "rpg": 23130,
+          "rev": 3006847
+        },
+        {
+          "m": "Abr",
+          "g": 72,
+          "occ": 0,
+          "rpg": 24483,
+          "rev": 1762780
         }
       ]
     },
@@ -1536,7 +1536,7 @@ window.AKAMPA_DATA = {
         "start": "2026-06-04",
         "end": "2026-06-07",
         "cap": 30,
-        "status": "next",
+        "status": "past",
         "payments": [
           {
             "date": "2026-05-22",
@@ -1686,6 +1686,21 @@ window.AKAMPA_DATA = {
         "status": "future",
         "payments": [
           {
+            "date": "2026-06-05",
+            "amount": 25500.0,
+            "participants": [
+              "CONSTANZA Olguín Chávez"
+            ]
+          },
+          {
+            "date": "2026-06-03",
+            "amount": 22500.0,
+            "participants": [
+              "Angel Luis Vázquez Vera",
+              "Julissa Ramos Mendez"
+            ]
+          },
+          {
             "date": "2026-05-30",
             "amount": 22500.0,
             "participants": [
@@ -1817,6 +1832,13 @@ window.AKAMPA_DATA = {
         "cap": 30,
         "status": "future",
         "payments": [
+          {
+            "date": "2026-06-04",
+            "amount": 16000.0,
+            "participants": [
+              "Antonio Luna Gutierrez"
+            ]
+          },
           {
             "date": "2026-05-21",
             "amount": 9833.0,
