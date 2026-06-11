@@ -1,9 +1,9 @@
-// akampa-data-v3.js — generado 2026-06-10
+// akampa-data-v3.js — generado 2026-06-11
 // Solo expone window.AKAMPA_DATA (sin conflictos de scope)
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-06-10 11:42",
+    "last_updated": "2026-06-11 11:50",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -1152,7 +1152,7 @@ window.AKAMPA_DATA = {
       "2025-W05": 898,
       "2026-W21": 42336,
       "2026-W22": 51391,
-      "2026-W23": 650783,
+      "2026-W23": 644158,
       "2026-W24": 54571
     },
     "daily": {
@@ -1684,7 +1684,7 @@ window.AKAMPA_DATA = {
         "start": "2026-06-11",
         "end": "2026-06-14",
         "cap": 30,
-        "status": "future",
+        "status": "next",
         "payments": [
           {
             "date": "2026-06-05",
