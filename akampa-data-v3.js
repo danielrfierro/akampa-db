@@ -1,9 +1,9 @@
-// akampa-data-v3.js — generado 2026-06-14
+// akampa-data-v3.js — generado 2026-06-15
 // Solo expone window.AKAMPA_DATA (sin conflictos de scope)
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-06-14 10:05",
+    "last_updated": "2026-06-15 10:45",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
@@ -1686,8 +1686,39 @@ window.AKAMPA_DATA = {
         "start": "2026-06-11",
         "end": "2026-06-14",
         "cap": 30,
-        "status": "next",
+        "status": "past",
         "payments": [
+          {
+            "date": "2026-06-11",
+            "amount": 12750.0,
+            "participants": [
+              "Nayvy Juarez Pérez"
+            ]
+          },
+          {
+            "date": "2026-06-11",
+            "amount": 18000.0,
+            "participants": [
+              "Sasha Glatt Porteny",
+              "Edouard Triet"
+            ]
+          },
+          {
+            "date": "2026-06-11",
+            "amount": 12750.0,
+            "participants": [
+              "Marlene Gras Marin"
+            ]
+          },
+          {
+            "date": "2026-06-08",
+            "amount": 35250.0,
+            "participants": [
+              "Arturs Aleksandrovics",
+              "Maksimilians Aleksandrovics",
+              "Markus Aleksandrovics"
+            ]
+          },
           {
             "date": "2026-06-05",
             "amount": 25500.0,
