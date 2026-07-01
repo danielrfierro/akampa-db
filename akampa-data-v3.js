@@ -1,9 +1,9 @@
-// akampa-data-v3.js — generado 2026-06-30
+// akampa-data-v3.js — generado 2026-07-01
 // Solo expone window.AKAMPA_DATA (sin conflictos de scope)
 window.AKAMPA_DATA = {
   "meta": {
     "kpi_anual": 30000000,
-    "last_updated": "2026-06-30 10:36",
+    "last_updated": "2026-07-01 10:55",
     "property": "Akampa · All Destinations"
   },
   "bahia_mag": {
